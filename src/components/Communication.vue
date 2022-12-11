@@ -43,8 +43,8 @@ export default defineComponent({
     return {
       // store the parsed CSV data in a local variable
       data: [] as CsvData[],
-      urlLine: {},
-      translatorLine: {},
+      urlLine: {} as CsvData,
+      translatorLine: {} as CsvData,
       isLoading: false,
     };
   },
@@ -57,7 +57,7 @@ export default defineComponent({
       await this.loadCsvFromUrl(this.csvUrl)
     },
     // define a method to load the CSV data from the URL
-    async loadCsvFromUrl(url: String) {
+    async loadCsvFromUrl(url: string) {
       this.isLoading = true
       try {
         // use the fetch() function to request the CSV data from the URL
@@ -75,13 +75,13 @@ export default defineComponent({
         alert(e)
       }
     },
-    loadCsvFromText(text: String) {
+    loadCsvFromText(text: string) {
       try {
-        const { data } = Papa.parse(text, {
+        const data: CsvData[] = Papa.parse(text, {
           header: true, // use the first row as the header
-        });
+        }).data as CsvData[];
 
-        data.forEach(element => {
+        data.forEach((element: CsvData) => {
           if (element.id === "info") {
             this.urlLine = element
           }
@@ -91,7 +91,7 @@ export default defineComponent({
         });
 
         // store the parsed CSV data in the "data" variable
-        this.data = data.filter((item) => item.text) as CsvData[];
+        this.data = data.filter((item: CsvData) => item.text) as CsvData[];
         this.isLoading = false
       } catch (e) {
         alert(e)
@@ -102,10 +102,11 @@ export default defineComponent({
       // generate the updated CSV data by mapping over the "data" array and
       // replacing the "trans" property of each item with the updated value
       // from the "DialogueLine" components
+      const lines: any[] = this.$refs.lines as any[];
       let updatedData = this.data.map((item, index) => {
         return {
           ...item,
-          trans: this.$refs.lines[index].local_trans,
+          trans: lines[index].local_trans,
         };
       });
 

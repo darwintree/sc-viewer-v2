@@ -2,11 +2,12 @@
 import Communication from './components/Communication.vue';
 import { ref } from 'vue';
 
-let csvUrl = ref(null);
-let communication = ref(null);
+let csvUrl = ref("");
+let communication = ref<InstanceType<typeof Communication> | null>(null);
 
 function loadCsv() {
   // trigger the "loadCsv" method in the "Communication" component
+    // 调用Communication组件的loadCsv方法
   if (communication.value !== null)
     communication.value.loadCsv();
 }
@@ -22,7 +23,8 @@ function handleFileChange(e: Event) {
       const text = reader.result as string;
 
       // pass the file text to the Communication component
-      communication.value.loadCsvFromText(text);
+      if (communication.value !== null)
+        communication.value.loadCsvFromText(text);
     };
 
     reader.readAsText(file);
