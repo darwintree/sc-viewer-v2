@@ -46,7 +46,7 @@ export default defineComponent({
   },
   computed: {
     audioUrl() {
-      return `http://localhost:11452/direct/sounds/voice/events/${this.base}/${this.id}.m4a`
+      return `https://strawberrytree.top/convert/cache/sounds/voice/events/${this.base}/${this.id}.m4a`
     },
     hasAudio() {
       if (this.id) {
