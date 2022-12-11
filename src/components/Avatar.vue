@@ -29,8 +29,9 @@ export default defineComponent({
 <style scoped>
 /* add styles for the "Avatar" component here */
 img {
-  width: 120px;
-  height: 120px;
+  width: 20vw;
+  max-width: 120px;
+  height: auto;
 }
 
 .avatar {

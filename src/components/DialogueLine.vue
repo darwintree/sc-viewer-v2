@@ -1,3 +1,5 @@
+// DialogueLine.vue
+
 <template>
   <!-- only render the component if all required props are defined -->
   <div class="line" v-if="name && text && trans">
@@ -179,5 +181,3 @@ export default defineComponent({
   align-items: center;
 }
 </style>
-
-

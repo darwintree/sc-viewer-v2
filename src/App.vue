@@ -2,7 +2,7 @@
 import Communication from './components/Communication.vue';
 import { ref } from 'vue';
 
-let csvUrl = ref('/301701201.csv');
+let csvUrl = ref(null);
 let communication = ref(null);
 
 function loadCsv() {
@@ -11,12 +11,32 @@ function loadCsv() {
     communication.value.loadCsv();
 }
 
+function handleFileChange(e: Event) {
+  const files = (e.target as HTMLInputElement).files;
+
+  if (files && files.length > 0) {
+    const file = files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const text = reader.result as string;
+
+      // pass the file text to the Communication component
+      communication.value.loadCsvFromText(text);
+    };
+
+    reader.readAsText(file);
+  }
+}
+
 </script>
 <template>
   <div class="main">
     <div class="input-row">
-      <input v-model="csvUrl" placeholder="Enter CSV URL" />
+      <input v-model="csvUrl" placeholder="Enter CSV URL" class="url-input"/>
       <button @click="loadCsv">Confirm</button>
+      <label> or </label>
+      <input type="file" @change="handleFileChange" class="file-selector"/>
     </div>
     <Communication :csvUrl="csvUrl" ref="communication" />
   </div>
@@ -25,9 +45,36 @@ function loadCsv() {
 .input-row {
   display: flex;
   flex: 8;
+  align-items: center;
 }
 
-.input-row > input {
-  flex: 6
+.input-row > .url-input {
+  flex: 5;
+  height: 100%;
+  font-size: medium;
+}
+
+/* .file-selector {
+  appearance: none;
+  background: blue;
+  color: white;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+} */
+
+.file-selector {
+  
+  appearance: none;
+  color: white;
+  padding: 8px;
+  /* border: none;
+  border-radius: 4px;
+  font-size: 1em; */
+  color: black;
+  cursor: pointer;
+  flex: 3;
 }
 </style>

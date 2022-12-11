@@ -27,7 +27,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  /* place-items:  */
   min-width: 320px;
   min-height: 100vh;
 }
@@ -39,8 +39,9 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  border: 1px solid grey;
+  padding: 0.2em 1em;
+  margin: 3px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -61,11 +62,35 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
+  max-width: 720px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif;
+  height: 100%;
+  width: 100%;
 }
+
+@font-face {
+  font-family: 'UDKakugo_SmallPr6-B';
+  src: url('/font/heiti.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'HummingStd-E';
+  src: url('/font/yuanti.woff2') format('woff2');
+}
+
+
+html {
+  /* height: 100%; */
+  /* background: url("@/assets/pattern_bg.png"); */
+  background-image: url("/pattern_bg.png");
+  background-attachment: fixed;
+}
+/* body {
+  height: 100%;
+
+} */
 
 @media (prefers-color-scheme: light) {
   :root {

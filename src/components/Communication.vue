@@ -5,19 +5,11 @@
     Loading...
   </div>
   <!-- the "communication" element contains the list of messages -->
-  <button @click="downloadCsv">Download CSV</button>
+  <button @click="downloadCsv" class="download-button">Download CSV</button>
   <div class="communication">
     <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
-    <DialogueLine
-      v-for="(item, index) in data"
-      :key="index"
-      :id="item.id"
-      :name="item.name"
-      :text="item.text"
-      :trans="item.trans"
-      :base="urlLine.name.split('.')[0]"
-      ref="lines"
-    />
+    <DialogueLine v-for="(item, index) in data" :key="index" :id="item.id" :name="item.name" :text="item.text"
+      :trans="item.trans" :base="urlLine.name.split('.')[0]" ref="lines" />
   </div>
 </template>
 
@@ -25,7 +17,7 @@
 import { defineComponent } from 'vue';
 import DialogueLine from './DialogueLine.vue'; // import the "DialogueLine" component
 import * as Papa from 'papaparse'; // import PapaParse
-import FileSaver from 'file-saver'; 
+import FileSaver from 'file-saver';
 
 // define the interface for the CSV data
 interface CsvData {
@@ -61,41 +53,50 @@ export default defineComponent({
     this.loadCsv();
   },
   methods: {
-    // define a method to load the CSV data from the URL
     async loadCsv() {
+      await this.loadCsvFromUrl(this.csvUrl)
+    },
+    // define a method to load the CSV data from the URL
+    async loadCsvFromUrl(url: String) {
       this.isLoading = true
       try {
-      // use the fetch() function to request the CSV data from the URL
-        const response = await fetch(this.csvUrl);
+        // use the fetch() function to request the CSV data from the URL
+        const response = await fetch(url);
 
         // if the response is successful, parse the CSV data
         if (response.ok) {
           // get the text of the response
           const text = await response.text();
-
-          // parse the CSV data using PapaParse
-          const { data } = Papa.parse(text, {
-            header: true, // use the first row as the header
-          });
-
-          data.forEach(element => {
-            if (element.id === "info") {
-              this.urlLine = element
-            }
-            if (element.id === "译者") {
-              this.translatorLine = element
-            }
-          });
-
-          // store the parsed CSV data in the "data" variable
-          this.data = data.filter((item) => item.text) as CsvData[];
-          this.isLoading = false
+          this.loadCsvFromText(text)
         } else {
           alert("load failed")
         }
       } catch (e) {
         alert(e)
       }
+    },
+    loadCsvFromText(text: String) {
+      try {
+        const { data } = Papa.parse(text, {
+          header: true, // use the first row as the header
+        });
+
+        data.forEach(element => {
+          if (element.id === "info") {
+            this.urlLine = element
+          }
+          if (element.id === "译者") {
+            this.translatorLine = element
+          }
+        });
+
+        // store the parsed CSV data in the "data" variable
+        this.data = data.filter((item) => item.text) as CsvData[];
+        this.isLoading = false
+      } catch (e) {
+        alert(e)
+      }
+
     },
     downloadCsv() {
       // generate the updated CSV data by mapping over the "data" array and
@@ -131,5 +132,12 @@ export default defineComponent({
   font-weight: bold;
   color: red;
 }
+
+.download-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
 </style>
 
