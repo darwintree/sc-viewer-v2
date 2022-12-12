@@ -50,7 +50,7 @@ export default defineComponent({
     },
     hasAudio() {
       if (this.id) {
-        return this.id !== "0000000000000"
+        return this.id !== "0000000000000" && this.id !== "select";
       }
       return false
     }

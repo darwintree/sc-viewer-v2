@@ -16,3 +16,17 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
    1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
    2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+
+## TODOs
+
+- [] Read mode: lines will be presented after a click, and the audio will be played with the click
+- [] Check select label
+- [] Parse .json file (high priority)
+- [] Parse assets-map.json to present Idol stories and event stories
+- [] Use hashes.json and SCTranslation to add more information
+- [] Use github interface to push csv directly
+- [] styles: text frame and select
+- [] add translator input
+- [] bgm from json
+- [] p's voice (sound effect/tts)
+- [] next/previous chapter

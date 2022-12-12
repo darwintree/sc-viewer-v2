@@ -5,11 +5,11 @@
     Loading...
   </div>
   <!-- the "communication" element contains the list of messages -->
-  <button @click="downloadCsv" class="download-button">Download CSV</button>
+  <button @click="downloadData" class="download-button">Download CSV</button>
   <div class="communication">
     <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
     <DialogueLine v-for="(item, index) in data" :key="index" :id="item.id" :name="item.name" :text="item.text"
-      :trans="item.trans" :base="urlLine.name.split('.')[0]" ref="lines" />
+      :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" />
   </div>
 </template>
 
@@ -18,6 +18,7 @@ import { defineComponent } from 'vue';
 import DialogueLine from './DialogueLine.vue'; // import the "DialogueLine" component
 import * as Papa from 'papaparse'; // import PapaParse
 import FileSaver from 'file-saver';
+import Queue from '../helper/queue.js';
 
 // define the interface for the CSV data
 interface CsvData {
@@ -43,52 +44,66 @@ export default defineComponent({
     return {
       // store the parsed CSV data in a local variable
       data: [] as CsvData[],
-      urlLine: {} as CsvData,
-      translatorLine: {} as CsvData,
+      jsonUrl: "",
+      translator: "",
       isLoading: false,
     };
   },
   mounted() {
     // when the component is mounted, load the CSV data from the URL
-    this.loadCsv();
+    // this.loadData();
   },
   methods: {
-    async loadCsv() {
-      await this.loadCsvFromUrl(this.csvUrl)
+    async loadData() {
+      await this.loadDataFromUrl(this.csvUrl)
     },
     // define a method to load the CSV data from the URL
-    async loadCsvFromUrl(url: string) {
+    async loadDataFromUrl(url: string) {
       this.isLoading = true
       try {
         // use the fetch() function to request the CSV data from the URL
         const response = await fetch(url);
 
-        // if the response is successful, parse the CSV data
-        if (response.ok) {
-          // get the text of the response
-          const text = await response.text();
-          this.loadCsvFromText(text)
-        } else {
+        if (!response.ok) {
           alert("load failed")
+          return
+        }
+        // if the response is successful, parse the CSV data
+        
+          // get the text of the response
+        if (url.endsWith(".csv")) {
+          const text = await response.text();
+          await this.loadDataFromCsvText(text)
+        } else {
+          alert("file format not supported: specify .csv or .json")
         }
       } catch (e) {
         alert(e)
       }
     },
-    loadCsvFromText(text: string) {
+    async loadDataFromCsvText(text: string) {
       try {
         const data: CsvData[] = Papa.parse(text, {
           header: true, // use the first row as the header
         }).data as CsvData[];
 
+        let queue = new Queue<CsvData>;
+
         data.forEach((element: CsvData) => {
           if (element.id === "info") {
-            this.urlLine = element
-          }
+            this.jsonUrl = element.name
+          } 
           if (element.id === "译者") {
-            this.translatorLine = element
+            this.translator = element.name
+          } 
+          if (element.text) {
+            queue.enqueue(element)
           }
         });
+
+        if (!this.jsonUrl) {
+          alert("CSV format wrong")
+        }
 
         // store the parsed CSV data in the "data" variable
         this.data = data.filter((item: CsvData) => item.text) as CsvData[];
@@ -98,7 +113,7 @@ export default defineComponent({
       }
 
     },
-    downloadCsv() {
+    downloadData() {
       // generate the updated CSV data by mapping over the "data" array and
       // replacing the "trans" property of each item with the updated value
       // from the "DialogueLine" components
@@ -110,8 +125,18 @@ export default defineComponent({
         };
       });
 
-      updatedData.push(this.urlLine)
-      updatedData.push(this.translatorLine)
+      updatedData.push({
+        "id": "",
+        "name": this.jsonUrl,
+        "text": "",
+        "trans": ""
+      })
+      updatedData.push({
+        "id": "",
+        "name": this.translator,
+        "text": "",
+        "trans": ""
+      })
 
       // convert the updated data array to a CSV string using the PapaParse library
       const csv = Papa.unparse(updatedData);
@@ -136,8 +161,9 @@ export default defineComponent({
 
 .download-button {
   position: fixed;
-  top: 10px;
+  top: 80px;
   right: 10px;
+  opacity: 0.5;
 }
 
 </style>

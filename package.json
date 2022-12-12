@@ -11,9 +11,7 @@
   "dependencies": {
     "file-saver": "^2.0.5",
     "papaparse": "^5.3.2",
-    "vue": "^3.2.45",
-    "vue-class-component": "^7.2.6",
-    "vue-property-decorator": "^9.1.2"
+    "vue": "^3.2.45"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",

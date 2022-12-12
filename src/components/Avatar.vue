@@ -1,6 +1,6 @@
 <template>
   <!-- the "avatar" element displays the avatar image -->
-  <div class="avatar">
+  <div class="avatar" v-if="name">
     <img :src="avatarUrl" :alt="name" onerror="this.onerror=null;this.src='/icon/dummy.webp'"/>
   </div>
 </template>
@@ -35,6 +35,6 @@ img {
 }
 
 .avatar {
-  padding: 10px;
+  padding: 10px 10px 10px 0px;
 }
 </style>

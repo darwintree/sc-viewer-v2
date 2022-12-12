@@ -2,24 +2,22 @@
 
 <template>
   <!-- only render the component if all required props are defined -->
-  <div class="line" v-if="name && text && trans">
+  <div class="line" v-if="text">
     <!-- the avatar is a child component that displays the avatar image -->
     <Avatar :name="name" />
 
     <!-- the "text-container" element contains the name, text, and translation -->
     <div class="text-container">
-      <div class="name">{{ name }} 
+      <div class="name" v-if="name">{{ name }} 
         <AudioLabel :id="id" :base="base"></AudioLabel>
       </div>
-      <div class="text">{{ display_text }}</div>
+      <div :class="{ 'text': !isSelect, 'select': isSelect }">{{ display_text }}</div>
 
       <!-- the "line-controls" element contains the "trans" text and the "edit-toggle" button -->
-      <div class="line-controls">
+      <div :class="{'line-controls': !isSelect, 'select-controls': isSelect}">
         <!-- the "trans" element is shown when the component is not in edit mode -->
         <div class="trans" v-if="!isEditing">{{ display_trans }}</div>
-        <button class="edit-toggle" @click="toggleEdit" v-if="!isEditing">
-          Edit
-        </button>
+        <button class="edit-toggle" @click="toggleEdit" v-if="!isEditing">Edit</button>
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
         <div class="edit-container" v-else>
@@ -104,6 +102,9 @@ export default defineComponent({
         return this.local_trans.replace("\\n", "\n")
       return ""
     },
+    isSelect() {
+      return this.id === "select"
+    },
   },
   methods: {
     // define the "cancelEdit" method to cancel the edit operation
@@ -153,9 +154,11 @@ export default defineComponent({
   border-radius: 0.25em;
 }
 
-.line>.text-container>.trans {
-  font-size: 0.8em;
+.trans {
+  font-size: 0.9em;
   color: #999;
+  flex: 6;
+  padding: 0.5em;
 }
 
 .line>.line-controls>.edit-container>textarea {
@@ -167,6 +170,15 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex: 8
+}
+
+.select-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 8;
+  text-align: center;
 }
 
 .edit-container {
@@ -175,9 +187,25 @@ export default defineComponent({
   flex: 1;
 }
 
+.edit-toggle {
+  height: 2rem;
+  justify-self: stretch;
+  /* flex: 2; */
+}
+
 /* update the styles for the ".edit-controls" element to display its child elements on the same line */
 .edit-controls {
   display: flex;
   align-items: center;
+}
+
+.select { 
+  background-image: url("select_frame/001.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 1rem 0rem;
+  padding: 3rem 2rem;
+  text-align: center;
 }
 </style>

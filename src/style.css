@@ -4,7 +4,7 @@
   line-height: 24px;
   font-weight: 400;
 
-  color-scheme: light dark;
+  /* color-scheme: light dark; */
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
@@ -64,7 +64,7 @@ button:focus-visible {
 #app {
   max-width: 720px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.8rem;
   text-align: center;
   font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif;
   height: 100%;
@@ -81,7 +81,7 @@ button:focus-visible {
 }
 
 
-html {
+html  {
   /* height: 100%; */
   /* background: url("@/assets/pattern_bg.png"); */
   background-image: url("/pattern_bg.png");
@@ -93,6 +93,19 @@ html {
 } */
 
 @media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
     color: #213547;
     background-color: #ffffff;
