@@ -126,13 +126,13 @@ export default defineComponent({
       });
 
       updatedData.push({
-        "id": "",
+        "id": "info",
         "name": this.jsonUrl,
         "text": "",
         "trans": ""
       })
       updatedData.push({
-        "id": "",
+        "id": "译者",
         "name": this.translator,
         "text": "",
         "trans": ""
