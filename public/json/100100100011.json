@@ -1,0 +1,172 @@
+[
+  {
+    "charAnim1": "wait",
+    "charLabel": "mano",
+    "charType": "characters",
+    "charId": "001",
+    "charPosition": {
+      "x": 568,
+      "y": 640,
+      "order": 0
+    },
+    "bg": "00001"
+  },
+  {
+    "speaker": "プロデューサー",
+    "text": "この前のオフは出かけたんだって？",
+    "textCtrl": "p",
+    "textFrame": "002"
+  },
+  {
+    "id": 1001001000110010,
+    "speaker": "真乃",
+    "text": "はい、お買い物に行きましたっ！\r\nかわいい鳥さんの小物を見つけたんです",
+    "charAnim1": "wait4",
+    "charLipAnim": "lip_smile",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110010"
+  },
+  {
+    "id": 1001001000110020,
+    "speaker": "真乃",
+    "text": "本当にほわほわ～ってかわいくて、\r\n買おうか迷っちゃいました",
+    "charAnim1": "smile2",
+    "charLipAnim": "lip_smile",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110020"
+  },
+  {
+    "speaker": "プロデューサー",
+    "text": "（楽しそうに話してくれるな）",
+    "charLabel": "mano",
+    "textCtrl": "l",
+    "textFrame": "002"
+  },
+  {
+    "select": "ショッピングが\r\n好きなの？",
+    "nextLabel": "1001001000111"
+  },
+  {
+    "select": "どんな鳥？",
+    "nextLabel": "1001001000112"
+  },
+  {
+    "textCtrl": "cm",
+    "select": "小物が好きって、\r\n女の子らしいよな",
+    "nextLabel": "1001001000113"
+  },
+  {
+    "charLabel": "mano"
+  },
+  {
+    "id": 1001001000110030,
+    "label": "1001001000111",
+    "speaker": "真乃",
+    "text": "はいっ、お散歩するのが大好きで、お店もよく覗きます\r\nたまに素敵な物に出会えるのが楽しいですっ",
+    "charAnim1": "wait1",
+    "charAnim2": "blank",
+    "charLipAnim": "lip_smile",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110030"
+  },
+  {
+    "id": 1001001000110040,
+    "speaker": "真乃",
+    "text": "ほわ、鳥さんの小物とも素敵な出会いですよね？\r\nうん……やっぱり、買っちゃいますっ",
+    "charAnim1": "smile2",
+    "charLipAnim": "lip_smile",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110040"
+  },
+  {
+    "speaker": "プロデューサー",
+    "text": "（よし、楽しく話せたな）",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "002",
+    "nextLabel": "end"
+  },
+  {
+    "charLabel": "mano"
+  },
+  {
+    "id": 1001001000110050,
+    "label": "1001001000112",
+    "speaker": "真乃",
+    "text": "モチーフはインコです\r\n巾着になっていて、頭の紐をきゅっとすると……",
+    "charAnim1": "think",
+    "charLipAnim": "lip_smile",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110050"
+  },
+  {
+    "id": 1001001000110060,
+    "speaker": "真乃",
+    "text": "ほわわっ、そこまで聞いてないですよね……\r\nプロデューサーさんにも見せたかったです",
+    "charAnim2": "face_wait",
+    "charAnim3": "no",
+    "charAnim3Loop": false,
+    "charLipAnim": "lip_anger",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110060"
+  },
+  {
+    "speaker": "プロデューサー",
+    "text": "（まぁ、普通に話せたかな）",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "002",
+    "nextLabel": "end"
+  },
+  {
+    "charLabel": "mano"
+  },
+  {
+    "id": 1001001000110070,
+    "label": "1001001000113",
+    "speaker": "真乃",
+    "text": "ほわ……そうなんでしょうか……？",
+    "charAnim1": "wait3",
+    "charAnim2": "face_wait",
+    "charLipAnim": "lip_sad",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110070"
+  },
+  {
+    "id": 1001001000110080,
+    "speaker": "真乃",
+    "text": "小物だけじゃなくて、\r\n鳥さんがモチーフのものならなんでも好きです",
+    "charAnim3": "no",
+    "charAnim3Loop": false,
+    "charLipAnim": "lip_sad",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "001",
+    "voice": "produce_communications/100100100011/1001001000110080"
+  },
+  {
+    "speaker": "プロデューサー",
+    "text": "（うっ……しまった。別のことを言えば良かったな……）",
+    "charLabel": "mano",
+    "textCtrl": "p",
+    "textFrame": "002",
+    "nextLabel": "end"
+  },
+  {
+    "label": "end"
+  }
+]
