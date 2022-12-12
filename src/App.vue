@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import Communication from './components/Communication.vue';
-import { ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 
-let csvUrl = ref("");
+let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
 
-function loadCsv() {
-  // trigger the "loadCsv" method in the "Communication" component
-    // 调用Communication组件的loadCsv方法
-  if (communication.value !== null)
-    communication.value.loadCsv();
+onMounted(()=>{
+  if(location.hash) {
+    csvUrl.value = decodeURIComponent(location.hash.substring(1))
+    nextTick(()=>communication.value?.loadData())
+    // communication.value?.loadData()
+  }
+})
+
+function loadData() {
+  // trigger the "loadData" method in the "Communication" component
+    // 调用Communication组件的loadData方法
+  location.hash = encodeURIComponent(csvUrl.value)
+  communication.value?.loadData();
 }
 
 function handleFileChange(e: Event) {
@@ -24,7 +32,7 @@ function handleFileChange(e: Event) {
 
       // pass the file text to the Communication component
       if (communication.value !== null)
-        communication.value.loadCsvFromText(text);
+        communication.value.loadDataFromCsvText(text);
     };
 
     reader.readAsText(file);
@@ -36,7 +44,9 @@ function handleFileChange(e: Event) {
   <div class="main">
     <div class="input-row">
       <input v-model="csvUrl" placeholder="Enter CSV URL" class="url-input"/>
-      <button @click="loadCsv">Confirm</button>
+      <button @click="loadData">Confirm</button>
+    </div>
+    <div class="input-row">
       <label> or </label>
       <input type="file" @change="handleFileChange" class="file-selector"/>
     </div>
