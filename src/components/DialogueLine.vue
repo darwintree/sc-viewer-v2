@@ -200,7 +200,7 @@ export default defineComponent({
 }
 
 .select { 
-  background-image: url("select_frame/001.png");
+  background-image: url("/select_frame/001.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

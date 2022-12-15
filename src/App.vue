@@ -16,8 +16,12 @@ onMounted(()=>{
 function loadData() {
   // trigger the "loadData" method in the "Communication" component
     // 调用Communication组件的loadData方法
+  if (csvUrl.value.startsWith("https://github.com")) {
+    csvUrl.value = csvUrl.value.replace("github", "raw.githubusercontent")
+    csvUrl.value = csvUrl.value.replace("/blob/", "/")
+  }
   location.hash = encodeURIComponent(csvUrl.value)
-  communication.value?.loadData();
+  communication.value?.loadDataFromUrl(csvUrl.value);
 }
 
 function handleFileChange(e: Event) {
