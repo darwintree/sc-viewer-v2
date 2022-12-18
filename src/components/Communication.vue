@@ -6,6 +6,11 @@
   </div>
   <!-- the "communication" element contains the list of messages -->
   <button @click="downloadData" class="download-button">Download CSV</button>
+  <div v-if="iframeSrc">
+    <button @click="openEvent" class="preview-button">Preview Story↗</button>
+    <button @click="previewStory" class="preview-button">Preview Story↓</button>
+    <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
+  </div>
   <div class="communication">
     <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
     <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name" :text="item.text"
@@ -19,6 +24,7 @@ import DialogueLine from './DialogueLine.vue'; // import the "DialogueLine" comp
 import * as Papa from 'papaparse'; // import PapaParse
 import FileSaver from 'file-saver';
 import Queue from '../helper/queue.js';
+import EventIframe from './EventIframe.vue';
 
 // define the interface for the CSV data
 interface CsvData {
@@ -32,7 +38,8 @@ export default defineComponent({
   // define the "DialogueLine" component as a child component
   components: {
     DialogueLine,
-  },
+    EventIframe
+},
   // the URL of the CSV data will be passed to the component as a prop
   props: {
     csvUrl: {
@@ -47,13 +54,29 @@ export default defineComponent({
       jsonUrl: "",
       translator: "",
       isLoading: false,
+      isPreviewing: false,
     };
   },
   mounted() {
     // when the component is mounted, load the CSV data from the URL
     // this.loadData();
   },
+  computed: {
+    iframeSrc() {
+      if (!this.jsonUrl) return null
+      const eventType = this.jsonUrl.split("/")[0]
+      const eventId = this.jsonUrl.split("/")[1].split(".")[0]
+      return `https://event.strawberrytree.top/?eventType=${eventType}&eventId=${eventId}`
+    }
+  },
   methods: {
+    previewStory() {
+      // window.open("https://www.baidu.com")
+      this.isPreviewing = !this.isPreviewing
+    },
+    openEvent() {
+      window.open(this.iframeSrc!)
+    },
     async loadData() {
       await this.loadDataFromUrl(this.csvUrl)
     },
@@ -161,7 +184,7 @@ export default defineComponent({
 
 .download-button {
   position: fixed;
-  top: 80px;
+  top: 55px;
   right: 10px;
   opacity: 0.5;
 }
