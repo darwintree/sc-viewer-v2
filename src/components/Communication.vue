@@ -8,7 +8,7 @@
   <button @click="downloadData" class="download-button">Download CSV</button>
   <div class="communication">
     <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
-    <DialogueLine v-for="(item, index) in data" :key="index" :id="item.id" :name="item.name" :text="item.text"
+    <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name" :text="item.text"
       :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" />
   </div>
 </template>

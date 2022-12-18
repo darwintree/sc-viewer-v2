@@ -11,7 +11,7 @@
       <div class="name" v-if="name">{{ name }} 
         <AudioLabel :id="id" :base="base"></AudioLabel>
       </div>
-      <div :class="{ 'text': !isSelect, 'select': isSelect }">{{ display_text }}</div>
+      <div :class="{ 'text': !isSelect, 'select': isSelect }" :style="selectBgStyle">{{ display_text }}</div>
 
       <!-- the "line-controls" element contains the "trans" text and the "edit-toggle" button -->
       <div :class="{'line-controls': !isSelect, 'select-controls': isSelect}">
@@ -49,6 +49,10 @@ export default defineComponent({
     AudioLabel
 },
   props: {
+    index: {
+      type: Number,
+      required: true,
+    },
     id: {
       type: String,
       required: true,
@@ -105,6 +109,14 @@ export default defineComponent({
     isSelect() {
       return this.id === "select"
     },
+    selectBgStyle() {
+      if (this.id === "select"){
+        return { 
+          "background-image": `url("/select_frame/00${this.index%5+1}.png")`,
+        }
+      }
+      return {}
+    }
   },
   methods: {
     // define the "cancelEdit" method to cancel the edit operation
@@ -200,7 +212,7 @@ export default defineComponent({
 }
 
 .select { 
-  background-image: url("/select_frame/001.png");
+  /* background-image: url("/select_frame/001.png"); */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
