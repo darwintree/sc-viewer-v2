@@ -58,11 +58,8 @@ export default defineComponent({
       translator: "",
       isLoading: false,
       isPreviewing: false,
+      csvFileName: "",
     };
-  },
-  mounted() {
-    // when the component is mounted, load the CSV data from the URL
-    // this.loadData();
   },
   computed: {
     iframeSrc() {
@@ -74,14 +71,10 @@ export default defineComponent({
   },
   methods: {
     previewStory() {
-      // window.open("https://www.baidu.com")
       this.isPreviewing = !this.isPreviewing
     },
     openEvent() {
       window.open(this.iframeSrc!)
-    },
-    async loadData() {
-      await this.loadDataFromUrl(this.csvUrl)
     },
     // define a method to load the CSV data from the URL
     async loadDataFromUrl(url: string) {
@@ -98,6 +91,7 @@ export default defineComponent({
         
           // get the text of the response
         if (url.endsWith(".csv")) {
+          this.csvFileName = decodeURI(url.split('/').reverse()[0])
           const text = await response.text();
           await this.loadDataFromCsvText(text)
         } else {
@@ -173,7 +167,7 @@ export default defineComponent({
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
       // use the FileSaver library to save the Blob object as a file
-      FileSaver.saveAs(blob, 'updated-translations.csv');
+      FileSaver.saveAs(blob, this.csvFileName);
     },
   },
 });

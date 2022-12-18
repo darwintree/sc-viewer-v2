@@ -31,3 +31,4 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 - [ ] p's voice (sound effect/tts)
 - [ ] next/previous chapter
 - [x] Preview Story Button
+- [x] Save file name as load name

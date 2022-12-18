@@ -8,14 +8,11 @@ let communication = ref<InstanceType<typeof Communication> | null>(null);
 onMounted(()=>{
   if(location.hash) {
     csvUrl.value = decodeURIComponent(location.hash.substring(1))
-    nextTick(()=>communication.value?.loadData())
-    // communication.value?.loadData()
+    nextTick(()=>communication.value?.loadDataFromUrl(csvUrl.value))
   }
 })
 
 function loadData() {
-  // trigger the "loadData" method in the "Communication" component
-    // 调用Communication组件的loadData方法
   if (csvUrl.value.startsWith("https://github.com")) {
     csvUrl.value = csvUrl.value.replace("github", "raw.githubusercontent")
     csvUrl.value = csvUrl.value.replace("/blob/", "/")
@@ -35,8 +32,10 @@ function handleFileChange(e: Event) {
       const text = reader.result as string;
 
       // pass the file text to the Communication component
-      if (communication.value !== null)
+      if (communication.value !== null) {
+        communication.value.csvFileName = file.name;
         communication.value.loadDataFromCsvText(text);
+      }
     };
 
     reader.readAsText(file);
