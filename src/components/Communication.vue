@@ -15,6 +15,7 @@
     <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
     <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name" :text="item.text"
       :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" />
+    <TranslatorLine :name="'译者'" :trans="translator" ref="translator"></TranslatorLine>
   </div>
 </template>
 
@@ -25,6 +26,7 @@ import * as Papa from 'papaparse'; // import PapaParse
 import FileSaver from 'file-saver';
 import Queue from '../helper/queue.js';
 import EventIframe from './EventIframe.vue';
+import TranslatorLine from './TranslatorLine.vue';
 
 // define the interface for the CSV data
 interface CsvData {
@@ -38,7 +40,8 @@ export default defineComponent({
   // define the "DialogueLine" component as a child component
   components: {
     DialogueLine,
-    EventIframe
+    EventIframe,
+    TranslatorLine
 },
   // the URL of the CSV data will be passed to the component as a prop
   props: {
@@ -148,6 +151,8 @@ export default defineComponent({
         };
       });
 
+      const translatorLine: any = this.$refs.translator
+
       updatedData.push({
         "id": "info",
         "name": this.jsonUrl,
@@ -156,7 +161,7 @@ export default defineComponent({
       })
       updatedData.push({
         "id": "译者",
-        "name": this.translator,
+        "name": translatorLine.edit_trans,
         "text": "",
         "trans": ""
       })
