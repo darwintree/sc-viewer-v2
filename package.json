@@ -11,7 +11,8 @@
   "dependencies": {
     "file-saver": "^2.0.5",
     "papaparse": "^5.3.2",
-    "vue": "^3.2.45"
+    "vue": "^3.2.45",
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
