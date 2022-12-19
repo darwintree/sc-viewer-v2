@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { getAvatarPath } from '../helper/path';
 
 // define the props for the component
 export default defineComponent({
@@ -20,7 +21,8 @@ export default defineComponent({
   computed: {
     // compute the URL of the avatar image based on the name of the speaker
     avatarUrl() {
-      return `/icon/${this.name}.webp`;
+      return getAvatarPath(this.name)
+      // return `/icon/${this.name}.webp`;
     }
   },
 });

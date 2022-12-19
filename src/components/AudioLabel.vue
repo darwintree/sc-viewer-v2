@@ -3,6 +3,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { getAudioPath } from '../helper/path'
 
 // define the props for the component
 export default defineComponent({
@@ -46,7 +47,7 @@ export default defineComponent({
   },
   computed: {
     audioUrl() {
-      return `https://strawberrytree.top/convert/cache/sounds/voice/events/${this.base}/${this.id}.m4a`
+      return getAudioPath(this.id, this.base)
     },
     hasAudio() {
       if (this.id) {
