@@ -54,7 +54,7 @@ function toGithub() {
     <div class="input-row">
       <input v-model="csvUrl" placeholder="Enter CSV URL" class="url-input"/>
       <button @click="loadData">Confirm</button>
-      <img class="github" src="github.png" @click="toGithub" />
+      <img class="github" src="../assets/github.png" @click="toGithub" />
     </div>
     <div class="input-row">
       <label> or </label>
