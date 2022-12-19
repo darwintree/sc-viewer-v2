@@ -81,6 +81,9 @@ export default defineComponent({
       this.isLoading = true
       try {
         // use the fetch() function to request the CSV data from the URL
+        if (url.startsWith("https://github.com")) {
+          url = url.replace("github", "raw.githubusercontent").replace("/blob/", "/")
+        }
         const response = await fetch(url);
 
         if (!response.ok) {

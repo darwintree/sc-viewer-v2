@@ -1,3 +1,5 @@
+// App.vue
+
 <script setup lang="ts">
 import Communication from './components/Communication.vue';
 import { ref, onMounted, nextTick } from 'vue';
@@ -13,10 +15,6 @@ onMounted(()=>{
 })
 
 function loadData() {
-  if (csvUrl.value.startsWith("https://github.com")) {
-    csvUrl.value = csvUrl.value.replace("github", "raw.githubusercontent")
-    csvUrl.value = csvUrl.value.replace("/blob/", "/")
-  }
   location.hash = encodeURIComponent(csvUrl.value)
   communication.value?.loadDataFromUrl(csvUrl.value);
 }
@@ -42,12 +40,22 @@ function handleFileChange(e: Event) {
   }
 }
 
+function toGithub() {
+  if (csvUrl.value) {
+    window.open(csvUrl.value)
+  }
+  else {
+    window.open("https://github.com/ShinyGroup/SCTranslationData/tree/master/data/story")
+  }
+}
+
 </script>
 <template>
   <div class="main">
     <div class="input-row">
       <input v-model="csvUrl" placeholder="Enter CSV URL" class="url-input"/>
       <button @click="loadData">Confirm</button>
+      <img class="github" src="github.png" @click="toGithub" />
     </div>
     <div class="input-row">
       <label> or </label>
@@ -67,6 +75,11 @@ function handleFileChange(e: Event) {
   flex: 5;
   height: 100%;
   font-size: medium;
+}
+
+.github {
+  height: 30px;
+  cursor: pointer;
 }
 
 /* .file-selector {
