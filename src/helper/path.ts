@@ -6,7 +6,6 @@ let unitList: string[] = []
 for (let unit of Object.keys(units)) {
     unitList.push(unit)
     let idols = ((units as any)[unit])
-    console.log(idols)
     idolList = idolList.concat(idols)
 }
 

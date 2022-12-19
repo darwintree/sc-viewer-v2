@@ -186,7 +186,7 @@ export default defineComponent({
 
 .download-button {
   position: fixed;
-  top: 55px;
+  top: 75px;
   right: 10px;
   opacity: 0.5;
 }
