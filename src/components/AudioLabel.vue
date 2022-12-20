@@ -1,5 +1,5 @@
 <template>
-  <label class="audio-button" @click="playAudio" :title="audioTitle" v-if="hasAudio">🔈</label>
+  <label class="audio-button" @click="playAudio" :title="audioTitle" v-if="hasAudio">{{ audioIcon }}</label>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
@@ -22,7 +22,7 @@ export default defineComponent({
   data() {
     return {
       // define the audio title
-      audioTitle: 'Play Audio',
+      isPlaying: false,
     };
   },
   methods: {
@@ -34,7 +34,7 @@ export default defineComponent({
       // add an event listener to the audio object to listen for the "ended" event
       audio.addEventListener('ended', () => {
         // when the audio ends, update the audio button title to the default value
-        this.audioTitle = 'Play Audio';
+        this.isPlaying = false;
         audio.removeEventListener('ended', () => {})
       });
 
@@ -42,7 +42,7 @@ export default defineComponent({
       audio.play();
 
       // update the audio button title to indicate that the audio is playing
-      this.audioTitle = 'Playing...';
+      this.isPlaying = true;
     },
   },
   computed: {
@@ -54,6 +54,12 @@ export default defineComponent({
         return this.id !== "0000000000000" && this.id !== "select";
       }
       return false
+    },
+    audioTitle() { 
+      return this.isPlaying? 'Playing...':'Play Audio';
+    },
+    audioIcon() { 
+      return this.isPlaying? '🔊':'🔈';
     }
   },
 });
@@ -65,6 +71,6 @@ export default defineComponent({
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 0.8em;
+  font-size: 1em;
 }
 </style>
