@@ -14,3 +14,4 @@
 - [ ] next/previous chapter
 - [x] Preview Story Button
 - [x] Save file name as load name
+- [x] Scroll bar for translation panel

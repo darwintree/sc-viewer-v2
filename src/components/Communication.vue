@@ -1,21 +1,23 @@
 // Communication.vue
 
 <template>
-  <div v-if="isLoading" class="loading">
-    Loading...
-  </div>
-  <!-- the "communication" element contains the list of messages -->
-  <button @click="downloadData" class="download-button">Download CSV</button>
-  <div v-if="iframeSrc">
-    <button @click="openEvent" class="preview-button">Preview Story↗</button>
-    <button @click="previewStory" class="preview-button">Preview Story↓</button>
-    <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
-  </div>
-  <div class="communication">
-    <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
-    <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name" :text="item.text"
-      :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" />
-    <TranslatorLine :name="'译者'" :trans="translator" ref="translator"></TranslatorLine>
+  <div class="container">
+    <div v-if="isLoading" class="loading">
+      Loading...
+    </div>
+    <!-- the "communication" element contains the list of messages -->
+    <button @click="downloadData" class="download-button">Download CSV</button>
+    <div class="event-block" v-if="iframeSrc">
+      <button @click="openEvent" class="preview-button">Preview Story↗</button>
+      <button @click="previewStory" class="preview-button">Preview Story↓</button>
+      <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
+    </div>
+    <div class="communication" :class="{ 'scroll': hasPreviewed }">
+      <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
+      <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
+        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" />
+      <TranslatorLine :name="'译者'" :trans="translator" ref="translator"></TranslatorLine>
+    </div>
   </div>
 </template>
 
@@ -42,7 +44,7 @@ export default defineComponent({
     DialogueLine,
     EventIframe,
     TranslatorLine
-},
+  },
   // the URL of the CSV data will be passed to the component as a prop
   props: {
     csvUrl: {
@@ -59,6 +61,7 @@ export default defineComponent({
       isLoading: false,
       isPreviewing: false,
       csvFileName: "",
+      hasPreviewed: false,
     };
   },
   computed: {
@@ -72,6 +75,7 @@ export default defineComponent({
   methods: {
     previewStory() {
       this.isPreviewing = !this.isPreviewing
+      this.hasPreviewed = true
     },
     openEvent() {
       window.open(this.iframeSrc!)
@@ -91,8 +95,8 @@ export default defineComponent({
           return
         }
         // if the response is successful, parse the CSV data
-        
-          // get the text of the response
+
+        // get the text of the response
         if (url.endsWith(".csv")) {
           this.csvFileName = decodeURI(url.split('/').reverse()[0])
           const text = await response.text();
@@ -115,10 +119,10 @@ export default defineComponent({
         data.forEach((element: CsvData) => {
           if (element.id === "info") {
             this.jsonUrl = element.name
-          } 
+          }
           if (element.id === "译者") {
             this.translator = element.name
-          } 
+          }
           if (element.text) {
             queue.enqueue(element)
           }
@@ -177,6 +181,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.event-block {
+  /* display: block; */
+  width: 100%;
+}
+
 /* add styles for the "Communication" component here */
 .loading {
   font-size: 1.5em;
@@ -191,5 +206,35 @@ export default defineComponent({
   opacity: 0.5;
 }
 
+.communication {
+  width: 100%;
+  max-width: 720px;
+  height: 80vh;
+}
+
+.scroll {
+  overflow: scroll;
+}
+
+.communication::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 10px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+
+.communication::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #535353;
+}
+
+.communication::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #ededed;
+}
 </style>
 
