@@ -2,7 +2,8 @@
 
 <script setup lang="ts">
 import Communication from './Communication.vue';
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
+import { store } from '../store';
 
 let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
@@ -31,6 +32,9 @@ function handleFileChange(e: Event) {
 
       // pass the file text to the Communication component
       if (communication.value !== null) {
+        window.location.hash = ""
+        csvUrl.value = ""
+        store.path = `data/story///${file.name}`
         communication.value.csvFileName = file.name;
         communication.value.loadDataFromCsvText(text);
       }
@@ -49,12 +53,16 @@ function toGithub() {
   }
 }
 
+let iconSrc = computed(()=>{
+  return "github.png"
+})
+
 </script>
 <template>
     <div class="input-row">
       <input v-model="csvUrl" placeholder="Enter CSV URL" class="url-input"/>
       <button @click="loadData">Confirm</button>
-      <img class="github" src="../assets/github.png" @click="toGithub" />
+      <img class="github" :src="iconSrc" @click="toGithub" />
     </div>
     <div class="input-row">
       <label> or </label>

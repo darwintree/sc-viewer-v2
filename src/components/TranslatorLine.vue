@@ -89,6 +89,7 @@ export default defineComponent({
     saveEdit() {
       this.isEditing = false;
       this.local_trans = this.edit_trans;
+      this.$emit("save")
     },
     toggleEdit() {
       this.isEditing = true;

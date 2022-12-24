@@ -3,7 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import './style.css'
 import App from './App.vue'
 import TranslationPanel from './components/TranslationPanel.vue';
-import AboutVue from './components/About.vue';
+import About from './components/About.vue';
+import User from './components/User.vue';
+import AuthCallback from './components/AuthCallback.vue';
 
 // create a new router instance
 const router = createRouter({
@@ -11,10 +13,20 @@ const router = createRouter({
   routes: [
     // define your routes here
     {
-      path: '/', component: TranslationPanel,
+      path: '/',
+      component: TranslationPanel,
     },
     {
-      path: '/about', component: AboutVue,
+      path: '/about',
+      component: About,
+    },
+    {
+      path: '/user',
+      component: User,
+    },
+    {
+      path: '/auth',
+      component: AuthCallback,
     }
   ]
 });

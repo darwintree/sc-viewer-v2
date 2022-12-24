@@ -7,6 +7,7 @@
     </div>
     <!-- the "communication" element contains the list of messages -->
     <button @click="downloadData" class="download-button">Download CSV</button>
+    <!-- <button @click="saveCsvToContent" class="ready-button">Ready for Commit</button> -->
     <div class="event-block" v-if="iframeSrc">
       <button @click="openEvent" class="preview-button">Preview Story↗</button>
       <button @click="previewStory" class="preview-button">Preview Story↓</button>
@@ -15,8 +16,8 @@
     <div class="communication" :class="{ 'scroll': hasPreviewed }">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
       <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
-        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" />
-      <TranslatorLine :name="'译者'" :trans="translator" ref="translator"></TranslatorLine>
+        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToContent"  />
+      <TranslatorLine :name="'译者'" :trans="translator" ref="translator" @save="saveCsvToContent" />
     </div>
   </div>
 </template>
@@ -29,6 +30,8 @@ import FileSaver from 'file-saver';
 import Queue from '../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
+import { store } from '../store';
+import { extractInfoFromUrl } from '../helper/path';
 
 // define the interface for the CSV data
 interface CsvData {
@@ -84,6 +87,11 @@ export default defineComponent({
     async loadDataFromUrl(url: string) {
       this.isLoading = true
       try {
+        const info = extractInfoFromUrl(url)
+        store.owner = info.owner
+        store.repo = info.repo
+        store.path = decodeURIComponent(info.path)
+
         // use the fetch() function to request the CSV data from the URL
         if (url.startsWith("https://github.com")) {
           url = url.replace("github", "raw.githubusercontent").replace("/blob/", "/")
@@ -140,7 +148,7 @@ export default defineComponent({
       }
 
     },
-    downloadData() {
+    getCurrentDataString() {
       // generate the updated CSV data by mapping over the "data" array and
       // replacing the "trans" property of each item with the updated value
       // from the "DialogueLine" components
@@ -162,13 +170,16 @@ export default defineComponent({
       })
       updatedData.push({
         "id": "译者",
-        "name": translatorLine.edit_trans,
+        "name": translatorLine.local_trans,
         "text": "",
         "trans": ""
       })
 
       // convert the updated data array to a CSV string using the PapaParse library
-      const csv = Papa.unparse(updatedData);
+      return Papa.unparse(updatedData);
+    },
+    downloadData() {
+      const csv = this.getCurrentDataString()
 
       // create a new Blob object with the CSV string as its content
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
@@ -176,6 +187,20 @@ export default defineComponent({
       // use the FileSaver library to save the Blob object as a file
       FileSaver.saveAs(blob, this.csvFileName);
     },
+    b64EncodeUnicode(str: string) {
+      // first we use encodeURIComponent to get percent-encoded UTF-8,
+      // then we convert the percent encodings into raw bytes which
+      // can be fed into btoa.
+      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+        function toSolidBytes(match, p1) {
+        return String.fromCharCode(Number('0x' + p1));
+      }));
+    },
+    saveCsvToContent() {
+      console.log("saving")
+      const csv = this.getCurrentDataString()
+      store.base64content = this.b64EncodeUnicode(csv);
+    }
   },
 });
 </script>
@@ -202,6 +227,13 @@ export default defineComponent({
 .download-button {
   position: fixed;
   top: 75px;
+  right: 10px;
+  opacity: 0.5;
+}
+
+.ready-button {
+  position: fixed;
+  top: 60px;
   right: 10px;
   opacity: 0.5;
 }
