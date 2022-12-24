@@ -116,7 +116,14 @@ function checkInput() {
 async function update() {
   checkInput()
   isUpdating.value = true
-  const result = await updateContent(store.accessToken!, store.path, message.value, store.base64content!, store.owner, store.repo)
+  let result;
+  try {
+    result = await updateContent(store.accessToken!, store.path, message.value, store.base64content!, store.owner, store.repo)
+  } catch (e: any) {
+    window.alert(e.message)
+    console.error(e)
+    throw e
+  }
   isUpdating.value = false
   store.base64content = null
   console.log(result)
