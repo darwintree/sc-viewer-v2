@@ -9,8 +9,8 @@
     <button @click="downloadData" class="download-button">Download CSV</button>
     <!-- <button @click="saveCsvToContent" class="ready-button">Ready for Commit</button> -->
     <div class="event-block" v-if="iframeSrc">
-      <button @click="openEvent" class="preview-button">Preview Story↗</button>
-      <button @click="previewStory" class="preview-button">Preview Story↓</button>
+      <button @click="openEvent" class="preview-button">Preview Story⤴</button>
+      <button @click="previewStory" class="preview-button">Preview Story⤵</button>
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
     <div class="communication" :class="{ 'scroll': hasPreviewed }">

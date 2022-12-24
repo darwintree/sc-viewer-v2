@@ -30,13 +30,15 @@ export default defineComponent({
 
 }
 
-.aspect-ratio>iframe {
+.aspect-ratio> iframe {
 
   position: absolute;
 
   width: 100%;
 
   height: 100%;
+
+  max-height: 95vh;
 
   left: 0;
 
