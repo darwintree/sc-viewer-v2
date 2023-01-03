@@ -31,7 +31,9 @@ import Queue from '../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store } from '../store';
-import { extractInfoFromUrl } from '../helper/path';
+import { extractInfoFromUrl, getJsonPath } from '../helper/path';
+import dataToCSV from '../helper/convert';
+
 
 // define the interface for the CSV data
 interface CsvData {
@@ -86,6 +88,15 @@ export default defineComponent({
     // define a method to load the CSV data from the URL
     async loadDataFromUrl(url: string) {
       this.isLoading = true
+      if (url.endsWith(".csv")) {
+        await this.loadDataFromGithubCsvUrl(url)
+      } else if (url.endsWith(".json")) {
+        await this.loadDataFromJsonPathUrl(url)
+      } else {
+        alert("unexpected Url: should ends with .csv or .json")
+      }
+    },
+    async loadDataFromGithubCsvUrl(url: string) {
       try {
         const info = extractInfoFromUrl(url)
         store.owner = info.owner
@@ -109,12 +120,32 @@ export default defineComponent({
           this.csvFileName = decodeURI(url.split('/').reverse()[0])
           const text = await response.text();
           await this.loadDataFromCsvText(text)
-        } else {
+        } 
+        else {
           alert("file format not supported: specify .csv or .json")
         }
       } catch (e) {
         alert(e)
       }
+    },
+    async loadDataFromJsonPathUrl(url: string) {
+      let splits = url.split("/").reverse()
+      let relPath = `${splits[1]}/${splits[0]}`
+      let realUrl = url
+      if (!url.startsWith("https://")) {
+        realUrl = getJsonPath(relPath)
+      }
+      const response = await fetch(realUrl);
+      if (!response.ok) {
+        alert("load failed")
+        console.log(response)
+        return
+      }
+      const jsonText = await response.text();
+      console.log(jsonText)
+      const csvText = dataToCSV(JSON.parse(jsonText), relPath);
+      this.csvFileName = splits[0].replace(".json", "")
+      await this.loadDataFromCsvText(csvText)
     },
     async loadDataFromCsvText(text: string) {
       try {

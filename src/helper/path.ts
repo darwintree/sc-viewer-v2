@@ -23,6 +23,11 @@ function getAudioPath(id: string, base: string) {
     return `${ASSETSERVER}/sounds/voice/events/${base}/${id}.m4a`
 }
 
+// relPath includes .json postfix
+function getJsonPath(relPath: string) {
+    return `${ASSETSERVER}/json/${relPath}`
+}
+
 function getQueryVariable(variable: string) {
     var query = window.location.search.substring(1);
     var vars = query.split('&');
@@ -81,4 +86,5 @@ export {
     getQueryVariable,
     extractInfoFromUrl,
     idolOptions,
+    getJsonPath,
 }
