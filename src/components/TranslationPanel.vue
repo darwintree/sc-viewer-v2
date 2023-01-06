@@ -4,6 +4,13 @@
 import Communication from './Communication.vue';
 import { ref, onMounted, nextTick, computed } from 'vue';
 import { store } from '../store';
+// import hotkeys from 'hotkeys-js';
+
+// hotkeys("return", function(event, handler){
+//   // Prevent the default refresh event under WINDOWS system
+//   event.preventDefault()
+//   loadData()
+// });
 
 let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
@@ -60,7 +67,7 @@ let iconSrc = computed(()=>{
 </script>
 <template>
     <div class="input-row">
-      <input v-model="csvUrl" placeholder="Enter json path or Github CSV URL" class="url-input"/>
+      <input v-model="csvUrl" placeholder="Enter json path or Github CSV URL" class="url-input" @keypress.enter="loadData"/>
       <button @click="loadData">Confirm</button>
       <img class="github" :src="iconSrc" @click="toGithub" />
     </div>

@@ -15,7 +15,8 @@ window.addEventListener('hashchange', function () {
 <template>
   <div class="main">
     <nav>
-      <router-link :to="`/${locationHash}`">Main</router-link> |
+      <router-link :to="`/${locationHash}`">Home</router-link> |
+      <router-link :to="`/translate${locationHash}`">Translate</router-link> |
       <router-link :to="`/about${locationHash}`">About</router-link> |
       <router-link :to="`/user${locationHash}`">Github</router-link>
     </nav>

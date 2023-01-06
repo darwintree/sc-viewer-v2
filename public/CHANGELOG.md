@@ -5,3 +5,4 @@
 * Add keyboard shortcuts
   * url input: enter
   * translate input: enter, shift+enter, esc
+* Add homepage and changelog
