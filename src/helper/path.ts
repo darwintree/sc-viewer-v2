@@ -9,7 +9,6 @@ for (let unit of Object.keys(units)) {
     idolList = idolList.concat(idols)
 }
 
-console.log(idolList)
 function getAvatarPath(name: string) {
     if (idolList.indexOf(name) >= 0) {
         return `/icon/${name}.webp`

@@ -142,7 +142,6 @@ export default defineComponent({
         return
       }
       const jsonText = await response.text();
-      console.log(jsonText)
       const csvText = dataToCSV(JSON.parse(jsonText), relPath);
       this.csvFileName = splits[0].replace(".json", "")
       await this.loadDataFromCsvText(csvText)
