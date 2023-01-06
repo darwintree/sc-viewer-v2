@@ -21,7 +21,16 @@
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
         <div class="edit-container" v-else>
-          <textarea v-model="edit_trans" class="edit-textarea"></textarea>
+          <textarea 
+            v-model="edit_trans" 
+            class="edit-textarea" 
+            placeholder="Press Enter↩ to input '\n' and press Shift⇧ + Enter↩ to save"
+            @keydown.enter="addLineBreak"
+            @keydown.shift.enter="saveEdit"
+            @keydown.esc="cancelEdit"
+            ref="edit"
+          >
+          </textarea>
 
           <!-- the "edit-controls" element contains the "edit-cancel" and "edit-save" buttons -->
           <div class="edit-controls">
@@ -98,12 +107,12 @@ export default defineComponent({
   computed: {
     display_text() {
       if (this.text)
-        return this.text.replace("\\n", "\n")
+        return this.text.replaceAll("\\n", "\n")
       return ""
     },
     display_trans() {
       if (this.local_trans)
-        return this.local_trans.replace("\\n", "\n")
+        return this.local_trans.replaceAll("\\n", "\n")
       return ""
     },
     isSelect() {
@@ -132,7 +141,14 @@ export default defineComponent({
     toggleEdit() {
       this.isEditing = true;
       this.edit_trans = this.local_trans;
+      this.$nextTick(()=>{
+        (this.$refs.edit as any).focus()
+      })
     },
+    addLineBreak(event: any) {
+      event.preventDefault()
+      this.edit_trans += "\\n"
+    }
   },
 });
 </script>
