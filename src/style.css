@@ -64,7 +64,6 @@ button:focus-visible {
 #app {
   max-width: 900px;
   margin: 0 auto;
-  padding: 0.8rem;
   text-align: center;
   font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif;
   height: 100%;

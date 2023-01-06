@@ -28,4 +28,7 @@ window.addEventListener('hashchange', function () {
   </div>
 </template>
 <style scoped>
+.main {
+  margin: 0.8em
+}
 </style>

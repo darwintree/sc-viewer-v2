@@ -7,12 +7,14 @@
 - [ ] **Parse local .json file (high priority)**
 - [ ] save to localstorage
 - [ ] home page
-  - [ ] updates
+  - [x] updates
   - [ ] claim latest stories
   - [ ] localstorage
 
 ### Low Priority
 
+- [x] Strange translate page style for mobile
+- [ ] Error process for remote json files
 - [x] Check select label
 - [x] Parse remote .json file
 - [ ] Parse assets-map.json to present Idol stories and event stories
