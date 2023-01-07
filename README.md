@@ -5,15 +5,16 @@
 ### High Priority
 
 - [ ] **Parse local .json file (high priority)**
-- [ ] save to localstorage
+- [x] save to localstorage
 - [ ] home page
   - [x] updates
   - [ ] claim latest stories
-  - [ ] localstorage
+  - [x] localstorage
 
 ### Low Priority
 
 - [x] Strange translate page style for mobile
+- [ ] generate changelog html when building (to reduce size)
 - [ ] Error process for remote json files
 - [x] Check select label
 - [x] Parse remote .json file

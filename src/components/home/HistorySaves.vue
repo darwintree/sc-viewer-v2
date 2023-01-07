@@ -62,14 +62,15 @@ const createColumns = ({
 
 let columns = ref(createColumns({
   navigate(row: SaveBrief) {
-  router.push({
-    path: "/translate",
-    query: {
-      "forceReload": "1",
-      "mode": "storage"
-    },
-    hash: `#${encodeURIComponent(row.name)}`
-  })
-}
+    router.push({
+      path: "/translate",
+      query: {
+        "forceReload": "1",
+        "mode": "storage"
+      },
+      // do not use encodeURIComponent
+      hash: `#${row.name}`
+    })
+  }
 }))
 </script>

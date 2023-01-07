@@ -150,7 +150,7 @@ export default defineComponent({
       }
       const jsonText = await response.text();
       const csvText = dataToCSV(JSON.parse(jsonText), relPath);
-      this.csvFileName = splits[0].replace(".json", "")
+      this.csvFileName = splits[0].replace(".json", ".csv")
       await this.loadDataFromCsvText(csvText)
     },
     loadDataFromFile(file: File) {
