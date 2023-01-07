@@ -2,23 +2,51 @@
 
 <script setup lang="ts">
 import Communication from './Communication.vue';
-import { ref, onMounted, nextTick, computed } from 'vue';
-import { store } from '../store';
-// import hotkeys from 'hotkeys-js';
+import { ref, onMounted, nextTick, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-// hotkeys("return", function(event, handler){
-//   // Prevent the default refresh event under WINDOWS system
-//   event.preventDefault()
-//   loadData()
-// });
+
+const route = useRoute()
+const router = useRouter()
+
+const query = computed(()=>{
+  return route.query
+})
 
 let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
 
+// if this page is never loaded, onMounted will activate
 onMounted(()=>{
-  if(location.hash) {
-    csvUrl.value = decodeURIComponent(location.hash.substring(1))
-    nextTick(()=>communication.value?.loadDataFromUrl(csvUrl.value))
+  removeForceReloadParamInSearch()
+  const mode = (new URLSearchParams(window.location.search)).get("mode")
+  if (mode === "storage") {
+    if(location.hash) {
+      const name = decodeURIComponent(location.hash.substring(1))
+      nextTick(()=>communication.value?.loadDataFromLocalStorage(name))
+    }
+  } else {
+    if(location.hash) {
+      csvUrl.value = decodeURIComponent(location.hash.substring(1))
+      nextTick(()=>communication.value?.loadDataFromUrl(csvUrl.value))
+    }
+  }
+  
+})
+
+function removeForceReloadParamInSearch() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get("forceReload")) {
+    params.delete("forceReload")
+    window.location.search = params.toString()
+  }
+}
+
+// if this page has been loaded for once, use watch to detect page reload requirement
+watch(query, (newQuery) => {
+  if (newQuery.forceReload) {
+    // delete route.query.forceReload
+    removeForceReloadParamInSearch()
   }
 })
 
@@ -32,22 +60,11 @@ function handleFileChange(e: Event) {
 
   if (files && files.length > 0) {
     const file = files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const text = reader.result as string;
-
-      // pass the file text to the Communication component
-      if (communication.value !== null) {
-        window.location.hash = ""
-        csvUrl.value = ""
-        store.path = `data/story///${file.name}`
-        communication.value.csvFileName = file.name;
-        communication.value.loadDataFromCsvText(text);
-      }
-    };
-
-    reader.readAsText(file);
+    if (communication.value !== null) {
+      csvUrl.value = ""
+      window.location.hash = ""
+      communication.value?.loadDataFromFile(file)
+    }
   }
 }
 

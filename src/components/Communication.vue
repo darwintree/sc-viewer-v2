@@ -65,7 +65,9 @@ export default defineComponent({
       translator: "",
       isLoading: false,
       isPreviewing: false,
-      csvFileName: "",
+      csvFileName: "", // the csv file name after download
+      // TODO: a extended csv path to help present the file
+      // extendedCsvPath: "",
       hasPreviewed: false,
     };
   },
@@ -95,6 +97,11 @@ export default defineComponent({
       } else {
         alert("unexpected Url: should ends with .csv or .json")
       }
+    },
+    loadDataFromLocalStorage(name: string) {
+      const text = store.saves.saveDict[name].csv
+      this.csvFileName = name
+      this.loadDataFromCsvText(text)
     },
     async loadDataFromGithubCsvUrl(url: string) {
       try {
@@ -146,7 +153,19 @@ export default defineComponent({
       this.csvFileName = splits[0].replace(".json", "")
       await this.loadDataFromCsvText(csvText)
     },
-    async loadDataFromCsvText(text: string) {
+    loadDataFromFile(file: File) {
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        const text = reader.result as string;
+        store.path = `data/story///${file.name}`
+        this.csvFileName = file.name;
+        await this.loadDataFromCsvText(text);
+      };
+
+      reader.readAsText(file);
+    },
+    loadDataFromCsvText(text: string) {
       try {
         const data: CsvData[] = Papa.parse(text, {
           header: true, // use the first row as the header
@@ -230,6 +249,10 @@ export default defineComponent({
       console.log("saving")
       const csv = this.getCurrentDataString()
       store.base64content = this.b64EncodeUnicode(csv);
+      store.saves.setItem(this.csvFileName, {
+        csv,
+        timeLabel: new Date().toLocaleString()
+      })
     }
   },
 });

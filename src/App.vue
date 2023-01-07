@@ -5,20 +5,24 @@ import { RouterView } from 'vue-router';
 import { ref, computed } from 'vue'
 
 let locationHash = ref(window.location.hash)
+let locationSearch = ref(window.location.search)
 
 window.addEventListener('hashchange', function () {
-  console.log(window.location.hash)
   locationHash.value = window.location.hash
+});
+
+window.addEventListener('searchchange', function () {
+  locationSearch.value = window.location.search
 });
 
 </script>
 <template>
   <div class="main">
     <nav>
-      <router-link :to="`/${locationHash}`">Home</router-link> |
-      <router-link :to="`/translate${locationHash}`">Translate</router-link> |
-      <router-link :to="`/about${locationHash}`">About</router-link> |
-      <router-link :to="`/user${locationHash}`">Github</router-link>
+      <router-link :to="`/${locationSearch}${locationHash}`">Home</router-link> |
+      <router-link :to="`/translate${locationSearch}${locationHash}`">Translate</router-link> |
+      <router-link :to="`/about${locationSearch}${locationHash}`">About</router-link> |
+      <router-link :to="`/user${locationSearch}${locationHash}`">Github</router-link>
     </nav>
     <router-view v-slot="{ Component }">
       <keep-alive>

@@ -6,7 +6,7 @@ import TranslationPanel from './components/TranslationPanel.vue';
 import About from './components/About.vue';
 import User from './components/User.vue';
 import AuthCallback from './components/AuthCallback.vue';
-import HomePage from './components/HomePage.vue';
+import HomePage from './components/home/HomePage.vue';
 
 // create a new router instance
 const router = createRouter({
