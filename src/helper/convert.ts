@@ -13,7 +13,22 @@ const replaceWrap = (text: String) => {
   return text
 }
 
-const dataToCSV = (data: any[], name: String) => {
+function jsonPathFromData(data: any[]) {
+  let name = ""
+  data.some(item => {
+    if (item.voice) {
+      const splits = item.voice.split("/")
+      if (splits.length == 3) {
+        name = `${splits[0]}/${splits[1]}.json`
+      }
+      return true
+    }
+    return false
+  })
+  return name
+}
+
+const dataToCSV = (data: any[], jsonPath: String | null) => {
   const list = []
   data.forEach(item => {
     let text = trim(replaceWrap(item.text))
@@ -33,8 +48,11 @@ const dataToCSV = (data: any[], name: String) => {
       })
     }
   })
+  if (!jsonPath) {
+    jsonPath = jsonPathFromData(data)
+  }
   list.push({
-    id: 'info', name, text: '', trans: ''
+    id: 'info', name: jsonPath, text: '', trans: ''
   })
   list.push({
     id: '译者', name: '', text: '', trans: ''

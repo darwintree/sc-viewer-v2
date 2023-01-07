@@ -4,7 +4,7 @@
 
 ### High Priority
 
-- [ ] **Parse local .json file (high priority)**
+- [x] **Parse local .json file (high priority)**
 - [x] save to localstorage
 - [ ] home page
   - [x] updates

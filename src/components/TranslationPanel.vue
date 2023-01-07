@@ -52,6 +52,7 @@ watch(query, (newQuery) => {
 
 function loadData() {
   location.hash = encodeURIComponent(csvUrl.value)
+  location.search = ""
   communication.value?.loadDataFromUrl(csvUrl.value);
 }
 

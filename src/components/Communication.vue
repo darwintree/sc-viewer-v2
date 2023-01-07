@@ -140,6 +140,7 @@ export default defineComponent({
       let relPath = `${splits[1]}/${splits[0]}`
       let realUrl = url
       if (!url.startsWith("https://")) {
+        // get remote json source path from relative path
         realUrl = getJsonPath(relPath)
       }
       const response = await fetch(realUrl);
@@ -149,7 +150,7 @@ export default defineComponent({
         return
       }
       const jsonText = await response.text();
-      const csvText = dataToCSV(JSON.parse(jsonText), relPath);
+      const csvText = dataToCSV(JSON.parse(jsonText), null);
       this.csvFileName = splits[0].replace(".json", ".csv")
       await this.loadDataFromCsvText(csvText)
     },
@@ -157,9 +158,14 @@ export default defineComponent({
       const reader = new FileReader();
 
       reader.onload = async () => {
-        const text = reader.result as string;
-        store.path = `data/story///${file.name}`
+        let text = reader.result as string;
         this.csvFileName = file.name;
+        if (file.name.endsWith(".json")) {
+          this.csvFileName = file.name.replace(".json", ".csv")
+          text = dataToCSV(JSON.parse(text), null)
+        }
+
+        store.path = `data/story///${file.name}`
         await this.loadDataFromCsvText(text);
       };
 
