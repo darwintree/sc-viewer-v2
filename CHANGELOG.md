@@ -3,6 +3,8 @@
 ## 2023.1.19
 
 * Add previous/next chapter button except for true end
+* improve url display
+* add homepage recent game updates button
 
 ## 2023.1.7
 

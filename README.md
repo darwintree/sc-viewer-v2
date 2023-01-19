@@ -6,10 +6,11 @@
 
 - [x] **Parse local .json file (high priority)**
 - [x] save to localstorage
-- [ ] next/previous chapter
+- [x] next/previous chapter
 - [ ] home page
   - [x] updates
-  - [ ] claim latest stories
+  - [x] claim latest stories
+    - [ ] remind user for latest updates
   - [x] localstorage
     - [ ] remove specific item
 - [ ] fix no github push panel problem
@@ -18,7 +19,7 @@
 
 - [ ] Use N-Step for pushing to Github
 - [x] Strange translate page style for mobile
-- [ ] generate changelog html when building (to reduce size)
+- [x] generate changelog html when building (to reduce size)
 - [ ] Error process for remote json files
 - [x] Check select label
 - [x] Parse remote .json file

@@ -25,3 +25,5 @@ dist-ssr
 .vscode
 
 public/CHANGELOG.md
+public/CHANGELOG.html
+public/GAMEUPDATES.html
