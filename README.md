@@ -6,13 +6,17 @@
 
 - [x] **Parse local .json file (high priority)**
 - [x] save to localstorage
+- [ ] next/previous chapter
 - [ ] home page
   - [x] updates
   - [ ] claim latest stories
   - [x] localstorage
+    - [ ] remove specific item
+- [ ] fix no github push panel problem
 
 ### Low Priority
 
+- [ ] Use N-Step for pushing to Github
 - [x] Strange translate page style for mobile
 - [ ] generate changelog html when building (to reduce size)
 - [ ] Error process for remote json files
@@ -25,5 +29,4 @@
 - [x] add translator input
 - [ ] bgm from json
 - [ ] p's voice (sound effect/tts)
-- [ ] next/previous chapter
 - [ ] Hide preview until login

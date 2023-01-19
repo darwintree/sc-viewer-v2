@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Avatar from './Avatar.vue'; // import the "Avatar" component
+import Avatar from '../Avatar.vue'; // import the "Avatar" component
 
 // define the props for the component
 export default defineComponent({

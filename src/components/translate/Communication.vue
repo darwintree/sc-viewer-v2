@@ -27,12 +27,12 @@ import { defineComponent } from 'vue';
 import DialogueLine from './DialogueLine.vue'; // import the "DialogueLine" component
 import * as Papa from 'papaparse'; // import PapaParse
 import FileSaver from 'file-saver';
-import Queue from '../helper/queue.js';
+import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
-import { store } from '../store';
-import { extractInfoFromUrl, getJsonPath } from '../helper/path';
-import dataToCSV from '../helper/convert';
+import { store } from '../../store';
+import { extractInfoFromUrl, getJsonPath } from '../../helper/path';
+import dataToCSV from '../../helper/convert';
 
 
 // define the interface for the CSV data
@@ -101,6 +101,7 @@ export default defineComponent({
     loadDataFromLocalStorage(name: string) {
       const text = store.saves.saveDict[name].csv
       this.csvFileName = name
+      store.path = `data/story///${name}`
       this.loadDataFromCsvText(text)
     },
     async loadDataFromGithubCsvUrl(url: string) {
