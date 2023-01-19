@@ -22,11 +22,13 @@ onMounted(()=>{
   const mode = (new URLSearchParams(window.location.search)).get("mode")
   if (mode === "storage") {
     if(location.hash) {
+      location.hash = decodeURIComponent(location.hash)
       const name = decodeURIComponent(location.hash.substring(1))
       nextTick(()=>communication.value?.loadDataFromLocalStorage(name))
     }
   } else {
     if(location.hash) {
+      location.hash = decodeURIComponent(location.hash)
       csvUrl.value = decodeURIComponent(location.hash.substring(1))
       nextTick(()=>communication.value?.loadDataFromUrl(csvUrl.value))
     }
@@ -50,12 +52,13 @@ watch(query, (newQuery) => {
   }
 })
 
-function loadData() {
+function confirm() {
+  csvUrl.value = decodeURI(csvUrl.value)
   loadDataFromUrl(csvUrl.value)
 }
 
 function loadDataFromUrl(url: string) {
-  location.hash = encodeURIComponent(url)
+  location.hash = url
   location.search = ""
   communication.value?.loadDataFromUrl(url);
 }
