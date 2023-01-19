@@ -143,6 +143,7 @@ async function trueEndJsonUrl(jsonUrl: string) {
 
 // provided when jsonUrl is te to go back to first chapter
 async function firstJsonUrl(jsonUrl: string) {
+    if (!jsonUrl.endsWith("11.json")) return null
     if (await trueEndJsonUrl(jsonUrl)) return null
     return jsonUrl.replace("11.json", "01.json")
 }

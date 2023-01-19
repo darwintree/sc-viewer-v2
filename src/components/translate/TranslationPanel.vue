@@ -89,8 +89,8 @@ let iconSrc = computed(()=>{
 </script>
 <template>
     <div class="input-row">
-      <input v-model="csvUrl" placeholder="Enter json path or Github CSV URL" class="url-input" @keypress.enter="loadData"/>
-      <button @click="loadData">Confirm</button>
+      <input v-model="csvUrl" placeholder="Enter json path or Github CSV URL" class="url-input" @keypress.enter="confirm"/>
+      <button @click="confirm">Confirm</button>
       <img class="github" :src="iconSrc" @click="toGithub" />
     </div>
     <div class="input-row">

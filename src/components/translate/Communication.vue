@@ -3,7 +3,7 @@
 <template>
   <div class="container">
     <div v-if="isLoading" class="loading">
-      Loading...
+      <n-spin size="large"></n-spin>
     </div>
     <!-- the "communication" element contains the list of messages -->
     <button @click="downloadData" class="download-button">Download CSV</button>
@@ -14,11 +14,15 @@
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
     <div class="jump">
-      <button @click="changeChapter(previousJsonUrl)" :disabled="!previousJsonUrl">
+      <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
+        ← First
+      </n-button>
+      <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
         ← Previous
-      </button>
-      <button @click="changeChapter(nextJsonUrl)" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</button>
-      <button @click="changeChapter(trueEndJsonUrl)" v-else >TE →</button>
+      </n-button>
+      
+      <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</n-button>
+      <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >TE →</n-button>
     </div>
     <div class="communication" :class="{ 'scroll': hasPreviewed }">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
@@ -38,7 +42,8 @@ import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl } from '../../helper/path';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl } from '../../helper/path';
+import { NButton, NSpin } from 'naive-ui';
 import dataToCSV from '../../helper/convert';
 
 
@@ -55,7 +60,9 @@ export default defineComponent({
   components: {
     DialogueLine,
     EventIframe,
-    TranslatorLine
+    TranslatorLine,
+    NButton,
+    NSpin,
   },
   // the URL of the CSV data will be passed to the component as a prop
   props: {
@@ -72,6 +79,7 @@ export default defineComponent({
       previousJsonUrl: null as null|string,
       nextJsonUrl: null as null|string,
       trueEndJsonUrl: null as null|string,
+      firstJsonUrl: null as null|string,
       translator: "",
       isLoading: false,
       isPreviewing: false,
@@ -280,6 +288,7 @@ export default defineComponent({
       this.nextJsonUrl = await nextJsonUrl(this.jsonUrl)
       this.previousJsonUrl = await previousJsonUrl(this.jsonUrl)
       this.trueEndJsonUrl = await trueEndJsonUrl(this.jsonUrl)
+      this.firstJsonUrl = await firstJsonUrl(this.jsonUrl)
     }
   },
 });
