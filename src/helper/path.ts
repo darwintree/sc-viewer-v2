@@ -79,6 +79,74 @@ idolOptionKeys.forEach((item)=>{
     })
 })
 
+function changedJsonUrlByNumber(jsonUrl: string, change: number) {
+    try {
+        const splits = jsonUrl.split("/")
+        if (splits.length !== 2) return null
+        let index = Number(splits[1].split(".")[0])
+        return `${splits[0]}/${index + change}.json`
+    } catch (e) {
+        console.log(e)
+        return null
+    }
+
+}
+
+async function hasContentForJsonUrl(jsonUrl: string | null) {
+    try {
+        if (!jsonUrl) return false
+        const res = await fetch(getJsonPath(jsonUrl))
+        return !!res.ok
+    } catch {
+        return false
+    }
+
+}
+
+// example input: produce_events/100200506.json
+async function nextJsonUrl(jsonUrl: string) {
+    const rtn = changedJsonUrlByNumber(jsonUrl, 1)
+    if (await hasContentForJsonUrl(rtn)) {
+        return rtn
+    }
+    return null
+}
+
+async function previousJsonUrl(jsonUrl: string) {
+    if (jsonUrl.endsWith("01.json")) return null
+    const rtn = changedJsonUrlByNumber(jsonUrl, -1)
+    if (jsonUrl.endsWith("11.json") && !await hasContentForJsonUrl(rtn)) {
+        return null
+    }
+    return rtn
+}
+
+// note that self will not be returned
+async function trueEndJsonUrl(jsonUrl: string) {
+    try {
+        const splits = jsonUrl.split("/")
+        if (splits.length !== 2) return null
+        let index = splits[1].split(".")[0]
+        // pcard length
+        if (index.length !== 9) return null
+        // p card
+        if (!index.startsWith("2")) return null
+        // already true end
+        if (index.endsWith("11")) return null
+        let trueEndIndex = `${index.substring(0, 7)}11`
+        return `${splits[0]}/${trueEndIndex}.json`
+    } catch (e) {
+        console.log(e)
+        return null
+    }
+}
+
+// provided when jsonUrl is te to go back to first chapter
+async function firstJsonUrl(jsonUrl: string) {
+    if (await trueEndJsonUrl(jsonUrl)) return null
+    return jsonUrl.replace("11.json", "01.json")
+}
+
 export {
     getAvatarPath,
     getAudioPath,
@@ -86,4 +154,8 @@ export {
     extractInfoFromUrl,
     idolOptions,
     getJsonPath,
+    nextJsonUrl,
+    previousJsonUrl,
+    trueEndJsonUrl,
+    firstJsonUrl,
 }

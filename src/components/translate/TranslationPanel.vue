@@ -51,9 +51,13 @@ watch(query, (newQuery) => {
 })
 
 function loadData() {
-  location.hash = encodeURIComponent(csvUrl.value)
+  loadDataFromUrl(csvUrl.value)
+}
+
+function loadDataFromUrl(url: string) {
+  location.hash = encodeURIComponent(url)
   location.search = ""
-  communication.value?.loadDataFromUrl(csvUrl.value);
+  communication.value?.loadDataFromUrl(url);
 }
 
 function handleFileChange(e: Event) {
@@ -93,7 +97,7 @@ let iconSrc = computed(()=>{
       <label> or </label>
       <input type="file" @change="handleFileChange" class="file-selector"/>
     </div>
-    <Communication :csvUrl="csvUrl" ref="communication" />
+    <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl"/>
 </template>
 <style scoped>
 .input-row {

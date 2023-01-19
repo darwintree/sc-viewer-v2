@@ -7,11 +7,18 @@
     </div>
     <!-- the "communication" element contains the list of messages -->
     <button @click="downloadData" class="download-button">Download CSV</button>
-    <!-- <button @click="saveCsvToContent" class="ready-button">Ready for Commit</button> -->
+   
     <div class="event-block" v-if="iframeSrc">
       <button @click="openEvent" class="preview-button">Preview Story⤴</button>
       <button @click="previewStory" class="preview-button">Preview Story⤵</button>
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
+    </div>
+    <div class="jump">
+      <button @click="changeChapter(previousJsonUrl)" :disabled="!previousJsonUrl">
+        ← Previous
+      </button>
+      <button @click="changeChapter(nextJsonUrl)" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</button>
+      <button @click="changeChapter(trueEndJsonUrl)" v-else >TE →</button>
     </div>
     <div class="communication" :class="{ 'scroll': hasPreviewed }">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
@@ -31,7 +38,7 @@ import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store } from '../../store';
-import { extractInfoFromUrl, getJsonPath } from '../../helper/path';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl } from '../../helper/path';
 import dataToCSV from '../../helper/convert';
 
 
@@ -61,7 +68,10 @@ export default defineComponent({
     return {
       // store the parsed CSV data in a local variable
       data: [] as CsvData[],
-      jsonUrl: "",
+      jsonUrl: "", // e.g. produce_events/xxx.json
+      previousJsonUrl: null as null|string,
+      nextJsonUrl: null as null|string,
+      trueEndJsonUrl: null as null|string,
       translator: "",
       isLoading: false,
       isPreviewing: false,
@@ -80,6 +90,10 @@ export default defineComponent({
     }
   },
   methods: {
+    changeChapter(jsonUrl: string|null) {
+      if (!jsonUrl) return
+      this.$emit("load-data", jsonUrl)
+    },
     previewStory() {
       this.isPreviewing = !this.isPreviewing
       this.hasPreviewed = true
@@ -183,6 +197,7 @@ export default defineComponent({
         data.forEach((element: CsvData) => {
           if (element.id === "info") {
             this.jsonUrl = element.name
+            this.updateRelatedChapterStatus()
           }
           if (element.id === "译者") {
             this.translator = element.name
@@ -260,6 +275,11 @@ export default defineComponent({
         csv,
         timeLabel: new Date().toLocaleString()
       })
+    },
+    async updateRelatedChapterStatus() {
+      this.nextJsonUrl = await nextJsonUrl(this.jsonUrl)
+      this.previousJsonUrl = await previousJsonUrl(this.jsonUrl)
+      this.trueEndJsonUrl = await trueEndJsonUrl(this.jsonUrl)
     }
   },
 });
@@ -274,6 +294,12 @@ export default defineComponent({
 
 .event-block {
   /* display: block; */
+  width: 100%;
+}
+
+.jump {
+  justify-content: space-between;
+  display: flex;
   width: 100%;
 }
 

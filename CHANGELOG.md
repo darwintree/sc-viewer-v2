@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023.1.19
+
+* Add previous/next chapter button except for true end
+
 ## 2023.1.7
 
 * Support browser localStorage
