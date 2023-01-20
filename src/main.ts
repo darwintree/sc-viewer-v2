@@ -2,11 +2,11 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router';
 import './style.css'
 import App from './App.vue'
-import TranslationPanel from './components/translate/TranslationPanel.vue';
-import About from './components/About.vue';
-import User from './components/User.vue';
-import AuthCallback from './components/AuthCallback.vue';
-import HomePage from './components/home/HomePage.vue';
+const TranslationPanel =  () => import('./components/translate/TranslationPanel.vue');
+const About = () => import('./components/About.vue');
+const User = () =>import('./components/User.vue');
+const AuthCallback = () => import('./components/AuthCallback.vue');
+const HomePage = () => import('./components/home/HomePage.vue');
 
 // create a new router instance
 const router = createRouter({
