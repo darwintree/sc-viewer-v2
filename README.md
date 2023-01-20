@@ -18,6 +18,7 @@
 ### Low Priority
 
 - [ ] Use N-Step for pushing to Github
+- [ ] use popselect component for download csv
 - [x] Strange translate page style for mobile
 - [x] generate changelog html when building (to reduce size)
 - [ ] Error process for remote json files
