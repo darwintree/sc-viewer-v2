@@ -10,14 +10,15 @@
 - [ ] home page
   - [x] updates
   - [x] claim latest stories
-    - [ ] remind user for latest updates
+    - [x] remind user for latest updates
   - [x] localstorage
     - [ ] remove specific item
+    - [x] remove all
 - [ ] fix no github push panel problem
 - [ ] version warning when trying to rewrite a history save
   - [ ] switch to history mode after first save
 - [ ] unit test
-- [ ] file name option (will use jsonUrl as id)
+- [ ] file name edit
 
 ### Low Priority
 
@@ -33,11 +34,10 @@
 - [x] Use github interface to push csv directly
 - [x] styles: text frame and select
 - [x] add translator input
-- [ ] bgm from json
 - [ ] p's voice (sound effect/tts)
 - [ ] Hide preview until login
 
 ### example url inputs
 
-- `https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/七草にちか/【あっかい】七草にちか/1 ポップ'n pop.csv`
-- `produce_events/100200506.json`
+- `http://127.0.0.1:5173/translate#https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/七草にちか/【あっかい】七草にちか/1%20ポップ'n%20pop.csv`
+- `http://127.0.0.1:5173/translate#produce_events/100200506.json`

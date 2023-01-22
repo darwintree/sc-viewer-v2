@@ -4,6 +4,7 @@
 
 * Add an icon to indicate data source
 * UI improvements
+* feat: clear history
 
 ## 2023/1/19
 

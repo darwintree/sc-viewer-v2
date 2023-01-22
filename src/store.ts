@@ -11,15 +11,17 @@ enum DataSourceType {
 interface Save {
     timeLabel: string,
     csv: string,
+    name: null | string
 }
 
 interface SaveManager {
+    // id will typically be jsonUrl
     saveDict: {
-        [name: string]: Save
+        [id: string]: Save
     }
-    setItem(name: string, save: Save): void;
-    getItem(name: string): Save | undefined;
-    removeItem(name: string): void;
+    setItem(id: string, save: Save): void;
+    getItem(id: string): Save | undefined;
+    removeItem(id: string): void;
     clear(): void;
 }
 
@@ -50,18 +52,18 @@ class LocalStorageSaveManager implements SaveManager {
         }
     }
 
-    setItem(name: string, save: Save): void {
+    setItem(id: string, save: Save): void {
       // implement setItem method here
-        this.saveDict[name] = save
+        this.saveDict[id] = save
         this.saveToLocalStorage(true)
     }
   
-    getItem(name: string): Save | undefined {
-        return this.saveDict[name]
+    getItem(id: string): Save | undefined {
+        return this.saveDict[id]
     }
 
-    removeItem(name: string): void {
-        delete this.saveDict[name]
+    removeItem(id: string): void {
+        delete this.saveDict[id]
         this.saveToLocalStorage()
     }
   
@@ -72,7 +74,7 @@ class LocalStorageSaveManager implements SaveManager {
     }
   
     saveDict: {
-        [name: string]: Save
+        [id: string]: Save
     } = {}
     key: string
     store: any
@@ -81,6 +83,7 @@ class LocalStorageSaveManager implements SaveManager {
 const store = reactive({
   accessToken: null as string | null,
   isLoading: false,
+  isMobile: false,
   username: null as string | null,
   avatarUrl: null as string | null,
   base64content: null as string | null,
@@ -127,6 +130,8 @@ function logOut() {
 function syncInit(){
     const saveManager = new LocalStorageSaveManager("saves", store)
     store.saves = saveManager
+
+    store.isMobile = !!navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
 }
 
 async function init() {

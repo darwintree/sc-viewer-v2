@@ -1,25 +1,36 @@
 <template>
-  <n-data-table :columns="columns" :data="saveBriefData" :bordered="false" />
+  <n-data-table class="history-table" :columns="columns" :data="saveBriefData" :bordered="false" striped />
+  
+  <n-popconfirm
+    @positive-click="store.saves.clear()"
+  >
+    <template #trigger>
+      <n-button primary type="error">CLEAR HISTORY</n-button>
+    </template>
+    Will Clear All History
+  </n-popconfirm>
 </template>
 
 <script setup lang="ts">
 import { h, ref, computed } from 'vue'
-import { NButton, NDataTable } from 'naive-ui'
+import { NButton, NDataTable, NPopconfirm } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { store } from '../../store'
+import { store, DataSourceType } from '../../store'
 import type { DataTableColumns } from 'naive-ui'
 
 type SaveBrief = {
-  name: string,
+  name: string, // the file name
+  id: string, // the id that indicates the save in localstorage
   timeLabel: string,
 }
 
 const saveBriefData = computed(() => {
   const rtn = []
-  for (let name of Object.keys(store.saves.saveDict)) {
+  for (let id of Object.keys(store.saves.saveDict)) {
     rtn.push({
-      name,
-      timeLabel: store.saves.saveDict[name].timeLabel
+      name: store.saves.saveDict[id].name || id,
+      id,
+      timeLabel: store.saves.saveDict[id].timeLabel
     })
   }
   return rtn
@@ -32,15 +43,14 @@ const createColumns = ({
 }: {
   navigate: (row: SaveBrief) => void,
 }): DataTableColumns<SaveBrief> => {
-  return [
+  const base = [
     {
       title: 'Name',
       key: 'name',
-      render(row) {
+      render(row: SaveBrief) {
         return h(
           NButton,
           {
-            // strong: true,
             text: true,
             tag: "a",
             type: "primary",
@@ -53,10 +63,18 @@ const createColumns = ({
       }
     },
     {
+      title: "URL",
+      key: 'id',
+    },
+    {
       title: 'Latest Update',
       key: 'timeLabel',
     }
   ]
+  if (store.isMobile) {
+    base.splice(1,1)
+  }
+  return base
 }
 
 
@@ -66,11 +84,22 @@ let columns = ref(createColumns({
       path: "/translate",
       query: {
         "forceReload": "1",
-        "mode": "history"
+        "mode": DataSourceType.History
       },
       // do not use encodeURIComponent
-      hash: `#${row.name}`
+      hash: `#${row.id}`
     })
   }
 }))
 </script>
+
+<style scoped>
+.history-table {
+  font-size: x-small;
+  font-weight: lighter;
+}
+
+.n-button {
+  margin: 10px;
+}
+</style>

@@ -1,10 +1,10 @@
 <template>
   <n-collapse :default-expanded-names="['saves']">
-    <n-collapse-item title="History" name="saves">
+    <n-collapse-item title="History Saves" name="saves">
       <history-saves />
       <template #header-extra>
         <n-tag type="info" size="small">
-          latest update: {{ latestUpdate }}
+          {{ latestUpdate }}
         </n-tag>
       </template>
     </n-collapse-item>
@@ -92,8 +92,8 @@ async function loadGameUpdates() {
   console.log(`latest visit: ${latestVisit}`)
   if(!visitedAfterUpdate(latestVisit, updatesBrief.value)) {
     showUpdateModal.value = true
-    localStorage.setItem("latestVisit", (new Date()).toLocaleString())
   }
+  localStorage.setItem("latestVisit", (new Date()).toLocaleString())
 }
 
 </script>

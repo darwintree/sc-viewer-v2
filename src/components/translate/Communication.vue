@@ -296,9 +296,10 @@ export default defineComponent({
       console.log("saving")
       const csv = this.getCurrentDataString()
       store.base64content = this.b64EncodeUnicode(csv);
-      store.saves.setItem(this.csvFileName, {
+      store.saves.setItem(this.jsonUrl, {
         csv,
-        timeLabel: new Date().toLocaleString()
+        timeLabel: new Date().toLocaleString(),
+        name: this.csvFileName
       })
     },
     async updateRelatedChapterStatus() {
