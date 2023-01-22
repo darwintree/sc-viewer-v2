@@ -1,6 +1,6 @@
 <template>
   <n-collapse :default-expanded-names="['saves']">
-    <n-collapse-item title="History Saves" name="saves">
+    <n-collapse-item title="History" name="saves">
       <history-saves />
       <template #header-extra>
         <n-tag type="info" size="small">
@@ -8,7 +8,7 @@
         </n-tag>
       </template>
     </n-collapse-item>
-    <n-collapse-item title="Recent Game Updates" name="updates">
+    <n-collapse-item title="Game Updates" name="updates">
       <div class="changelog" v-html="updatesHtml"></div> 
       <template #header-extra>
         <n-tag type="info" size="small">
