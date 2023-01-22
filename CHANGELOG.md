@@ -3,6 +3,7 @@
 ## 2023/1/22
 
 * Add an icon to indicate data source
+* UI improvements
 
 ## 2023/1/19
 

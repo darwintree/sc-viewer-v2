@@ -2,7 +2,7 @@
 
 <template>
   <!-- only render the component if all required props are defined -->
-  <div class="line" >
+  <div class="line">
     <!-- the avatar is a child component that displays the avatar image -->
     <Avatar :name="'283'" />
 
@@ -14,7 +14,8 @@
       <div class="line-controls text">
         <!-- the "trans" element is shown when the component is not in edit mode -->
         <div v-if="!isEditing">{{ display_trans }}</div>
-        <n-button class="edit-toggle" strong primary circle type="success" @click="toggleEdit" v-if="!isEditing" title="edit">
+        <n-button class="edit-toggle" strong primary circle type="success" @click="toggleEdit" v-if="!isEditing"
+          title="edit">
           <template #icon>
             <n-icon>
               <Edit />
@@ -23,18 +24,23 @@
           <!-- Edit -->
         </n-button>
 
-        <!-- the "edit-container" element is shown when the component is in edit mode -->
-        <div class="edit-container" v-else>
-          <n-input type="textarea" v-model:value="edit_trans" class="edit-textarea"></n-input>
-
-          <!-- the "edit-controls" element contains the "edit-cancel" and "edit-save" buttons -->
-          <div class="edit-controls">
-            <n-button-group>
-              <n-button class="edit-cancel" type="warning" @click="cancelEdit">Cancel</n-button>
-              <n-button class="edit-save" secondary strong type="success" @click="saveEdit">Save</n-button>
-            </n-button-group>
-          </div>
-        </div>
+        <n-button-group class="edit-container" v-else>
+          <n-input type="text" v-model:value="edit_trans" class="edit-textarea" placeholder="translator"></n-input>
+          <n-button class="edit-cancel" circle secondary @click="cancelEdit">
+            <template #icon>
+              <n-icon>
+                <CancelFilled />
+              </n-icon>
+            </template>
+          </n-button>
+          <n-button class="edit-save" circle secondary strong type="success" @click="saveEdit">
+            <template #icon>
+              <n-icon>
+                <CheckFilled />
+              </n-icon>
+            </template>
+          </n-button>
+        </n-button-group>
       </div>
     </div>
   </div>
@@ -47,6 +53,7 @@ import { defineComponent } from 'vue';
 import { NButton, NIcon, NButtonGroup, NInput } from 'naive-ui'
 import Avatar from '../Avatar.vue'; // import the "Avatar" component
 import { Edit } from '@vicons/carbon'
+import { CancelFilled, CheckFilled } from '@vicons/material'
 
 // define the props for the component
 export default defineComponent({
@@ -57,8 +64,10 @@ export default defineComponent({
     NIcon,
     Edit,
     NButtonGroup,
-    NInput
-},
+    NInput,
+    CancelFilled,
+    CheckFilled
+  },
   props: {
     // the name of the speaker
     name: {
@@ -152,9 +161,9 @@ export default defineComponent({
   padding: 0.5em;
 }
 
-/* .line>.line-controls>.edit-container>textarea {
+.edit-container {
   width: 100%;
-} */
+}
 
 /* add styles to align the "Edit" button to the right inside the ".line-controls" element */
 .line-controls {
@@ -172,21 +181,4 @@ export default defineComponent({
   text-align: center;
 }
 
-.edit-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-/* .edit-toggle {
-  height: 2rem;
-  justify-self: stretch;
-} */
-
-/* update the styles for the ".edit-controls" element to display its child elements on the same line */
-.edit-controls {
-  display: flex;
-  align-items: center;
-  justify-content: end;
-}
 </style>

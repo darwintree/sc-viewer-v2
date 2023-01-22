@@ -125,7 +125,7 @@ function handleFileChange(e: Event) {
 <template>
     <div class="input-row">
       <n-input-group class="url-input">
-        <n-input v-model:value="csvUrl" placeholder="Enter json path or Github CSV URL"  @keypress.enter="confirm" clearable ref="urlInput" />
+        <n-input v-model:value="csvUrl" placeholder="Json / CSV URL"  @keypress.enter="confirm" clearable ref="urlInput" />
         <n-button type="info" @click="confirm">Confirm</n-button>
         <n-tooltip :show-arrow="false" trigger="hover" v-if="!!currentMode">
           <template #trigger>
