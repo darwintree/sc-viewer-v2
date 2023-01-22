@@ -1,28 +1,18 @@
 // App.vue
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import { ref, computed } from 'vue'
+import { RouterView, useRoute } from 'vue-router';
 
-let locationHash = ref(window.location.hash)
-let locationSearch = ref(window.location.search)
-
-window.addEventListener('hashchange', function () {
-  locationHash.value = window.location.hash
-});
-
-window.addEventListener('searchchange', function () {
-  locationSearch.value = window.location.search
-});
+const route = useRoute()
 
 </script>
 <template>
   <div class="main">
     <nav>
-      <router-link :to="`/${locationSearch}${locationHash}`">Home</router-link> |
-      <router-link :to="`/translate${locationSearch}${locationHash}`">Translate</router-link> |
-      <router-link :to="`/about${locationSearch}${locationHash}`">About</router-link> |
-      <router-link :to="`/user${locationSearch}${locationHash}`">Github</router-link>
+      <router-link :to="{ path: '/', query: route.query, hash: route.hash }">Home</router-link> |
+      <router-link :to="{ path: '/translate', query: route.query, hash: route.hash }">Translate</router-link> |
+      <router-link :to="{ path: '/about', query: route.query, hash: route.hash }">About</router-link> |
+      <router-link :to="{ path: '/user', query: route.query, hash: route.hash }">Github</router-link>
     </nav>
     <router-view v-slot="{ Component }">
       <keep-alive>

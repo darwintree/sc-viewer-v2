@@ -4,7 +4,7 @@
 
 ### High Priority
 
-- [x] **Parse local .json file (high priority)**
+- [x] Parse local .json file (high priority)
 - [x] save to localstorage
 - [x] next/previous chapter
 - [ ] home page
@@ -15,6 +15,9 @@
     - [ ] remove specific item
 - [ ] fix no github push panel problem
 - [ ] version warning when trying to rewrite a history save
+  - [ ] switch to history mode after first save
+- [ ] unit test
+- [ ] file name option (will use jsonUrl as id)
 
 ### Low Priority
 

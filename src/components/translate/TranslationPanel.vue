@@ -13,7 +13,7 @@ import { DataSourceType } from '../../store'
 const route = useRoute()
 const router = useRouter()
 
-const query = computed(()=>{
+const routeQuery = computed(()=>{
   return route.query
 })
 
@@ -24,38 +24,37 @@ const currentMode = ref("" as DataSourceType)
 
 // if this page is never loaded, onMounted will activate
 onMounted(()=>{
-  removeForceReloadParamInSearch()
-  const mode = (new URLSearchParams(window.location.search)).get("mode")
-  if (mode === "history") {
-    if(location.hash) {
-      currentMode.value = DataSourceType.History
-      location.hash = decodeURIComponent(location.hash)
-      const name = decodeURIComponent(location.hash.substring(1))
-      nextTick(()=>communication.value?.loadDataFromLocalStorage(name))
-    }
-  } else {
-    if(location.hash) {
-      location.hash = decodeURIComponent(location.hash)
-      csvUrl.value = decodeURIComponent(location.hash.substring(1))
-      nextTick(()=>loadDataFromUrl(csvUrl.value))
-    }
-  }
-  
+  // removeForceReloadParamInSearch()
+  loadDataFromLocation()
 })
 
-function removeForceReloadParamInSearch() {
-  const params = new URLSearchParams(window.location.search)
-  if (params.get("forceReload")) {
-    params.delete("forceReload")
-    window.location.search = params.toString()
+async function loadDataFromLocation() {
+  if (!route.hash) return
+  const mode = route.query?.mode
+  if (mode === "history") {
+    currentMode.value = DataSourceType.History
+    router.push({
+      path: route.path,
+      query: {
+        mode: currentMode.value
+      },
+      hash: `${decodeURIComponent(route.hash)}`
+    })
+    const name = decodeURIComponent(route.hash.substring(1))
+    nextTick(()=>communication.value?.loadDataFromLocalStorage(name))
+  } 
+  // TODO: specify certain mode 
+  else {
+    nextTick(()=>loadDataFromUrl(route.hash.substring(1)))
   }
 }
 
 // if this page has been loaded for once, use watch to detect page reload requirement
-watch(query, (newQuery) => {
+watch(routeQuery, async (newQuery) => {
   if (newQuery.forceReload) {
     // delete route.query.forceReload
-    removeForceReloadParamInSearch()
+    // removeForceReloadParamInSearch()
+    await loadDataFromLocation()
   }
 })
 
@@ -65,6 +64,7 @@ function confirm() {
 }
 
 async function loadDataFromUrl(url: string) {
+  csvUrl.value = url
   if (url.endsWith(".csv")) {
     currentMode.value = DataSourceType.Server
     await communication.value?.loadDataFromGithubCsvUrl(url)
@@ -77,7 +77,7 @@ async function loadDataFromUrl(url: string) {
   }
   router.replace({
     path: route.path,
-    hash: `#${url}`,
+    hash: decodeURIComponent(`#${url}`),
     query: {
       mode: currentMode.value.toString()
     }
@@ -95,8 +95,14 @@ function handleFileChange(e: Event) {
     const file = files[0];
     if (communication.value !== null) {
       csvUrl.value = ""
-      window.location.hash = ""
       currentMode.value = DataSourceType.File
+      router.replace({
+        path: route.path,
+        query: {
+          mode: currentMode.value
+        },
+        hash: ""
+      })
       communication.value?.loadDataFromFile(file)
     }
   }
