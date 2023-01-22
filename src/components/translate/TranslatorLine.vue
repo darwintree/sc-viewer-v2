@@ -2,7 +2,7 @@
 
 <template>
   <!-- only render the component if all required props are defined -->
-  <div class="line" v-if="trans">
+  <div class="line" >
     <!-- the avatar is a child component that displays the avatar image -->
     <Avatar :name="'283'" />
 
