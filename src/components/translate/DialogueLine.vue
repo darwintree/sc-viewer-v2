@@ -17,25 +17,32 @@
       <div :class="{'line-controls': !isSelect, 'select-controls': isSelect}">
         <!-- the "trans" element is shown when the component is not in edit mode -->
         <div class="trans" v-if="!isEditing">{{ display_trans }}</div>
-        <button class="edit-toggle" @click="toggleEdit" v-if="!isEditing">Edit</button>
+        <n-button class="edit-toggle" strong primary circle type="success" @click="toggleEdit" v-if="!isEditing" title="edit">
+          <template #icon>
+            <n-icon>
+              <Edit />
+            </n-icon>
+          </template>
+        </n-button>
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
-        <div class="edit-container" v-else>
-          <textarea 
-            v-model="edit_trans" 
-            class="edit-textarea" 
-            placeholder="Press Enter↩ to input '\n' and press Shift⇧ + Enter↩ to save"
+        <div class="edit-container" v-else             
             @keydown.enter="addLineBreak"
             @keydown.shift.enter="saveEdit"
-            @keydown.esc="cancelEdit"
+            @keydown.esc="cancelEdit">
+          <n-input type="textarea" 
+            v-model:value="edit_trans" 
+            class="edit-textarea" 
+            placeholder="Press Enter↩ to input '\n' and press Shift⇧ + Enter↩ to save"
             ref="edit"
-          >
-          </textarea>
+          />
 
           <!-- the "edit-controls" element contains the "edit-cancel" and "edit-save" buttons -->
           <div class="edit-controls">
-            <button class="edit-cancel" @click="cancelEdit">Cancel</button>
-            <button class="edit-save" @click="saveEdit">Save</button>
+            <n-button-group>
+              <n-button class="edit-cancel" type="warning" @click="cancelEdit">Cancel</n-button>
+              <n-button class="edit-save" secondary strong type="success" @click="saveEdit">Save</n-button>
+            </n-button-group>
           </div>
         </div>
       </div>
@@ -49,13 +56,20 @@
 import { defineComponent } from 'vue';
 import Avatar from '../Avatar.vue'; // import the "Avatar" component
 import AudioLabel from '../AudioLabel.vue';
+import { NButton, NIcon, NButtonGroup, NInput } from 'naive-ui'
+import { Edit } from '@vicons/carbon'
 
 // define the props for the component
 export default defineComponent({
   // define the "Avatar" component as a child component
   components: {
     Avatar,
-    AudioLabel
+    AudioLabel,
+    NButton,
+    NIcon,
+    Edit,
+    NButtonGroup,
+    NInput
 },
   props: {
     index: {
@@ -145,7 +159,7 @@ export default defineComponent({
         (this.$refs.edit as any).focus()
       })
     },
-    addLineBreak(event: any) {
+    addLineBreak(event: Event) {
       event.preventDefault()
       this.edit_trans += "\\n"
     }
@@ -190,9 +204,9 @@ export default defineComponent({
   padding: 0.5em;
 }
 
-.line>.line-controls>.edit-container>textarea {
+/* .line>.line-controls>.edit-container>textarea {
   width: 100%;
-}
+} */
 
 /* add styles to align the "Edit" button to the right inside the ".line-controls" element */
 .line-controls {
@@ -216,16 +230,16 @@ export default defineComponent({
   flex: 1;
 }
 
-.edit-toggle {
+/* .edit-toggle {
   height: 2rem;
   justify-self: stretch;
-  /* flex: 2; */
-}
+} */
 
 /* update the styles for the ".edit-controls" element to display its child elements on the same line */
 .edit-controls {
   display: flex;
   align-items: center;
+  justify-content: end;
 }
 
 .select { 

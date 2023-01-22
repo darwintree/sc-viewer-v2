@@ -6,11 +6,20 @@
       <n-spin size="large"></n-spin>
     </div>
     <!-- the "communication" element contains the list of messages -->
-    <button @click="downloadData" class="download-button">Download CSV</button>
+    <n-button @click="downloadData" type="success" ghost class="download-button">
+      <template #icon>
+        <n-icon>
+          <Download></Download>
+        </n-icon>
+      </template>
+      CSV
+    </n-button>
    
     <div class="event-block" v-if="iframeSrc">
-      <button @click="openEvent" class="preview-button">Preview Story⤴</button>
-      <button @click="previewStory" class="preview-button">Preview Story⤵</button>
+      <n-button-group>
+        <n-button @click="openEvent" tertiary strong bordered round class="preview-button">Preview Story⤴</n-button>
+        <n-button @click="previewStory" tertiary strong bordered round class="preview-button">Preview Story⤵</n-button>
+      </n-button-group>
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
     <div class="jump" v-if="!!data.length">
@@ -24,7 +33,7 @@
       <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</n-button>
       <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >TE →</n-button>
     </div>
-    <div class="communication" :class="{ 'scroll': hasPreviewed }">
+    <div class="communication" :class="{ 'scroll': hasPreviewed }" v-if="!!data.length">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
       <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
         :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToContent"  />
@@ -55,7 +64,8 @@ import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store } from '../../store';
 import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl } from '../../helper/path';
-import { NButton, NSpin } from 'naive-ui';
+import { NButton, NSpin, NButtonGroup, NIcon } from 'naive-ui';
+import { Download } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
 
 
@@ -75,6 +85,9 @@ export default defineComponent({
     TranslatorLine,
     NButton,
     NSpin,
+    NButtonGroup,
+    Download,
+    NIcon
   },
   // the URL of the CSV data will be passed to the component as a prop
   props: {
@@ -314,7 +327,7 @@ export default defineComponent({
   justify-content: space-between;
   display: flex;
   width: 100%;
-  padding: 0 0 10px 0;
+  padding: 10px 0 10px 0;
 }
 
 /* add styles for the "Communication" component here */
@@ -328,7 +341,7 @@ export default defineComponent({
   position: fixed;
   top: 75px;
   right: 10px;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 .ready-button {

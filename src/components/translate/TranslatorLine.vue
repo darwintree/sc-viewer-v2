@@ -14,16 +14,25 @@
       <div class="line-controls text">
         <!-- the "trans" element is shown when the component is not in edit mode -->
         <div v-if="!isEditing">{{ display_trans }}</div>
-        <button class="edit-toggle" @click="toggleEdit" v-if="!isEditing">Edit</button>
+        <n-button class="edit-toggle" strong primary circle type="success" @click="toggleEdit" v-if="!isEditing" title="edit">
+          <template #icon>
+            <n-icon>
+              <Edit />
+            </n-icon>
+          </template>
+          <!-- Edit -->
+        </n-button>
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
         <div class="edit-container" v-else>
-          <textarea v-model="edit_trans" class="edit-textarea"></textarea>
+          <n-input type="textarea" v-model:value="edit_trans" class="edit-textarea"></n-input>
 
           <!-- the "edit-controls" element contains the "edit-cancel" and "edit-save" buttons -->
           <div class="edit-controls">
-            <button class="edit-cancel" @click="cancelEdit">Cancel</button>
-            <button class="edit-save" @click="saveEdit">Save</button>
+            <n-button-group>
+              <n-button class="edit-cancel" type="warning" @click="cancelEdit">Cancel</n-button>
+              <n-button class="edit-save" secondary strong type="success" @click="saveEdit">Save</n-button>
+            </n-button-group>
           </div>
         </div>
       </div>
@@ -35,13 +44,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { NButton, NIcon, NButtonGroup, NInput } from 'naive-ui'
 import Avatar from '../Avatar.vue'; // import the "Avatar" component
+import { Edit } from '@vicons/carbon'
 
 // define the props for the component
 export default defineComponent({
   // define the "Avatar" component as a child component
   components: {
     Avatar,
+    NButton,
+    NIcon,
+    Edit,
+    NButtonGroup,
+    NInput
 },
   props: {
     // the name of the speaker
@@ -136,9 +152,9 @@ export default defineComponent({
   padding: 0.5em;
 }
 
-.line>.line-controls>.edit-container>textarea {
+/* .line>.line-controls>.edit-container>textarea {
   width: 100%;
-}
+} */
 
 /* add styles to align the "Edit" button to the right inside the ".line-controls" element */
 .line-controls {
@@ -162,15 +178,15 @@ export default defineComponent({
   flex: 1;
 }
 
-.edit-toggle {
+/* .edit-toggle {
   height: 2rem;
   justify-self: stretch;
-  /* flex: 2; */
-}
+} */
 
 /* update the styles for the ".edit-controls" element to display its child elements on the same line */
 .edit-controls {
   display: flex;
   align-items: center;
+  justify-content: end;
 }
 </style>
