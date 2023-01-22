@@ -66,7 +66,7 @@ let columns = ref(createColumns({
       path: "/translate",
       query: {
         "forceReload": "1",
-        "mode": "storage"
+        "mode": "history"
       },
       // do not use encodeURIComponent
       hash: `#${row.name}`

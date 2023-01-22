@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/1/22
+
+* Add an icon to indicate data source
+
 ## 2023/1/19
 
 * Add previous/next chapter button except for true end

@@ -2,9 +2,10 @@ import { reactive } from 'vue'
 import { fetchUserInfo, proxiedGithubUrl } from './helper/auth';
 
 enum DataSourceType {
-    Remote = "remote",
-    File = "file",
-    Storage = "storage"
+    Raw = "raw", // json file from remote
+    Server = "server", // csv file from remote
+    File = "file", // local file on disk
+    History = "history" // local file in browser
 }
 
 interface Save {
@@ -138,5 +139,6 @@ init()
 export {
     store,
     tryLogin,
-    logOut
+    logOut,
+    DataSourceType
 };

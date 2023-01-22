@@ -14,6 +14,7 @@
   - [x] localstorage
     - [ ] remove specific item
 - [ ] fix no github push panel problem
+- [ ] version warning when trying to rewrite a history save
 
 ### Low Priority
 
@@ -32,3 +33,8 @@
 - [ ] bgm from json
 - [ ] p's voice (sound effect/tts)
 - [ ] Hide preview until login
+
+### example url inputs
+
+- `https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/七草にちか/【あっかい】七草にちか/1 ポップ'n pop.csv`
+- `produce_events/100200506.json`

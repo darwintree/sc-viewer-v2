@@ -13,7 +13,7 @@
       <button @click="previewStory" class="preview-button">Preview Story⤵</button>
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
-    <div class="jump">
+    <div class="jump" v-if="!!data.length">
       <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
         ← First
       </n-button>
@@ -109,24 +109,15 @@ export default defineComponent({
     openEvent() {
       window.open(this.iframeSrc!)
     },
-    // define a method to load the CSV data from the URL
-    async loadDataFromUrl(url: string) {
-      this.isLoading = true
-      if (url.endsWith(".csv")) {
-        await this.loadDataFromGithubCsvUrl(url)
-      } else if (url.endsWith(".json")) {
-        await this.loadDataFromJsonPathUrl(url)
-      } else {
-        alert("unexpected Url: should ends with .csv or .json")
-      }
-    },
     loadDataFromLocalStorage(name: string) {
+      this.isLoading = true
       const text = store.saves.saveDict[name].csv
       this.csvFileName = name
       store.path = `data/story///${name}`
       this.loadDataFromCsvText(text)
     },
     async loadDataFromGithubCsvUrl(url: string) {
+      this.isLoading = true
       try {
         const info = extractInfoFromUrl(url)
         store.owner = info.owner
@@ -159,6 +150,7 @@ export default defineComponent({
       }
     },
     async loadDataFromJsonPathUrl(url: string) {
+      this.isLoading = true
       let splits = url.split("/").reverse()
       let relPath = `${splits[1]}/${splits[0]}`
       let realUrl = url
