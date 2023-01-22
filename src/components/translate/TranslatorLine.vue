@@ -29,14 +29,14 @@
           <n-button class="edit-cancel" circle secondary @click="cancelEdit">
             <template #icon>
               <n-icon>
-                <CancelFilled />
+                <img src="/public/icon/material/CancelFilled.svg" />
               </n-icon>
             </template>
           </n-button>
           <n-button class="edit-save" circle secondary strong type="success" @click="saveEdit">
             <template #icon>
               <n-icon>
-                <CheckFilled />
+                <img src="/public/icon/material/CheckFilled.svg" />
               </n-icon>
             </template>
           </n-button>
@@ -53,7 +53,6 @@ import { defineComponent } from 'vue';
 import { NButton, NIcon, NButtonGroup, NInput } from 'naive-ui'
 import Avatar from '../Avatar.vue'; // import the "Avatar" component
 import { Edit } from '@vicons/carbon'
-import { CancelFilled, CheckFilled } from '@vicons/material'
 
 // define the props for the component
 export default defineComponent({
@@ -65,8 +64,6 @@ export default defineComponent({
     Edit,
     NButtonGroup,
     NInput,
-    CancelFilled,
-    CheckFilled
   },
   props: {
     // the name of the speaker

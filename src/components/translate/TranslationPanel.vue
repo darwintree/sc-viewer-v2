@@ -4,7 +4,6 @@
 import Communication from './Communication.vue';
 import { NInput, NInputGroup, NButton, NIcon, NTooltip } from 'naive-ui';
 import {  LogoGithub, Raw, VolumeFileStorage } from '@vicons/carbon'
-import { HistoryFilled } from '@vicons/material'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { DataSourceType } from '../../store'
@@ -131,7 +130,7 @@ function handleFileChange(e: Event) {
           <template #trigger>
             <n-button tertiary type="default">
               <n-icon size="30">
-                <HistoryFilled v-if="currentMode==='history'" />
+                <img src="/icon/material/HistoryFilled.svg" v-if="currentMode==='history'" />
                 <LogoGithub v-if="currentMode==='server'"/>
                 <Raw v-if="currentMode==='raw'"/>
                 <VolumeFileStorage v-if="currentMode==='file'"/>
