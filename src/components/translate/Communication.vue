@@ -29,6 +29,18 @@
       <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
         :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToContent"  />
       <TranslatorLine :name="'译者'" :trans="translator" ref="translator" @save="saveCsvToContent" />
+      <!-- same buttons after whole communication -->
+      <div class="jump" v-if="!!data.length && !hasPreviewed">
+        <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
+          ← First
+        </n-button>
+        <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
+          ← Previous
+        </n-button>
+        
+        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</n-button>
+        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >TE →</n-button>
+      </div>
     </div>
   </div>
 </template>
@@ -302,6 +314,7 @@ export default defineComponent({
   justify-content: space-between;
   display: flex;
   width: 100%;
+  padding: 0 0 10px 0;
 }
 
 /* add styles for the "Communication" component here */
