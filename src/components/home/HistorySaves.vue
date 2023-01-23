@@ -1,9 +1,7 @@
 <template>
   <n-data-table class="history-table" :columns="columns" :data="saveBriefData" :bordered="false" striped />
-  
-  <n-popconfirm
-    @positive-click="store.saves.clear()"
-  >
+
+  <n-popconfirm @positive-click="store.saves.clear()">
     <template #trigger>
       <n-button primary type="error">CLEAR HISTORY</n-button>
     </template>
@@ -16,7 +14,6 @@ import { h, ref, computed } from 'vue'
 import { NButton, NDataTable, NPopconfirm } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { store, DataSourceType } from '../../store'
-import type { DataTableColumns } from 'naive-ui'
 
 type SaveBrief = {
   name: string, // the file name
@@ -42,7 +39,7 @@ const createColumns = ({
   navigate,
 }: {
   navigate: (row: SaveBrief) => void,
-}): DataTableColumns<SaveBrief> => {
+}): any => {
   const base = [
     {
       title: 'Name',
@@ -69,10 +66,12 @@ const createColumns = ({
     {
       title: 'Latest Update',
       key: 'timeLabel',
+      defaultSortOrder: 'descend',
+      sorter: 'default'
     }
   ]
   if (store.isMobile) {
-    base.splice(1,1)
+    base.splice(1, 1)
   }
   return base
 }
