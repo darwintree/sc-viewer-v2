@@ -6,7 +6,7 @@ import { NInput, NInputGroup, NButton, NIcon, NTooltip } from 'naive-ui';
 import {  LogoGithub, Raw, VolumeFileStorage } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { DataSourceType } from '../../store'
+import { DataSourceType, store } from '../../store'
 
 
 const route = useRoute()
@@ -19,7 +19,6 @@ const routeQuery = computed(()=>{
 let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
 let urlInput = ref<InstanceType<typeof NInput> | null>(null);
-const currentMode = ref("" as DataSourceType)
 
 // if this page is never loaded, onMounted will activate
 onMounted(()=>{
@@ -31,11 +30,12 @@ async function loadDataFromLocation() {
   if (!route.hash) return
   const mode = route.query?.mode
   if (mode === "history") {
-    currentMode.value = DataSourceType.History
+    store.currentMode = DataSourceType.History
+    // why push, use replace is also ok
     router.push({
       path: route.path,
       query: {
-        mode: currentMode.value
+        mode: store.currentMode
       },
       hash: `${decodeURIComponent(route.hash)}`
     })
@@ -65,10 +65,10 @@ function confirm() {
 async function loadDataFromUrl(url: string) {
   csvUrl.value = url
   if (url.endsWith(".csv")) {
-    currentMode.value = DataSourceType.Server
+    store.currentMode = DataSourceType.Server
     await communication.value?.loadDataFromGithubCsvUrl(url)
   } else if (url.endsWith(".json")) {
-    currentMode.value = DataSourceType.Raw
+    store.currentMode = DataSourceType.Raw
     await communication.value?.loadDataFromJsonPathUrl(url)
   } else {
     console.log(url)
@@ -78,7 +78,7 @@ async function loadDataFromUrl(url: string) {
     path: route.path,
     hash: decodeURIComponent(`#${url}`),
     query: {
-      mode: currentMode.value.toString()
+      mode: store.currentMode.toString()
     }
   })
   nextTick(()=> urlInput.value?.scrollTo({
@@ -94,11 +94,11 @@ function handleFileChange(e: Event) {
     const file = files[0];
     if (communication.value !== null) {
       csvUrl.value = ""
-      currentMode.value = DataSourceType.File
+      store.currentMode = DataSourceType.File
       router.replace({
         path: route.path,
         query: {
-          mode: currentMode.value
+          mode: store.currentMode
         },
         hash: ""
       })
@@ -126,18 +126,18 @@ function handleFileChange(e: Event) {
       <n-input-group class="url-input">
         <n-input v-model:value="csvUrl" placeholder="Json / CSV URL"  @keypress.enter="confirm" clearable ref="urlInput" />
         <n-button type="info" @click="confirm">Confirm</n-button>
-        <n-tooltip :show-arrow="false" trigger="hover" v-if="!!currentMode">
+        <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
           <template #trigger>
             <n-button tertiary type="default">
               <n-icon size="30">
-                <img src="/icon/material/HistoryFilled.svg" v-if="currentMode==='history'" />
-                <LogoGithub v-if="currentMode==='server'"/>
-                <Raw v-if="currentMode==='raw'"/>
-                <VolumeFileStorage v-if="currentMode==='file'"/>
+                <img src="/icon/material/HistoryFilled.svg" v-if="store.currentMode==='history'" />
+                <LogoGithub v-if="store.currentMode==='server'"/>
+                <Raw v-if="store.currentMode==='raw'"/>
+                <VolumeFileStorage v-if="store.currentMode==='file'"/>
               </n-icon>
             </n-button>
           </template>
-          Current mode: {{ currentMode }}
+          Current mode: {{ store.currentMode }}
         </n-tooltip>
         
       </n-input-group>

@@ -90,8 +90,10 @@ const store = reactive({
   owner: "ShinyGroup",
   repo: "SCTranslationData",
   path: "",
+
   saves: {} as LocalStorageSaveManager,
   latestUpdate: "",
+
   setAvatarUrl(currentAvatarUrl: string|null) {
     if (currentAvatarUrl === null) {
         this.avatarUrl = null
@@ -99,7 +101,7 @@ const store = reactive({
     }
     this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
   },
-  currentDataSourceType: "file" as DataSourceType,
+  currentMode: "" as DataSourceType,
 })
 
 async function tryLogin() {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/1/23
+
+* feat: sort history saves by latest update
+
 ## 2023/1/22
 
 * Add an icon to indicate data source

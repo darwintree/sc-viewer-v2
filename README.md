@@ -19,10 +19,12 @@
   - [ ] switch to history mode after first save
 - [ ] unit test
 - [ ] file name edit
+- [ ] i18n
 
 ### Low Priority
 
 - [ ] Use N-Step for pushing to Github
+- [ ] use .env for some const
 - [ ] use popselect component for download csv
 - [x] Strange translate page style for mobile
 - [x] generate changelog html when building (to reduce size)
