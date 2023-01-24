@@ -1,5 +1,12 @@
 # README
 
+## installation
+
+``` bash
+yarn
+yarn dev
+```
+
 ## TODOs
 
 ### High Priority
@@ -20,6 +27,7 @@
 - [ ] unit test
 - [ ] file name edit
 - [ ] i18n
+- [ ] ready for open source
 
 ### Low Priority
 

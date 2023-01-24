@@ -17,21 +17,21 @@
    
     <div class="event-block" v-if="iframeSrc">
       <n-button-group>
-        <n-button @click="openEvent" tertiary strong bordered round class="preview-button">Preview Story⤴</n-button>
-        <n-button @click="previewStory" tertiary strong bordered round class="preview-button">Preview Story⤵</n-button>
+        <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤴</n-button>
+        <n-button @click="previewStory" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤵</n-button>
       </n-button-group>
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
     <div class="jump" v-if="!!data.length">
       <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
-        ← First
+        ← {{ $t("control.first") }}
       </n-button>
       <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
-        ← Previous
+        ← {{ $t("control.previous") }}
       </n-button>
       
-      <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</n-button>
-      <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >TE →</n-button>
+      <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
+      <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >True End →</n-button>
     </div>
     <div class="communication" :class="{ 'scroll': hasPreviewed }" v-if="!!data.length">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
@@ -41,14 +41,14 @@
       <!-- same buttons after whole communication -->
       <div class="jump" v-if="!!data.length && !hasPreviewed">
         <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
-          ← First
+          ← {{ $t("control.first") }}
         </n-button>
         <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
-          ← Previous
+          ← {{ $t("control.previous") }}
         </n-button>
         
-        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">Next →</n-button>
-        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >TE →</n-button>
+        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
+        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >True End →</n-button>
       </div>
     </div>
   </div>
@@ -340,7 +340,7 @@ export default defineComponent({
 
 .download-button {
   position: fixed;
-  top: 75px;
+  top: 83px;
   right: 10px;
   opacity: 0.8;
 }

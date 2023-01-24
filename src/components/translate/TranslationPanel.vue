@@ -6,9 +6,10 @@ import { NInput, NInputGroup, NButton, NIcon, NTooltip } from 'naive-ui';
 import {  LogoGithub, Raw, VolumeFileStorage } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { DataSourceType, store } from '../../store'
 
-
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -125,7 +126,7 @@ function handleFileChange(e: Event) {
     <div class="input-row">
       <n-input-group class="url-input">
         <n-input v-model:value="csvUrl" placeholder="Json / CSV URL"  @keypress.enter="confirm" clearable ref="urlInput" />
-        <n-button type="info" @click="confirm">Confirm</n-button>
+        <n-button type="info" @click="confirm"> {{ t("common.confirm") }} </n-button>
         <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
           <template #trigger>
             <n-button tertiary type="default">

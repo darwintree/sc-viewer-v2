@@ -33,15 +33,15 @@
           <n-input type="textarea" 
             v-model:value="edit_trans" 
             class="edit-textarea" 
-            placeholder="Press Enter↩ to input '\n' and press Shift⇧ + Enter↩ to save"
+            :placeholder="$t('translate.translatePlaceholder')"
             ref="edit"
           />
 
           <!-- the "edit-controls" element contains the "edit-cancel" and "edit-save" buttons -->
           <div class="edit-controls">
             <n-button-group>
-              <n-button class="edit-cancel" type="warning" @click="cancelEdit">Cancel</n-button>
-              <n-button class="edit-save" secondary strong type="success" @click="saveEdit">Save</n-button>
+              <n-button class="edit-cancel" type="warning" @click="cancelEdit">{{ $t("common.cancel") }}</n-button>
+              <n-button class="edit-save" secondary strong type="success" @click="saveEdit">{{ $t("common.save") }}</n-button>
             </n-button-group>
           </div>
         </div>
@@ -230,16 +230,16 @@ export default defineComponent({
   flex: 1;
 }
 
-/* .edit-toggle {
-  height: 2rem;
-  justify-self: stretch;
-} */
+.edit-toggle {
+  margin: 3px 0 0 0;
+}
 
 /* update the styles for the ".edit-controls" element to display its child elements on the same line */
 .edit-controls {
   display: flex;
   align-items: center;
   justify-content: end;
+  margin: 2px 0 0 0;
 }
 
 .select { 

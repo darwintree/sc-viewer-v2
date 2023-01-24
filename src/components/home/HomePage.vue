@@ -1,6 +1,6 @@
 <template>
   <n-collapse :default-expanded-names="['saves']">
-    <n-collapse-item title="History Saves" name="saves">
+    <n-collapse-item :title="t('home.history.title')" name="saves">
       <history-saves />
       <template #header-extra>
         <n-tag type="info" size="small">
@@ -8,7 +8,7 @@
         </n-tag>
       </template>
     </n-collapse-item>
-    <n-collapse-item title="Game Updates" name="updates">
+    <n-collapse-item :title="t('home.updates')" name="updates">
       <div class="changelog" v-html="updatesHtml"></div> 
       <template #header-extra>
         <n-tag type="info" size="small">
@@ -16,7 +16,7 @@
         </n-tag>
       </template>
     </n-collapse-item>
-    <n-collapse-item title="Changelog" name="changelog">
+    <n-collapse-item :title="t('home.changelog')" name="changelog">
       <div class="changelog" v-html="changelogHtml"></div> 
       <template #header-extra>
         <n-tag type="info" size="small">
@@ -39,6 +39,7 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { NCollapse, NCollapseItem, NTag, NModal } from 'naive-ui';
 import { store } from '../../store';
 import HistorySaves from './HistorySaves.vue'
@@ -48,6 +49,7 @@ let changelogBrief = ref("")
 let updatesHtml = ref("")
 let updatesBrief = ref("")
 let showUpdateModal = ref(false)
+const { t } = useI18n()
 
 let latestUpdate = computed(()=>store.latestUpdate)
 

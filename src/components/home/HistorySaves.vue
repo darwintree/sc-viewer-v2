@@ -1,11 +1,11 @@
 <template>
   <n-data-table class="history-table" :columns="columns" :data="saveBriefData" :bordered="false" striped />
 
-  <n-popconfirm @positive-click="store.saves.clear()">
+  <n-popconfirm @positive-click="store.saves.clear()" :positive-text="t('common.confirm')" :negative-text="t('common.cancel')">
     <template #trigger>
-      <n-button primary type="error">CLEAR HISTORY</n-button>
+      <n-button primary type="error">{{ t('home.history.clear') }}</n-button>
     </template>
-    Will Clear All History
+    {{ t('home.history.clearWarning') }}
   </n-popconfirm>
 </template>
 
@@ -13,6 +13,7 @@
 import { h, ref, computed } from 'vue'
 import { NButton, NDataTable, NPopconfirm } from 'naive-ui'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { store, DataSourceType } from '../../store'
 
 type SaveBrief = {
@@ -34,6 +35,7 @@ const saveBriefData = computed(() => {
 })
 
 const router = useRouter()
+const { t } = useI18n()
 
 const createColumns = ({
   navigate,
@@ -42,7 +44,7 @@ const createColumns = ({
 }): any => {
   const base = [
     {
-      title: 'Name',
+      title: t("home.history.table.name"),
       key: 'name',
       render(row: SaveBrief) {
         return h(
@@ -60,11 +62,11 @@ const createColumns = ({
       }
     },
     {
-      title: "URL",
+      title: t("home.history.table.URL"),
       key: 'id',
     },
     {
-      title: 'Latest Update',
+      title: t("home.history.table.latestUpdate"),
       key: 'timeLabel',
       defaultSortOrder: 'descend',
       sorter: 'default'

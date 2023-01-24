@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
+import { createI18n } from 'vue-i18n'
 import { createRouter, createWebHistory } from 'vue-router';
 import './style.css'
+import { messages } from './locale'
 import App from './App.vue'
 const TranslationPanel =  () => import('./components/translate/TranslationPanel.vue');
 const About = () => import('./components/About.vue');
@@ -36,5 +38,13 @@ const router = createRouter({
   ]
 });
 
+const i18n = createI18n({
+  legacy: false, // you must set `false`, to use Composition API
+  locale: 'zh', // set locale
+  fallbackLocale: 'en', // set fallback locale
+  messages, // set locale messages
+  // If you need to specify other options, you can set other options
+  // ...
+})
 
-createApp(App).use(router).mount('#app')
+createApp(App).use(router).use(i18n).mount('#app')
