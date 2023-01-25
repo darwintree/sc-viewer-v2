@@ -134,11 +134,11 @@ export default defineComponent({
     openEvent() {
       window.open(this.iframeSrc!)
     },
-    loadDataFromLocalStorage(name: string) {
+    loadDataFromLocalStorage(jsonUrl: string) {
       this.isLoading = true
-      const text = store.saves.saveDict[name].csv
-      this.csvFileName = name
-      store.path = `data/story///${name}`
+      const text = store.saves.saveDict[jsonUrl].csv
+      this.csvFileName = store.saves.saveDict[jsonUrl].name || jsonUrl
+      store.path = `data/story///${jsonUrl}`
       this.loadDataFromCsvText(text)
     },
     async loadDataFromGithubCsvUrl(url: string) {

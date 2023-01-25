@@ -40,8 +40,8 @@ async function loadDataFromLocation() {
       },
       hash: `${decodeURIComponent(route.hash)}`
     })
-    const name = decodeURIComponent(route.hash.substring(1))
-    nextTick(()=>communication.value?.loadDataFromLocalStorage(name))
+    const id = decodeURIComponent(route.hash.substring(1))
+    nextTick(()=>communication.value?.loadDataFromLocalStorage(id))
   } 
   // TODO: specify certain mode 
   else {
