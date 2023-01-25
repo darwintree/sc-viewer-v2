@@ -1,5 +1,12 @@
 # Changelog
 
+## 2023/1/25
+
+* fix: bug that overwrite history file names
+* feat: notify user
+  * if a json file is loaded
+  * if current translation is saved
+
 ## 2023/1/24
 
 * feat: introduce i18n

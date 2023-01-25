@@ -19,6 +19,8 @@ const messages = {
         },
         translate: {
             translatePlaceholder: "Press Enter↩ to input '\\n' and press Shift⇧ + Enter↩ to save",
+            saveSuccess: "Saved",
+            loadRawWarning: "A raw json file is loaded"
         },
         home: {
             history: {
@@ -56,6 +58,8 @@ const messages = {
         },
         translate: {
             translatePlaceholder: "按下 Enter↩ 输入 '\\n'，\n按下 Shift⇧ + Enter↩ 保存",
+            saveSuccess: "已保存",
+            loadRawWarning: "当前加载源为原始 JSON 文件"
         },
         home: {
             history: {

@@ -64,10 +64,9 @@ import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store } from '../../store';
 import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl } from '../../helper/path';
-import { NButton, NSpin, NButtonGroup, NIcon } from 'naive-ui';
+import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
 import { Download } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
-
 
 // define the interface for the CSV data
 interface CsvData {
@@ -87,7 +86,7 @@ export default defineComponent({
     NSpin,
     NButtonGroup,
     Download,
-    NIcon
+    NIcon,
   },
   // the URL of the CSV data will be passed to the component as a prop
   props: {
@@ -95,6 +94,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
+  },
+  setup() {
+    const message = useMessage()
+    return {
+      createSuccessMessage (content: string) {
+        message.success(content)
+      },
+      createWarningMessage(content: string) {
+        message.warning(content)
+      }
+    }
   },
   data() {
     return {
@@ -192,6 +202,7 @@ export default defineComponent({
       const jsonText = await response.text();
       const csvText = dataToCSV(JSON.parse(jsonText), null);
       this.csvFileName = splits[0].replace(".json", ".csv")
+      this.createWarningMessage(this.$t("translate.loadRawWarning"))
       await this.loadDataFromCsvText(csvText)
     },
     loadDataFromFile(file: File) {
@@ -301,6 +312,7 @@ export default defineComponent({
         timeLabel: new Date().toLocaleString(),
         name: this.csvFileName
       })
+      this.createSuccessMessage(this.$t("translate.saveSuccess"))
     },
     async updateRelatedChapterStatus() {
       this.nextJsonUrl = await nextJsonUrl(this.jsonUrl)
@@ -343,6 +355,7 @@ export default defineComponent({
   top: 83px;
   right: 10px;
   opacity: 0.8;
+  z-index: 10;
 }
 
 .ready-button {
