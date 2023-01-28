@@ -19,6 +19,11 @@ yarn dev
 - [ ] ready for open source
   - [ ] use .env for some const
 - [ ] messages for specific action
+- [ ] fix local_trans bug
+  - change trans and save
+  - go to next chapter and back
+- [ ] machine translate
+- [ ] reset reviewing status when switch to other place
 
 ### Low Priority
 
@@ -41,3 +46,11 @@ yarn dev
 
 - `http://127.0.0.1:5173/translate#https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/七草にちか/【あっかい】七草にちか/1%20ポップ'n%20pop.csv`
 - `http://127.0.0.1:5173/translate#produce_events/100200506.json`
+
+## test cases
+
+### save
+
+- [ ] load a file
+- [ ] load a history
+- [ ] load a

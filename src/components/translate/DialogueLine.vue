@@ -41,7 +41,7 @@
           <div class="edit-controls">
             <n-button-group>
               <n-button class="edit-cancel" type="warning" @click="cancelEdit">{{ $t("common.cancel") }}</n-button>
-              <n-button class="edit-save" secondary strong type="success" @click="saveEdit">{{ $t("common.save") }}</n-button>
+              <n-button class="edit-save" secondary strong type="success" @click="trySaveEdit">{{ $t("common.save") }}</n-button>
             </n-button-group>
           </div>
         </div>
@@ -56,8 +56,9 @@
 import { defineComponent } from 'vue';
 import Avatar from '../Avatar.vue'; // import the "Avatar" component
 import AudioLabel from '../AudioLabel.vue';
-import { NButton, NIcon, NButtonGroup, NInput } from 'naive-ui'
+import { NButton, NIcon, NButtonGroup, NInput, useDialog, DialogOptions } from 'naive-ui'
 import { Edit } from '@vicons/carbon'
+import { store, DataSourceType } from '../../store'
 
 // define the props for the component
 export default defineComponent({
@@ -113,6 +114,14 @@ export default defineComponent({
   mounted() {
     this.local_trans = this.trans;
   },
+  setup() {
+    const dialog = useDialog()
+    return {
+      createWarningDialog(options: DialogOptions) {
+        dialog.warning(options)
+      }
+    }
+  },
   watch: {
     trans(newValue) {
       this.local_trans = newValue;
@@ -146,7 +155,44 @@ export default defineComponent({
     cancelEdit() {
       this.isEditing = false;
     },
+    changeToHistoryMode() {
+      store.currentMode = DataSourceType.History
+        this.$router.replace({
+          path: this.$route.path,
+          hash: `#${this.base}.json`, // for file mode
+          query: {
+            mode: store.currentMode.toString()
+          }
+        })
+    },
     // define the "saveEdit" method to save the edited translation
+    trySaveEdit() {
+      // 3 cases, action besides save
+      // if not in histroy mode and has history, overwrite warning and change mode
+      // if not in histroy mode but no history, change mode
+      // if in history mode, do nothing
+      if (store.currentMode === "history") {
+        this.saveEdit()
+        return
+      }
+
+      const saveId = `${this.base}.json`
+      if (store.saves.getItem(saveId)) {
+        this.createWarningDialog({
+          title: this.$t("translate.overwriteWarning"),
+          content: this.$t("translate.overwriteDetails"),
+          positiveText: this.$t("common.confirm"),
+          negativeText: this.$t("common.cancel"),
+          onPositiveClick: () => {
+            this.saveEdit()
+            this.changeToHistoryMode()
+          },
+        })
+      } else {
+        this.saveEdit()
+        this.changeToHistoryMode()
+      }
+    },
     saveEdit() {
       this.isEditing = false;
       this.local_trans = this.edit_trans;

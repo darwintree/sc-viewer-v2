@@ -20,7 +20,9 @@ const messages = {
         translate: {
             translatePlaceholder: "Press Enter↩ to input '\\n' and press Shift⇧ + Enter↩ to save",
             saveSuccess: "Saved",
-            loadRawWarning: "A raw json file is loaded"
+            loadRawWarning: "A raw json file is loaded",
+            overwriteWarning: "Overwrite Warning",
+            overwriteDetails: "A history save of current file is detected. This action will OVERWRITE the existed histroy save",
         },
         home: {
             history: {
@@ -59,7 +61,9 @@ const messages = {
         translate: {
             translatePlaceholder: "按下 Enter↩ 输入 '\\n'，\n按下 Shift⇧ + Enter↩ 保存",
             saveSuccess: "已保存",
-            loadRawWarning: "当前加载源为原始 JSON 文件"
+            loadRawWarning: "当前加载源为原始 JSON 文件",
+            overwriteWarning: "历史修改将被覆盖",
+            overwriteDetails: "检测到浏览器中当前文件的历史修改，本操作会覆盖历史修改，导致历史修改丢失",
         },
         home: {
             history: {

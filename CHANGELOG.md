@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/1/26
+
+* feat: warn the user if the user is trying to overwrite a file in localstorage
+
 ## 2023/1/25
 
 * fix: bug that overwrite history file names

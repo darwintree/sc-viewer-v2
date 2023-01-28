@@ -81,27 +81,27 @@ class LocalStorageSaveManager implements SaveManager {
 }
 
 const store = reactive({
-  accessToken: null as string | null,
-  isLoading: false,
-  isMobile: false,
-  username: null as string | null,
-  avatarUrl: null as string | null,
-  base64content: null as string | null,
-  owner: "ShinyGroup",
-  repo: "SCTranslationData",
-  path: "",
+    accessToken: null as string | null,
+    isLoading: false,
+    isMobile: false,
+    username: null as string | null,
+    avatarUrl: null as string | null,
+    base64content: null as string | null,
+    owner: "ShinyGroup",
+    repo: "SCTranslationData",
+    path: "",
 
-  saves: {} as LocalStorageSaveManager,
-  latestUpdate: "",
+    saves: {} as LocalStorageSaveManager,
+    latestUpdate: "",
 
-  setAvatarUrl(currentAvatarUrl: string|null) {
-    if (currentAvatarUrl === null) {
-        this.avatarUrl = null
-        return
-    }
-    this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
-  },
-  currentMode: "" as DataSourceType,
+    setAvatarUrl(currentAvatarUrl: string | null) {
+        if (currentAvatarUrl === null) {
+            this.avatarUrl = null
+            return
+        }
+        this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
+    },
+    currentMode: "" as DataSourceType,
 })
 
 async function tryLogin() {

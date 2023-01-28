@@ -3,7 +3,7 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { NSelect, NMessageProvider } from 'naive-ui';
+import { NSelect, NMessageProvider, NDialogProvider } from 'naive-ui';
 
 const route = useRoute()
 const { locale, availableLocales, t } = useI18n();
@@ -21,6 +21,7 @@ const options = availableLocales.map(
 <template>
   <div class="main">
   <n-message-provider>
+  <n-dialog-provider>
     <div class="first-line">
       <nav>
         <router-link :to="{ path: '/', query: route.query, hash: route.hash }">{{ t("tab.Home") }}</router-link> |
@@ -37,6 +38,7 @@ const options = availableLocales.map(
         <component :is="Component" />
       </keep-alive>
     </router-view>
+  </n-dialog-provider>
   </n-message-provider>
   </div>
 </template>
