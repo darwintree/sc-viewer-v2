@@ -12,8 +12,8 @@ yarn dev
 ### High Priority
 
 - [ ] fix no github push panel problem
-- [ ] version warning when trying to rewrite a history save
-  - [ ] switch to history mode after first save
+- [x] version warning when trying to rewrite a history save
+  - [x] switch to history mode after first save
 - [ ] unit test
 - [ ] file name edit
 - [ ] ready for open source
@@ -24,6 +24,7 @@ yarn dev
   - go to next chapter and back
 - [ ] machine translate
 - [ ] reset reviewing status when switch to other place
+- [ ] chrome application
 
 ### Low Priority
 

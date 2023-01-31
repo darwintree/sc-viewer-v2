@@ -2,16 +2,21 @@
 
 <script setup lang="ts">
 import Communication from './Communication.vue';
-import { NInput, NInputGroup, NButton, NIcon, NTooltip } from 'naive-ui';
-import {  LogoGithub, Raw, VolumeFileStorage } from '@vicons/carbon'
+import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, useMessage } from 'naive-ui';
+import { LogoGithub, Raw, VolumeFileStorage, Rotate360 } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { DataSourceType, store } from '../../store'
+import { queryTranslatedCsv, initTranslatedStoryIndex } from '../../helper/path';
+import HistoryIcon from '../HistoryIcon.vue';
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const showModal = ref(false)
+const isRotating = ref(false)
+const message = useMessage()
 
 const routeQuery = computed(()=>{
   return route.query
@@ -19,11 +24,17 @@ const routeQuery = computed(()=>{
 
 let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
+let fileInput = ref<InstanceType<typeof HTMLInputElement> | null>(null);
 let urlInput = ref<InstanceType<typeof NInput> | null>(null);
+
+const translatedCsvUrl = computed(() => {
+  if (communication.value)
+    return queryTranslatedCsv(communication.value.jsonUrl)
+  return ""
+})
 
 // if this page is never loaded, onMounted will activate
 onMounted(()=>{
-  // removeForceReloadParamInSearch()
   loadDataFromLocation()
 })
 
@@ -108,6 +119,25 @@ function handleFileChange(e: Event) {
   }
 }
 
+async function to(mode: string, id: string) {
+  showModal.value = false
+  router.push({
+    path: route.path,
+    query: {
+      mode,
+      forceReload: "1"
+    },
+    hash: `#${id}`
+  })
+}
+
+async function tryReloadStoryIndex() {
+  isRotating.value = true
+  await initTranslatedStoryIndex()
+  message.success(t("translate.switch.reloadFinished"))
+  isRotating.value = false
+}
+
 // function toGithub() {
 //   if (csvUrl.value) {
 //     window.open(csvUrl.value)
@@ -129,24 +159,89 @@ function handleFileChange(e: Event) {
         <n-button type="info" @click="confirm"> {{ t("common.confirm") }} </n-button>
         <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
           <template #trigger>
-            <n-button tertiary type="default">
+            <n-button tertiary type="default" @click="showModal = true">
               <n-icon size="30">
-                <img src="/icon/material/HistoryFilled.svg" v-if="store.currentMode==='history'" />
-                <LogoGithub v-if="store.currentMode==='server'"/>
-                <Raw v-if="store.currentMode==='raw'"/>
-                <VolumeFileStorage v-if="store.currentMode==='file'"/>
+                <HistoryIcon v-if="store.currentMode === 'history'" />
+                <LogoGithub v-if="store.currentMode === 'server'" />
+                <Raw v-if="store.currentMode === 'raw'" />
+                <VolumeFileStorage v-if="store.currentMode === 'file'" />
               </n-icon>
             </n-button>
           </template>
-          Current mode: {{ store.currentMode }}
+          {{ t(`translate.switch.title`) }}
         </n-tooltip>
-        
+
       </n-input-group>
     </div>
     <div class="input-row">
       <label> or </label>
-      <input type="file" @change="handleFileChange" class="file-selector"/>
+      <input type="file" @change="handleFileChange" class="file-selector" ref="fileInput" />
     </div>
+    <n-modal v-model:show="showModal" preset="card" style="width: 600px; max-width: 100%;"
+      :title="t(`translate.switch.title`)">
+      <n-space vertical>
+        <n-space align="center">
+          <n-button tertiary type="info" class="mode-switch" @click="to(`raw`, communication?.jsonUrl!)">
+            <template #icon>
+              <Raw />
+            </template>
+            raw
+          </n-button>
+          <span>
+            {{ t("translate.switch.explanation.raw") }}
+          </span>
+        </n-space>
+        <n-space align="center">
+          <n-button tertiary type="info" :disabled="!translatedCsvUrl" class="mode-switch"
+            @click="to(`server`, translatedCsvUrl!)">
+            <template #icon>
+              <LogoGithub />
+            </template>
+            server
+          </n-button>
+          <span>
+            {{ t("translate.switch.explanation.server") }}
+          </span>
+          <n-tooltip :show-arrow="false" trigger="hover" v-if="!translatedCsvUrl">
+            <template #trigger>
+              <n-button circle size="tiny" @click="tryReloadStoryIndex">
+                <template #icon>
+                  <n-spin :rotate="isRotating" :size="12">
+                    <template #icon>
+                      <Rotate360 class="mirror" />
+                    </template>
+                  </n-spin>
+                </template>
+              </n-button>
+            </template>
+            {{ t("translate.switch.reloadTooltip") }}
+          </n-tooltip>
+        </n-space>
+        <n-space align="center">
+          <n-button tertiary type="info" class="mode-switch" @click="fileInput!.click();showModal=false">
+            <template #icon>
+              <VolumeFileStorage />
+            </template>
+            file
+          </n-button>
+          <span>
+            {{ t("translate.switch.explanation.file") }}
+          </span>
+        </n-space>
+        <n-space align="center">
+          <n-button tertiary type="info" :disabled="!store.saves.getItem(communication?.jsonUrl!)" class="mode-switch"
+            @click="to(`history`, communication?.jsonUrl!)">
+            <template #icon>
+              <HistoryIcon></HistoryIcon>
+            </template>
+            history
+          </n-button>
+          <span>
+            {{ t("translate.switch.explanation.history") }}
+          </span>
+        </n-space>
+      </n-space>
+    </n-modal>
     <!-- event from chapter change -->
     <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl"/>
 </template>
@@ -181,7 +276,7 @@ function handleFileChange(e: Event) {
 } */
 
 .file-selector {
-  
+
   appearance: none;
   color: white;
   padding: 8px;
@@ -191,5 +286,14 @@ function handleFileChange(e: Event) {
   color: black;
   cursor: pointer;
   flex: 3;
+}
+
+.mode-switch {
+  width: 100px;
+  /* font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif; */
+}
+
+.mirror {
+  transform: rotateY(180deg);
 }
 </style>

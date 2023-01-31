@@ -1,4 +1,5 @@
 import { units } from '../assets/album-index.json'
+import { reactive } from 'vue'
 
 let idolList: string[] = []
 let unitList: string[] = []
@@ -17,6 +18,8 @@ function getAvatarPath(name: string) {
 }
 
 const ASSETSERVER = 'https://strawberrytree.top/convert/cache'
+
+const TranslationIndexUrl = 'https://raw.githubusercontent.com/biuuu/ShinyColors/gh-pages/story.json'
 
 function getAudioPath(id: string, base: string) {
     return `${ASSETSERVER}/sounds/voice/events/${base}/${id}.m4a`
@@ -112,6 +115,29 @@ async function nextJsonUrl(jsonUrl: string) {
     return null
 }
 
+let translatedStoryIndex:{
+    [key: string]: string
+} = reactive({})
+
+async function initTranslatedStoryIndex() {
+    const res = await fetch(TranslationIndexUrl)
+    if (!res.ok) {
+        console.log("fetch fail")
+        return
+    }
+    const text = await res.text()
+    const raw = JSON.parse(text)
+    raw.map((element: any) => {
+        translatedStoryIndex[element[0]] = element[1]
+    })
+    // console.log(translatedStoryIndex)
+}
+
+function queryTranslatedCsv(jsonUrl: string): string|null {
+    if (!translatedStoryIndex[jsonUrl]) return null
+    return `https://github.com/biuuu/ShinyColors/blob/gh-pages/data/story/${translatedStoryIndex[jsonUrl]}.csv`
+}
+
 async function previousJsonUrl(jsonUrl: string) {
     if (jsonUrl.endsWith("01.json")) return null
     const rtn = changedJsonUrlByNumber(jsonUrl, -1)
@@ -148,6 +174,9 @@ async function firstJsonUrl(jsonUrl: string) {
     return jsonUrl.replace("11.json", "01.json")
 }
 
+// init index
+initTranslatedStoryIndex()
+
 export {
     getAvatarPath,
     getAudioPath,
@@ -159,4 +188,6 @@ export {
     previousJsonUrl,
     trueEndJsonUrl,
     firstJsonUrl,
+    queryTranslatedCsv,
+    initTranslatedStoryIndex,
 }
