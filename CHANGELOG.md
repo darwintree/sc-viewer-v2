@@ -1,5 +1,13 @@
 # Changelog
 
+## 2023/2/3
+
+* ui change: badge on date switch button
+
+## 2023/2/2
+
+* feat: PWA support
+
 ## 2023/2/1
 
 * feat: data source switch

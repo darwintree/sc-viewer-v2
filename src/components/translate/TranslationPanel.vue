@@ -2,8 +2,8 @@
 
 <script setup lang="ts">
 import Communication from './Communication.vue';
-import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, useMessage } from 'naive-ui';
-import { LogoGithub, Raw, VolumeFileStorage, Rotate360 } from '@vicons/carbon'
+import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage } from 'naive-ui';
+import { LogoGithub, Raw, VolumeFileStorage, Renew, Repeat, } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -159,14 +159,21 @@ async function tryReloadStoryIndex() {
         <n-button type="info" @click="confirm"> {{ t("common.confirm") }} </n-button>
         <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
           <template #trigger>
-            <n-button tertiary type="default" @click="showModal = true">
-              <n-icon size="30">
-                <HistoryIcon v-if="store.currentMode === 'history'" />
-                <LogoGithub v-if="store.currentMode === 'server'" />
-                <Raw v-if="store.currentMode === 'raw'" />
-                <VolumeFileStorage v-if="store.currentMode === 'file'" />
-              </n-icon>
-            </n-button>
+            <n-badge color="transparent" type="warning" >
+              <n-button tertiary type="default" @click="showModal = true">
+                <n-icon size="30">
+                  <HistoryIcon v-if="store.currentMode === 'history'" />
+                  <LogoGithub v-if="store.currentMode === 'server'" />
+                  <Raw v-if="store.currentMode === 'raw'" />
+                  <VolumeFileStorage v-if="store.currentMode === 'file'" />
+                </n-icon>
+              </n-button>
+              <template #value >
+                <n-icon color="black" size="15">
+                  <Repeat />
+                </n-icon>
+              </template>
+            </n-badge>
           </template>
           {{ t(`translate.switch.title`) }}
         </n-tooltip>
@@ -208,7 +215,7 @@ async function tryReloadStoryIndex() {
                 <template #icon>
                   <n-spin :rotate="isRotating" :size="12">
                     <template #icon>
-                      <Rotate360 class="mirror" />
+                      <Renew class="mirror" />
                     </template>
                   </n-spin>
                 </template>

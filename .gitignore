@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 dev-dist
+public/font
 
 # Editor directories and files
 .vscode/*

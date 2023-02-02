@@ -24,7 +24,11 @@ yarn dev
   - go to next chapter and back
 - [ ] machine translate
 - [ ] reset reviewing status when switch to other place
-- [ ] chrome application
+- [x] PWA support
+- [ ] replace the bottom jump button with to the top button
+- [x] badge for switch button
+- [ ] raw.githubcontents proxy
+  - [ ] font source switch
 
 ### Low Priority
 
