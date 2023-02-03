@@ -160,7 +160,7 @@ async function tryReloadStoryIndex() {
         <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
           <template #trigger>
             <n-badge color="transparent" type="warning" >
-              <n-button tertiary type="default" @click="showModal = true">
+              <n-button tertiary type="default" @click="showModal = true" :focusable="false">
                 <n-icon size="30">
                   <HistoryIcon v-if="store.currentMode === 'history'" />
                   <LogoGithub v-if="store.currentMode === 'server'" />

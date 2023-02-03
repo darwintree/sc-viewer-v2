@@ -27,8 +27,8 @@ yarn dev
 - [x] PWA support
 - [ ] replace the bottom jump button with to the top button
 - [x] badge for switch button
-- [ ] raw.githubcontents proxy
-  - [ ] font source switch
+- [x] raw.githubcontents proxy
+  - [x] font source switch
 
 ### Low Priority
 

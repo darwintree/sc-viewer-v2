@@ -63,7 +63,7 @@ import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl } from '../../helper/path';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
 import { Download } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
@@ -160,9 +160,7 @@ export default defineComponent({
         store.path = decodeURIComponent(info.path)
 
         // use the fetch() function to request the CSV data from the URL
-        if (url.startsWith("https://github.com")) {
-          url = url.replace("github", "raw.githubusercontent").replace("/blob/", "/")
-        }
+        url = getGithubRawResourcePath(url)
         const response = await fetch(url);
 
         if (!response.ok) {

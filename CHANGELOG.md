@@ -3,6 +3,7 @@
 ## 2023/2/3
 
 * ui change: badge on date switch button
+* feat: use proxy for raw.githubusercontent.com
 
 ## 2023/2/2
 

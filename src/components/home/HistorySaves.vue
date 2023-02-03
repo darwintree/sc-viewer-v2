@@ -1,5 +1,5 @@
 <template>
-  <n-data-table class="history-table" :columns="columns" :data="saveBriefData" :bordered="false" striped />
+  <n-data-table class="history-table" :columns="columns" :data="saveBriefData" :bordered="false" />
 
   <n-popconfirm @positive-click="store.saves.clear()" :positive-text="t('common.confirm')" :negative-text="t('common.cancel')">
     <template #trigger>
