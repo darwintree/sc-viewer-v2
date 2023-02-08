@@ -131,8 +131,8 @@ let translatedStoryIndex:{
     [key: string]: string
 } = reactive({})
 
-async function initTranslatedStoryIndex() {
-    const res = await fetch(TranslationIndexUrl)
+async function initTranslatedStoryIndex(useProxy=true) {
+    const res = await fetch(getGithubRawResourcePath(TranslationIndexUrl, useProxy))
     if (!res.ok) {
         console.log("fetch fail")
         return
