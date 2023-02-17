@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/2/10
+
+* [chiyuki-step](/translate#produce_events/101600501.json)
+* [valentine](/translate#special_communications/490103701.json)
+* [touru-p-ssr](/translate#produce_events/202001001.json)
+* [kaho-s-ssr](/translate#produce_events/300901601.json)
+* [chiyuki-s-sr](/translate#produce_events/301601301.json)
+
 ## 2023/1/31
 
 * [straylight-event-vs](/translate#game_event_communications/400105701.json)
