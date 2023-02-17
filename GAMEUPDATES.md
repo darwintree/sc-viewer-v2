@@ -1,5 +1,11 @@
 # Updates
 
+## 2023/2/17
+
+* [tenka-p-ssr](/translate#produce_events/201501601.json)
+* [kogane-s-ssr](/translate#produce_events/300401701.json)
+* [koito-p-sr](/translate#produce_events/202200801.json)
+
 ## 2023/2/10
 
 * [chiyuki-step](/translate#produce_events/101600501.json)
