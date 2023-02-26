@@ -136,6 +136,7 @@ export default defineComponent({
     changeChapter(jsonUrl: string|null) {
       if (!jsonUrl) return
       this.$emit("load-data", jsonUrl)
+      window.scrollTo(0,0)
     },
     previewStory() {
       this.isPreviewing = !this.isPreviewing
