@@ -4,6 +4,7 @@
 
 * feat: scroll back to top after chapter change
 * feat: remind the user if translation is detected
+* host browser extension user script from gist to this website
 
 ## 2023/2/3
 

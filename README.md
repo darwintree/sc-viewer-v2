@@ -23,6 +23,8 @@ yarn dev
 
 ### Improvements
 
+- [x] update browser extension
+
 ### High Priority
 
 - [ ] unit test
