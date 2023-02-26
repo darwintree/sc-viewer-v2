@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/2/26
+
+* feat: scroll back to top after chapter change
+* feat: remind the user if translation is detected
+
 ## 2023/2/3
 
 * ui change: badge on date switch button

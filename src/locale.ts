@@ -21,6 +21,7 @@ const messages = {
             translatePlaceholder: "Press Enter↩ to input '\\n' and press Shift⇧ + Enter↩ to save",
             saveSuccess: "Saved",
             loadRawWarning: "A raw json file is loaded",
+            remoteTranslationDetected: "Remote translation is deteted. Click the 【RAW】 button at the top right corner to switch",
             overwriteWarning: "Overwrite Warning",
             overwriteDetails: "A history save of current file is detected. This action will OVERWRITE the existed histroy save",
             switch: {
@@ -73,6 +74,7 @@ const messages = {
             translatePlaceholder: "按下 Enter↩ 输入 '\\n'，\n按下 Shift⇧ + Enter↩ 保存",
             saveSuccess: "已保存",
             loadRawWarning: "当前加载源为原始 JSON 文件",
+            remoteTranslationDetected: "检测到已翻译文件。点击右上角【RAW】按钮切换",
             overwriteWarning: "历史修改将被覆盖",
             overwriteDetails: "检测到浏览器中当前文件的历史修改，本操作会覆盖历史修改，导致历史修改丢失",
             switch: {
@@ -100,6 +102,10 @@ const messages = {
             },
             updates: "游戏更新",
             changelog: "更新日志",
+        },
+        tips: {
+            switch: "在翻译文件加载后，可以点击URL输入行最右侧的按钮来切换不同版本的文件",
+            extension: "可以安装浏览器扩展以便快速从github页面导航至本网站"
         }
     }
 }

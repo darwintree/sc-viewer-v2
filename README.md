@@ -9,23 +9,30 @@ yarn dev
 
 ## TODOs
 
+### New Feature
+
+- [ ] file name edit
+  - [ ] file name suggest
+- [ ] Use github interface to push csv directly
+  - [ ] use popselect component for download csv
+    - [ ] download or push to github
+  - [ ] Use N-Step for pushing to Github
+  - [ ] fix no github push panel problem
+- [ ] machine translate
+- [ ] render translation to review
+
+### Improvements
+
 ### High Priority
 
-- [ ] fix no github push panel problem
-- [x] version warning when trying to rewrite a history save
-  - [x] switch to history mode after first save
 - [ ] unit test
-- [ ] file name edit
 - [ ] ready for open source
   - [ ] use .env for some const
-- [ ] messages for specific action
 - [ ] fix local_trans bug
   - change trans and save
   - go to next chapter and back
-- [ ] machine translate
 - [ ] reset reviewing status when switch to other place
 - [x] PWA support
-- [ ] replace the bottom jump button with to the top button
 - [x] badge for switch button
 - [x] raw.githubcontents proxy
   - [x] font source switch
@@ -36,14 +43,9 @@ yarn dev
   - [x] localstorage
     - [ ] remove specific item
     - [x] remove all
-- [ ] use popselect component for download csv
-  - [ ] download or push to github
+
 - [ ] Error process for remote json files
 - [x] Check select label
-- [ ] Parse assets-map.json to present Idol stories and event stories
-- [ ] Use hashes.json and SCTranslation to add more information
-- [ ] Use github interface to push csv directly
-  - [ ] Use N-Step for pushing to Github
 - [ ] p's voice (sound effect/tts)
 - [ ] Hide preview until login
 

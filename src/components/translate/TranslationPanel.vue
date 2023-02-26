@@ -8,7 +8,7 @@ import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { DataSourceType, store } from '../../store'
-import { queryTranslatedCsv, initTranslatedStoryIndex } from '../../helper/path';
+import { initTranslatedStoryIndex } from '../../helper/path';
 import HistoryIcon from '../HistoryIcon.vue';
 
 const { t } = useI18n()
@@ -29,8 +29,8 @@ let urlInput = ref<InstanceType<typeof NInput> | null>(null);
 
 const translatedCsvUrl = computed(() => {
   if (communication.value)
-    return queryTranslatedCsv(communication.value.jsonUrl)
-  return ""
+    return communication.value.translatedCsvUrl
+  return null
 })
 
 // if this page is never loaded, onMounted will activate

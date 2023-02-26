@@ -62,8 +62,8 @@ import FileSaver from 'file-saver';
 import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
-import { store } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath } from '../../helper/path';
+import { store, DataSourceType } from '../../store';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
 import { Download } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
@@ -130,6 +130,9 @@ export default defineComponent({
       const eventType = this.jsonUrl.split("/")[0]
       const eventId = this.jsonUrl.split("/")[1].split(".")[0]
       return `https://event.strawberrytree.top/?eventType=${eventType}&eventId=${eventId}`
+    },
+    translatedCsvUrl() {
+      return queryTranslatedCsv(this.jsonUrl)
     }
   },
   methods: {
@@ -233,6 +236,11 @@ export default defineComponent({
           if (element.id === "info") {
             this.jsonUrl = element.name
             this.updateRelatedChapterStatus()
+            this.$nextTick(()=>{
+              if (this.translatedCsvUrl && store.currentMode === DataSourceType.Raw) {
+                this.createSuccessMessage(this.$t('translate.remoteTranslationDetected'))
+              }
+            })
           }
           if (element.id === "译者") {
             this.translator = element.name
