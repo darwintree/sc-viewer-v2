@@ -28,7 +28,7 @@
   <n-modal
     v-model:show="showUpdateModal"
     preset="dialog"
-    title="Recent Game Updates"
+    :title="t('home.updates')"
     size="huge"
     :show-icon=false
     type="info"
