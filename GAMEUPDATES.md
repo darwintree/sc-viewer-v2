@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/2/28
+
+* [shhis-event](/translate#game_event_communications/400105801.json)
+* [event-s-ssr](/translate#produce_events/302501001.json)
+* [juri-p-ssr](/translate#produce_events/201101601.json)
+* [makoka-p-ssr](/translate#produce_events/202101101.json)
+* [ash-p-ssr](/translate#produce_events/201701401.json)
+* [hiori-s-ssr](/translate#produce_events/300201801.json)
+
 ## 2023/2/17
 
 * [tenka-p-ssr](/translate#produce_events/201501601.json)
