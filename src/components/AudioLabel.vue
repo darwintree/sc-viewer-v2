@@ -1,5 +1,6 @@
 <template>
   <label class="audio-button" @click="playAudio" :title="audioTitle" v-if="hasAudio">{{ audioIcon }}</label>
+  <a target="_blank" :href="audioUrl">                      ↓</a>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
