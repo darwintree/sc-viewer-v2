@@ -1,5 +1,12 @@
 # Updates
 
+## 2023/3/10
+
+* [kaho-step](/translate#produce_events/100900501.json)
+* [chiyoko-p-ssr](/translate#produce_events/201001401.json)
+* [mamimi-s-ssr](/translate#produce_events/300501601.json)
+* [touru-s-sr](/translate#produce_events/302001101.json) or [madoka-s-sr](/translate#produce_events/302101101.json)
+
 ## 2023/2/28
 
 * [shhis-event](/translate#game_event_communications/400105801.json)
