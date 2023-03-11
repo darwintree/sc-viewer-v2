@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
 import { fetchUserInfo, proxiedGithubUrl } from './helper/auth';
+import { EventsCollectionMeta } from "./helper/path";
 
 enum DataSourceType {
     Raw = "raw", // json file from remote
@@ -105,6 +106,8 @@ const store = reactive({
 
     // current translation panel info
     csvFilename: "",
+    jsonUrl: "", // e.g. produce_events/xxx.json
+    eventsCollectionMeta: null as null|EventsCollectionMeta
 })
 
 async function tryLogin() {

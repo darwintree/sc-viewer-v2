@@ -63,7 +63,7 @@ import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store, DataSourceType } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, EventsCollectionMeta } from '../../helper/path';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
 import { Download } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
@@ -110,7 +110,7 @@ export default defineComponent({
     return {
       // store the parsed CSV data in a local variable
       data: [] as CsvData[],
-      jsonUrl: "", // e.g. produce_events/xxx.json
+      // jsonUrl: "", // e.g. produce_events/xxx.json
       previousJsonUrl: null as null|string,
       nextJsonUrl: null as null|string,
       trueEndJsonUrl: null as null|string,
@@ -122,10 +122,17 @@ export default defineComponent({
       // TODO: a extended csv path to help present the file
       // extendedCsvPath: "",
       hasPreviewed: false,
-      eventsCollectionMeta: null as null|EventsCollectionMeta
     };
   },
   computed: {
+    jsonUrl: {
+      get() {
+        return store.jsonUrl
+      },
+      set(newVal: string) {
+        store.jsonUrl = newVal
+      }
+    },
     iframeSrc() {
       if (!this.jsonUrl) return null
       const eventType = this.jsonUrl.split("/")[0]
@@ -135,19 +142,6 @@ export default defineComponent({
     translatedCsvUrl() {
       return queryTranslatedCsv(this.jsonUrl)
     },
-    suggestedFilename() {
-      if (this.jsonUrl && this.eventsCollectionMeta) {
-        for (let communication of this.eventsCollectionMeta.communications) {
-          if (communication.jsonPath == this.jsonUrl) {
-            if (communication.name) {
-              return `${communication.name}-${communication.title}.csv`
-            }
-            return `${communication.title}.csv`
-          }
-        }
-      }
-      return null
-    }
   },
   methods: {
     changeChapter(jsonUrl: string|null) {
@@ -336,7 +330,7 @@ export default defineComponent({
       this.createSuccessMessage(this.$t("translate.saveSuccess"))
     },
     async updateRelatedChapterStatus() {
-      this.eventsCollectionMeta = await queryRelated(this.jsonUrl)
+      store.eventsCollectionMeta = await queryRelated(this.jsonUrl)
       // TODO: use eventsCollectionMeta for chapter navigation
       this.nextJsonUrl = await nextJsonUrl(this.jsonUrl)
       this.previousJsonUrl = await previousJsonUrl(this.jsonUrl)

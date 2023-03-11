@@ -34,6 +34,11 @@ const messages = {
                 },
                 reloadTooltip: "Requery translated file existence",
                 reloadFinished: "Requery finished"
+            },
+            rename: {
+                title: "Rename CSV File",
+                defaultName: "Default Name",
+                originName: "Origin Name",
             }
         },
         home: {
@@ -87,6 +92,11 @@ const messages = {
                 },
                 reloadTooltip: "重新查询翻译文件是否存在",
                 reloadFinished: "查询完成"
+            },
+            rename: {
+                title: "设置 CSV 文件名",
+                defaultName: "使用缺省名",
+                originName: "使用文件原名",
             }
         },
         home: {
