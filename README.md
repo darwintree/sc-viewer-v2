@@ -30,6 +30,7 @@ yarn dev
   - [ ] fix browser extension installation
 - [ ] Util bar hiding
 - [ ] recover review-story-in-new-page button
+- [ ] modal font
 
 ### High Priority
 

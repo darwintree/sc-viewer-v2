@@ -1,5 +1,12 @@
 # Changelog
 
+## 2023/3/11
+
+* feat: support filename editing and recommendation
+* feat: support communication index if found
+* ui change: add util bar
+* ui change: merge preview line and navigate line
+
 ## 2023/2/26
 
 * feat: scroll back to top after chapter change
