@@ -61,11 +61,14 @@ button:focus-visible {
   padding: 2em;
 }
 
+body {
+  font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif;
+}
+
 #app {
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
-  font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif;
   height: 100%;
   width: 100%;
 }

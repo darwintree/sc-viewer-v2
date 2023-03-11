@@ -23,6 +23,7 @@ yarn dev
   - [ ] fix no github push panel problem
 - [ ] machine translate
 - [ ] render translation to review
+- [ ] `make deploy` command
 
 ### Improvements
 
@@ -31,6 +32,7 @@ yarn dev
 - [ ] Util bar hiding
 - [ ] recover review-story-in-new-page button
 - [ ] modal font
+- [x] tips
 
 ### High Priority
 
