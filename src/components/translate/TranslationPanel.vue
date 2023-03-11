@@ -3,7 +3,7 @@
 <script setup lang="ts">
 import Communication from './Communication.vue';
 import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage, NButtonGroup, NDivider } from 'naive-ui';
-import { LogoGithub, Raw, VolumeFileStorage, Renew, Repeat, } from '@vicons/carbon'
+import { LogoGithub, Raw, VolumeFileStorage, Renew, Repeat, UpToTop } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -11,6 +11,7 @@ import { DataSourceType, store } from '../../store'
 import { initTranslatedStoryIndex } from '../../helper/path';
 import HistoryIcon from '../HistoryIcon.vue';
 import RenameIcon from '../icon/RenameIcon.vue'
+import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
 import CsvFilenameSetter from "./CsvFilenameSetter.vue"
 
 const { t } = useI18n()
@@ -143,6 +144,10 @@ async function tryReloadStoryIndex() {
   isRotating.value = false
 }
 
+function toTop() {
+  window.scrollTo(0,0)
+}
+
 // function toGithub() {
 //   if (csvUrl.value) {
 //     window.open(csvUrl.value)
@@ -265,23 +270,33 @@ async function tryReloadStoryIndex() {
   <div class="toolbar" v-if="!!communication?.data.length">
     <!-- <n-button-group> -->
     <n-space>
-      <n-button text type="info" @click="showCsvFilenameSetter=true">
-        <template #icon>
-          <n-icon>
-            <RenameIcon />
-          </n-icon>
-        </template>
-        更改文件名
-      </n-button>
-    </n-space>
-    <!-- <n-button text type="info">
-      <template #icon>
-        <n-icon>
+      <div class="clickable" @click="showCsvFilenameSetter=true">
+        <n-icon size="18">
           <RenameIcon />
+        </n-icon><br>
+        <n-button text type="default" :focusable="false"> {{ t("translate.tab.rename") }}</n-button>
+      </div>
+      <div class="clickable" @click="communication?.downloadData">
+        <n-icon size="18" >
+          <TaskCompleteIcon />
         </n-icon>
-      </template>
-      更改文件名
-    </n-button> -->
+        <br>
+        <n-button text type="default" :focusable="false">{{ t("translate.tab.complete") }}</n-button>
+      </div>
+      <div class="clickable" @click="showModal=true">
+        <n-icon size="18">
+          <Repeat />
+        </n-icon><br>
+        <n-button text type="default" :focusable="false">{{ t("translate.tab.switch") }}</n-button>
+      </div>
+      <div class="clickable" @click="toTop">
+        <n-icon size="18">
+          <UpToTop />
+        </n-icon><br>
+        <n-button text type="default" :focusable="false">{{ t("translate.tab.top") }}</n-button>
+      </div>
+    </n-space>
+
   <!-- </n-button-group> -->
   </div>
 </template>
@@ -328,6 +343,10 @@ async function tryReloadStoryIndex() {
   flex: 3;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .mode-switch {
   width: 100px;
   /* font-family: HummingStd-E, UDKakugo_SmallPr6-B, Avenir, Helvetica, Arial, sans-serif; */
@@ -346,11 +365,10 @@ async function tryReloadStoryIndex() {
   left: 0;
   right: 0;
   display: flex;
-  justify-content: left;
+  justify-content: center;
   background-color: white;
+  /* background: linear-gradient(to bottom, rgb(233, 245, 65), 2%, white);; */
   /* background-color: #f5f5f5; */
-  padding: 20px;
-  border-width: 2px;
-  border: black;
+  padding: 10px;
 }
 </style>

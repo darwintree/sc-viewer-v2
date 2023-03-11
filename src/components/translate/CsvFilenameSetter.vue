@@ -83,11 +83,11 @@ const defaultFilename = computed(() => {
         </n-tooltip>
         <n-tooltip>
           <template #trigger>
-            <n-button secondary type="success" :disabled="!suggestedFilename"
+            <n-button secondary type="success" tag="div" :disabled="!suggestedFilename"
               @click="tmpCsvFilename = suggestedFilename!">{{
                 t('translate.rename.originName') }}</n-button>
           </template>
-          {{ suggestedFilename }}
+          {{ suggestedFilename ? suggestedFilename : t("translate.rename.originNameNotFound") }}
         </n-tooltip>
       </n-input-group>
     </template>

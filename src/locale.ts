@@ -39,6 +39,13 @@ const messages = {
                 title: "Rename CSV File",
                 defaultName: "Default Name",
                 originName: "Origin Name",
+                originNameNotFound: "Origin name not found",
+            },
+            tab: {
+                rename: "Rename",
+                complete: "Complete",
+                switch: "Switch",
+                top: "TOP",
             }
         },
         home: {
@@ -97,6 +104,14 @@ const messages = {
                 title: "设置 CSV 文件名",
                 defaultName: "使用缺省名",
                 originName: "使用文件原名",
+                originNameNotFound: "未找到文件原名",
+
+            },
+            tab: {
+                rename: "CSV 更名",
+                complete: "下载/推送",
+                switch: "数据源切换",
+                top: "TOP",
             }
         },
         home: {

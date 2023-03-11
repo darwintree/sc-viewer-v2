@@ -6,18 +6,14 @@
       <n-spin size="large"></n-spin>
     </div>
     <!-- the "communication" element contains the list of messages -->
-    <n-button @click="downloadData" type="success" ghost class="download-button">
-      <template #icon>
-        <n-icon>
-          <Download></Download>
-        </n-icon>
-      </template>
-      CSV
-    </n-button>
    
     <div class="event-block" v-if="iframeSrc">
       <n-button-group>
-        <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤴</n-button>
+        <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}
+          <n-icon>
+            <Launch />
+          </n-icon>
+        </n-button>
         <n-button @click="previewStory" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤵</n-button>
       </n-button-group>
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
@@ -65,7 +61,7 @@ import TranslatorLine from './TranslatorLine.vue';
 import { store, DataSourceType } from '../../store';
 import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
-import { Download } from '@vicons/carbon'
+import { Download, Launch } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
 
 // define the interface for the CSV data
@@ -86,6 +82,7 @@ export default defineComponent({
     NSpin,
     NButtonGroup,
     Download,
+    Launch,
     NIcon,
   },
   // the URL of the CSV data will be passed to the component as a prop
@@ -365,14 +362,6 @@ export default defineComponent({
   font-size: 1.5em;
   font-weight: bold;
   color: red;
-}
-
-.download-button {
-  position: fixed;
-  top: 83px;
-  right: 10px;
-  opacity: 0.8;
-  z-index: 10;
 }
 
 .ready-button {
