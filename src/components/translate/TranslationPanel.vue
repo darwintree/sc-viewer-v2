@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { DataSourceType, store } from '../../store'
 import { initTranslatedStoryIndex } from '../../helper/path';
-import HistoryIcon from '../HistoryIcon.vue';
+import HistoryIcon from '../icon/HistoryIcon.vue';
 import RenameIcon from '../icon/RenameIcon.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
 import CsvFilenameSetter from "./CsvFilenameSetter.vue"
