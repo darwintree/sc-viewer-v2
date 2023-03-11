@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { units } from '../assets/album-index.json'
 import { reactive } from 'vue'
+import { EventsCollectionMeta } from "./metaInterfaces"
 
 let idolList: string[] = []
 let unitList: string[] = []
@@ -33,6 +34,10 @@ function getAudioPath(id: string, base: string) {
 // relPath includes .json postfix
 function getJsonPath(relPath: string) {
     return `${ASSETSERVER}/json/${relPath}`
+}
+
+function getRemoteImgPath(relPath: string) {
+    return `${ASSETSERVER}/${relPath}`
 }
 
 function getQueryVariable(variable: string) {
@@ -107,7 +112,6 @@ function changedJsonUrlByNumber(jsonUrl: string, change: number) {
         console.log(e)
         return null
     }
-
 }
 
 async function hasContentForJsonUrl(jsonUrl: string | null) {
@@ -151,21 +155,6 @@ async function initTranslatedStoryIndex(useProxy=true) {
 function queryTranslatedCsv(jsonUrl: string): string|null {
     if (!translatedStoryIndex[jsonUrl]) return null
     return `https://github.com/biuuu/ShinyColors/blob/gh-pages/data/story/${translatedStoryIndex[jsonUrl]}.csv`
-}
-
-interface CommunicationMeta {
-    title: string,
-    jsonPath: string,
-    name: string | undefined,
-}
-
-interface EventsCollectionMeta {
-    characterId: string | undefined,
-    unitId: string,
-    name: string,
-    openAt: number,
-    thumb: string,
-    communications: CommunicationMeta[]
 }
 
 async function queryCollectionMetaInfo(jsonUrl: string) {
@@ -223,6 +212,7 @@ export {
     getAvatarPath,
     getAudioPath,
     getQueryVariable,
+    getRemoteImgPath,
     extractInfoFromUrl,
     idolOptions,
     getJsonPath,
@@ -235,4 +225,3 @@ export {
     getGithubRawResourcePath,
     queryCollectionMetaInfo as queryRelated
 }
-export type { EventsCollectionMeta }

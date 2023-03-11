@@ -6,6 +6,7 @@ import { defineProps, ref, computed, defineEmits } from "vue";
 import { NInput, NModal, NButton, NInputGroup, NTooltip } from "naive-ui";
 import { store } from "../../store";
 import { useI18n } from "vue-i18n";
+import { suggestedCommunicationName } from "../../helper/metaInterfaces";
 
 const { t } = useI18n()
 
@@ -49,10 +50,8 @@ const suggestedFilename = computed(() => {
   if (store.jsonUrl && store.eventsCollectionMeta) {
     for (let communication of store.eventsCollectionMeta.communications) {
       if (communication.jsonPath == store.jsonUrl) {
-        if (communication.name) {
-          return `${communication.name}-${communication.title}.csv`
-        }
-        return `${communication.title}.csv`
+        const name = suggestedCommunicationName(communication)
+        return `${name}.csv`
       }
     }
   }

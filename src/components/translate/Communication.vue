@@ -5,30 +5,47 @@
     <div v-if="isLoading" class="loading">
       <n-spin size="large"></n-spin>
     </div>
+    <IndexModal :show-modal="showIndexModal"
+      @close="()=>{showIndexModal=false}"
+      @change-chapter="changeChapter"
+    >
+    </IndexModal>
     <!-- the "communication" element contains the list of messages -->
-   
-    <div class="event-block" v-if="iframeSrc">
+    <div class="jump" v-if="!!data.length">
       <n-button-group>
+        <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
+          ← {{ $t("control.first") }}
+        </n-button>
+        <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
+          ← {{ $t("control.previous") }}
+        </n-button>
+
+        <n-button strong bordered type="default" :disabled="!eventsCollectionMeta" @click="showIndexModal=true">
+          <template #icon>
+            <n-icon>
+              <Document />
+            </n-icon>
+          </template>
+          {{ $t("control.index") }}
+        </n-button>
+        <n-button @click="previewStory" strong bordered class="preview-button">{{ $t("control.review") }}⤵</n-button>
+        
+        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
+        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >True End →</n-button>
+      </n-button-group>
+    </div>
+    <div class="event-block" v-if="iframeSrc">
+      <!-- <n-button-group>
         <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}
           <n-icon>
             <Launch />
           </n-icon>
         </n-button>
         <n-button @click="previewStory" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤵</n-button>
-      </n-button-group>
+      </n-button-group> -->
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
-    <div class="jump" v-if="!!data.length">
-      <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
-        ← {{ $t("control.first") }}
-      </n-button>
-      <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
-        ← {{ $t("control.previous") }}
-      </n-button>
-      
-      <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
-      <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >True End →</n-button>
-    </div>
+    
     <div class="communication" :class="{ 'scroll': hasPreviewed }" v-if="!!data.length">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
       <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
@@ -58,10 +75,11 @@ import FileSaver from 'file-saver';
 import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
+import IndexModal from "./IndexModal.vue";
 import { store, DataSourceType } from '../../store';
 import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
-import { Download, Launch } from '@vicons/carbon'
+import { Download, Launch, Document } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
 
 // define the interface for the CSV data
@@ -84,6 +102,8 @@ export default defineComponent({
     Download,
     Launch,
     NIcon,
+    Document,
+    IndexModal,
   },
   // the URL of the CSV data will be passed to the component as a prop
   props: {
@@ -119,6 +139,7 @@ export default defineComponent({
       // TODO: a extended csv path to help present the file
       // extendedCsvPath: "",
       hasPreviewed: false,
+      showIndexModal: false,
     };
   },
   computed: {
@@ -139,6 +160,9 @@ export default defineComponent({
     translatedCsvUrl() {
       return queryTranslatedCsv(this.jsonUrl)
     },
+    eventsCollectionMeta() {
+      return store.eventsCollectionMeta
+    }
   },
   methods: {
     changeChapter(jsonUrl: string|null) {
@@ -351,7 +375,7 @@ export default defineComponent({
 }
 
 .jump {
-  justify-content: space-between;
+  justify-content: center;
   display: flex;
   width: 100%;
   padding: 10px 0 10px 0;

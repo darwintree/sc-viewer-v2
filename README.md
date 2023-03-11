@@ -12,9 +12,10 @@ yarn dev
 ### New Feature
 
 - [ ] file name edit
-  - [ ] file name suggest
-  - [ ] file name input
+  - [x] file name suggest
+  - [x] file name input
   - [ ] force select file name when first save / download
+- [x] index
 - [ ] Use github interface to push csv directly
   - [ ] use popselect component for download csv
     - [ ] download or push to github
@@ -26,6 +27,9 @@ yarn dev
 ### Improvements
 
 - [x] update browser extension
+  - [ ] fix browser extension installation
+- [ ] Util bar hiding
+- [ ] recover review-story-in-new-page button
 
 ### High Priority
 

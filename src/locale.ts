@@ -15,7 +15,8 @@ const messages = {
             first: "First",
             next: "Next",
             previous: "Previous",
-            review: "Review Story"
+            review: "Review",
+            index: "Index",
         },
         translate: {
             translatePlaceholder: "Press Enter↩ to input '\\n' and press Shift⇧ + Enter↩ to save",
@@ -81,6 +82,7 @@ const messages = {
             next: "下一节",
             previous: "上一节",
             review: "回顾故事",
+            index: "目录",
         },
         translate: {
             translatePlaceholder: "按下 Enter↩ 输入 '\\n'，\n按下 Shift⇧ + Enter↩ 保存",
