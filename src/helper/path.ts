@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { units } from '../assets/album-index.json'
 import { reactive } from 'vue'
-import { EventsCollectionMeta } from "./metaInterfaces"
+import { EventsCollectionMeta } from "./meta-interfaces"
 
 let idolList: string[] = []
 let unitList: string[] = []

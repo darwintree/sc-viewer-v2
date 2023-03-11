@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { fetchUserInfo, proxiedGithubUrl } from './helper/auth';
-import { EventsCollectionMeta } from "./helper/metaInterfaces";
+import { EventsCollectionMeta } from "./helper/meta-interfaces";
 
 enum DataSourceType {
     Raw = "raw", // json file from remote

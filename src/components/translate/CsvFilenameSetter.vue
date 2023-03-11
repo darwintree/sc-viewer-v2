@@ -6,7 +6,7 @@ import { defineProps, ref, computed, defineEmits } from "vue";
 import { NInput, NModal, NButton, NInputGroup, NTooltip } from "naive-ui";
 import { store } from "../../store";
 import { useI18n } from "vue-i18n";
-import { suggestedCommunicationName } from "../../helper/metaInterfaces";
+import { suggestedCommunicationName } from "../../helper/meta-interfaces";
 
 const { t } = useI18n()
 

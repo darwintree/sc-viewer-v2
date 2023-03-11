@@ -37,7 +37,7 @@ yarn dev
 ### High Priority
 
 - [ ] unit test
-- [ ] ready for open source
+- [ ] **ready for open source**
   - [ ] use .env for some const
 - [ ] fix local_trans bug
   - change trans and save
