@@ -102,6 +102,9 @@ const store = reactive({
         this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
     },
     currentMode: "" as DataSourceType,
+
+    // current translation panel info
+    csvFilename: "",
 })
 
 async function tryLogin() {

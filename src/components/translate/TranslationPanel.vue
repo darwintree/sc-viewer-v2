@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 import Communication from './Communication.vue';
-import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage } from 'naive-ui';
+import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage, NButtonGroup, NDivider } from 'naive-ui';
 import { LogoGithub, Raw, VolumeFileStorage, Renew, Repeat, } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -10,6 +10,8 @@ import { useI18n } from 'vue-i18n';
 import { DataSourceType, store } from '../../store'
 import { initTranslatedStoryIndex } from '../../helper/path';
 import HistoryIcon from '../HistoryIcon.vue';
+import RenameIcon from '../icon/RenameIcon.vue'
+import CsvFilenameSetter from "./CsvFilenameSetter.vue"
 
 const { t } = useI18n()
 const route = useRoute()
@@ -32,6 +34,9 @@ const translatedCsvUrl = computed(() => {
     return communication.value.translatedCsvUrl
   return null
 })
+
+const showCsvFilenameSetter = ref(false)
+const csvFilenameSetterExtraInfo = ref("")
 
 // if this page is never loaded, onMounted will activate
 onMounted(()=>{
@@ -249,8 +254,36 @@ async function tryReloadStoryIndex() {
         </n-space>
       </n-space>
     </n-modal>
+    <CsvFilenameSetter 
+      :show-modal="showCsvFilenameSetter" :extra-info="csvFilenameSetterExtraInfo"
+      @close-csv-filename-setter="()=>{showCsvFilenameSetter=false}"
+      @save="()=>communication?.saveCsvToContent()"
+      >
+    </CsvFilenameSetter>
     <!-- event from chapter change -->
     <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl"/>
+  <div class="toolbar" v-if="!!communication?.data.length">
+    <!-- <n-button-group> -->
+    <n-space>
+      <n-button text type="info" @click="showCsvFilenameSetter=true">
+        <template #icon>
+          <n-icon>
+            <RenameIcon />
+          </n-icon>
+        </template>
+        更改文件名
+      </n-button>
+    </n-space>
+    <!-- <n-button text type="info">
+      <template #icon>
+        <n-icon>
+          <RenameIcon />
+        </n-icon>
+      </template>
+      更改文件名
+    </n-button> -->
+  <!-- </n-button-group> -->
+  </div>
 </template>
 <style scoped>
 .input-row {
@@ -302,5 +335,22 @@ async function tryReloadStoryIndex() {
 
 .mirror {
   transform: rotateY(180deg);
+}
+
+/* .tab :deep(.n-tabs-nav) {
+  display: None;
+} */
+.toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: left;
+  background-color: white;
+  /* background-color: #f5f5f5; */
+  padding: 20px;
+  border-width: 2px;
+  border: black;
 }
 </style>

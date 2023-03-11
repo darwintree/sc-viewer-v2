@@ -63,7 +63,7 @@ import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import { store, DataSourceType } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv } from '../../helper/path';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, EventsCollectionMeta } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
 import { Download } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
@@ -118,10 +118,11 @@ export default defineComponent({
       translator: "",
       isLoading: false,
       isPreviewing: false,
-      csvFileName: "", // the csv file name after download
+      // csvFilename: "", // the csv file name after download
       // TODO: a extended csv path to help present the file
       // extendedCsvPath: "",
       hasPreviewed: false,
+      eventsCollectionMeta: null as null|EventsCollectionMeta
     };
   },
   computed: {
@@ -133,6 +134,19 @@ export default defineComponent({
     },
     translatedCsvUrl() {
       return queryTranslatedCsv(this.jsonUrl)
+    },
+    suggestedFilename() {
+      if (this.jsonUrl && this.eventsCollectionMeta) {
+        for (let communication of this.eventsCollectionMeta.communications) {
+          if (communication.jsonPath == this.jsonUrl) {
+            if (communication.name) {
+              return `${communication.name}-${communication.title}.csv`
+            }
+            return `${communication.title}.csv`
+          }
+        }
+      }
+      return null
     }
   },
   methods: {
@@ -151,7 +165,7 @@ export default defineComponent({
     loadDataFromLocalStorage(jsonUrl: string) {
       this.isLoading = true
       const text = store.saves.saveDict[jsonUrl].csv
-      this.csvFileName = store.saves.saveDict[jsonUrl].name || jsonUrl
+      store.csvFilename = store.saves.saveDict[jsonUrl].name || jsonUrl
       store.path = `data/story///${jsonUrl}`
       this.loadDataFromCsvText(text)
     },
@@ -175,7 +189,7 @@ export default defineComponent({
 
         // get the text of the response
         if (url.endsWith(".csv")) {
-          this.csvFileName = decodeURI(url.split('/').reverse()[0])
+          store.csvFilename = decodeURI(url.split('/').reverse()[0])
           const text = await response.text();
           await this.loadDataFromCsvText(text)
         } 
@@ -203,7 +217,7 @@ export default defineComponent({
       }
       const jsonText = await response.text();
       const csvText = dataToCSV(JSON.parse(jsonText), null);
-      this.csvFileName = splits[0].replace(".json", ".csv")
+      store.csvFilename = splits[0].replace(".json", ".csv")
       this.createWarningMessage(this.$t("translate.loadRawWarning"))
       await this.loadDataFromCsvText(csvText)
     },
@@ -212,9 +226,9 @@ export default defineComponent({
 
       reader.onload = async () => {
         let text = reader.result as string;
-        this.csvFileName = file.name;
+        store.csvFilename = file.name;
         if (file.name.endsWith(".json")) {
-          this.csvFileName = file.name.replace(".json", ".csv")
+          store.csvFilename = file.name.replace(".json", ".csv")
           text = dataToCSV(JSON.parse(text), null)
         }
 
@@ -299,7 +313,7 @@ export default defineComponent({
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
       // use the FileSaver library to save the Blob object as a file
-      FileSaver.saveAs(blob, this.csvFileName);
+      FileSaver.saveAs(blob, store.csvFilename);
     },
     b64EncodeUnicode(str: string) {
       // first we use encodeURIComponent to get percent-encoded UTF-8,
@@ -317,11 +331,13 @@ export default defineComponent({
       store.saves.setItem(this.jsonUrl, {
         csv,
         timeLabel: new Date().toLocaleString(),
-        name: this.csvFileName
+        name: store.csvFilename
       })
       this.createSuccessMessage(this.$t("translate.saveSuccess"))
     },
     async updateRelatedChapterStatus() {
+      this.eventsCollectionMeta = await queryRelated(this.jsonUrl)
+      // TODO: use eventsCollectionMeta for chapter navigation
       this.nextJsonUrl = await nextJsonUrl(this.jsonUrl)
       this.previousJsonUrl = await previousJsonUrl(this.jsonUrl)
       this.trueEndJsonUrl = await trueEndJsonUrl(this.jsonUrl)

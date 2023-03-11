@@ -13,6 +13,8 @@ yarn dev
 
 - [ ] file name edit
   - [ ] file name suggest
+  - [ ] file name input
+  - [ ] force select file name when first save / download
 - [ ] Use github interface to push csv directly
   - [ ] use popselect component for download csv
     - [ ] download or push to github

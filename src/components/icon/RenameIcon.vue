@@ -1,0 +1,10 @@
+<template>
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M8.5 2a.5.5 0 0 0 0 1h1v14h-1a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-1V3h1a.5.5 0 0 0 0-1h-3zm-4 2h4v1h-4A1.5 1.5 0 0 0 3 6.5v7A1.5 1.5 0 0 0 4.5 15h4v1h-4A2.5 2.5 0 0 1 2 13.5v-7A2.5 2.5 0 0 1 4.5 4zm11 11h-4v1h4a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 15.5 4h-4v1h4A1.5 1.5 0 0 1 17 6.5v7a1.5 1.5 0 0 1-1.5 1.5z" fill="currentColor"></path></g></svg>
+</template>
+<script lang="ts" setup>
+</script>
+<style scoped>
+svg {
+  fill: 'currentColor'
+}
+</style>

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { units } from '../assets/album-index.json'
 import { reactive } from 'vue'
 
@@ -18,6 +19,8 @@ function getAvatarPath(name: string) {
 }
 
 const ASSETSERVER = 'https://strawberrytree.top/convert/cache'
+
+const NAME_SERVICE_URL = 'https://strawberrytree.top/name'
 
 const RAW_CONTENT_PROXY = "https://strawberrytree.top/raw"
 
@@ -150,6 +153,33 @@ function queryTranslatedCsv(jsonUrl: string): string|null {
     return `https://github.com/biuuu/ShinyColors/blob/gh-pages/data/story/${translatedStoryIndex[jsonUrl]}.csv`
 }
 
+interface CommunicationMeta {
+    title: string,
+    jsonPath: string,
+    name: string | undefined,
+}
+
+interface EventsCollectionMeta {
+    characterId: string | undefined,
+    unitId: string,
+    name: string,
+    openAt: number,
+    thumb: string,
+    communications: CommunicationMeta[]
+}
+
+async function queryCollectionMetaInfo(jsonUrl: string) {
+    const prefix = jsonUrl.substring(0, jsonUrl.length - 7)
+    try {
+        const res = await axios(`${NAME_SERVICE_URL}/${prefix}`)
+        return(res.data as EventsCollectionMeta)
+    }
+    catch(e) {
+        console.log(e)
+        return null
+    }
+}
+
 async function previousJsonUrl(jsonUrl: string) {
     if (jsonUrl.endsWith("01.json")) return null
     const rtn = changedJsonUrlByNumber(jsonUrl, -1)
@@ -203,4 +233,6 @@ export {
     queryTranslatedCsv,
     initTranslatedStoryIndex,
     getGithubRawResourcePath,
+    queryCollectionMetaInfo as queryRelated
 }
+export type { EventsCollectionMeta }
