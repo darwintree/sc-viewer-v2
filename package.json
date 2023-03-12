@@ -1,8 +1,9 @@
 {
-  "name": "create",
+  "name": "sc-viewer-v2",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "make prebuild && vue-tsc && vite build",
