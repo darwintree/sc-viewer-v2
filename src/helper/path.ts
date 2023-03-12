@@ -4,13 +4,24 @@ import { reactive } from 'vue'
 import { EventsCollectionMeta, CommunicationDataMeta } from "./meta-interfaces"
 import dataToCSV from "./convert"
 
+// assets server: used for voice, raw json(including chapter navigation), index thumb
 const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
+// name service server: used for index, name suggestion
 const NAME_SERVICE_SERVER = import.meta.env.VITE_NAME_SERVICE_SERVER
-const GITHUB_RAW_PROXY = import.meta.env.VITE_GITHUB_RAW_PROXY
+
+// transaction index: used to query if translation exists
 const TRANSLATION_INDEX_URL = import.meta.env.VITE_TRANSLATION_INDEX_URL
+// translation dir: used to fetch translation from translation query result
 const TRANSLATION_DIR = import.meta.env.VITE_TRANSLATION_DIR
-const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
+
+// github raw proxy: used as raw.githubusercontent.com proxy
+const GITHUB_RAW_PROXY = import.meta.env.VITE_GITHUB_RAW_PROXY
+// whether uses github raw proxy
 let useGithubProxy = true
+
+// event viewer site: used as iframe source to review story
+const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
+
 
 let idolList: string[] = []
 let unitList: string[] = []
@@ -63,9 +74,16 @@ function getGithubRawResourcePath(url: string) {
     return url
 }
 
+function getIframeSrc(jsonUrl: string) {
+    if (!jsonUrl) return null
+    const eventType = jsonUrl.split("/")[0]
+    const eventId = jsonUrl.split("/")[1].split(".")[0]
+    return `${EVENT_VIEWER_SITE}/?eventType=${eventType}&eventId=${eventId}`
+}
+
 // https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/%E4%B8%89%E5%B3%B0%E7%B5%90%E8%8F%AF/%E3%80%90Hakoni%E2%96%A1a%E3%80%91%E4%B8%89%E5%B3%B0%E7%B5%90%E8%8F%AF/%E3%83%9A%E3%83%AB%E3%82%BD%E3%83%8A%E3%81%AA%E3%82%93%E3%81%A6%E7%AC%91%E3%81%A3%E3%81%A1%E3%82%83%E3%81%86.csv
 function extractInfoFromUrl(fileUrl: string) {
-    if(fileUrl.startsWith("https://github.com")) {
+    if (fileUrl.startsWith("https://github.com")) {
         const splits = fileUrl.split("/")
         let filePath = splits[7]
         for (let i = 0; i < splits.length; i++) {
@@ -88,21 +106,20 @@ function extractInfoFromUrl(fileUrl: string) {
     throw new Error("wrong prefix")
 }
 
+// idol options are used as options to push file to github
 const idolOptionKeys = [
     '283活动剧情', '七草にちか', '三峰結華',
     '八宮めぐる', '和泉愛依',
-    '園田智代子',  '大崎甘奈',   '大崎甜花',
-    '小宮果穂',    '市川雛菜',   '幽谷霧子',
-    '月岡恋鐘',    '有栖川夏葉', '杜野凛世',
-    '桑山千雪',    '樋口円香',   '櫻木真乃',
-    '浅倉透',      '田中摩美々', '白瀬咲耶',
-    '福丸小糸',    '緋田美琴',   '芹沢あさひ',
-    '西城樹里',   '風野灯織',    '黛冬優子'
-  ]
-
+    '園田智代子', '大崎甘奈', '大崎甜花',
+    '小宮果穂', '市川雛菜', '幽谷霧子',
+    '月岡恋鐘', '有栖川夏葉', '杜野凛世',
+    '桑山千雪', '樋口円香', '櫻木真乃',
+    '浅倉透', '田中摩美々', '白瀬咲耶',
+    '福丸小糸', '緋田美琴', '芹沢あさひ',
+    '西城樹里', '風野灯織', '黛冬優子'
+]
 let idolOptions: any[] = []
-
-idolOptionKeys.forEach((item)=>{
+idolOptionKeys.forEach((item) => {
     idolOptions.push({
         value: item,
         label: item
@@ -141,7 +158,8 @@ async function nextJsonUrl(jsonUrl: string) {
     return null
 }
 
-let translatedStoryIndex:{
+// this object is reactive as it is used in computed
+let translatedStoryIndex: {
     [key: string]: string
 } = reactive({})
 
@@ -158,16 +176,9 @@ async function initTranslatedStoryIndex() {
     })
 }
 
-function queryTranslatedCsv(jsonUrl: string): string|null {
+function queryTranslatedCsv(jsonUrl: string): string | null {
     if (!translatedStoryIndex[jsonUrl]) return null
     return `${TRANSLATION_DIR}/${translatedStoryIndex[jsonUrl]}.csv`
-}
-
-function getIframeSrc(jsonUrl: string) {
-    if (!jsonUrl) return null
-    const eventType = jsonUrl.split("/")[0]
-    const eventId = jsonUrl.split("/")[1].split(".")[0]
-    return `${EVENT_VIEWER_SITE}/?eventType=${eventType}&eventId=${eventId}`
 }
 
 async function queryCollectionMetaInfo(jsonUrl: string) {
@@ -175,9 +186,9 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
     const prefix = jsonUrl.substring(0, jsonUrl.length - 7)
     try {
         const res = await axios(`${NAME_SERVICE_SERVER}/${prefix}`)
-        return(res.data as EventsCollectionMeta)
+        return (res.data as EventsCollectionMeta)
     }
-    catch(e) {
+    catch (e) {
         console.log(e)
         return null
     }
@@ -185,7 +196,7 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
 
 async function previousJsonUrl(jsonUrl: string) {
     // performance optimization: block furthur request
-    if (jsonUrl.endsWith("01.json")) return null 
+    if (jsonUrl.endsWith("01.json")) return null
     const rtn = changedJsonUrlByNumber(jsonUrl, -1)
     if (!await hasContentForJsonUrl(rtn)) {
         return null
@@ -253,8 +264,8 @@ async function metaInfoFromGithubCsvUrl(url: string): Promise<CommunicationDataM
     const response = await fetch(url);
 
     if (!response.ok) {
-      alert("load failed")
-      throw new Error("Failed to load github csv data")
+        alert("load failed")
+        throw new Error("Failed to load github csv data")
     }
     if (!url.endsWith(".csv")) {
         alert("file format not supported: specify .csv")

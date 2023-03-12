@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import dataToCSV from './convert'
 
 interface CsvDataLine {
   id: string;
@@ -56,4 +57,4 @@ function toCsvText(info: CsvTextInfo) {
 }
 
 export type { CsvDataLine }
-export { extractInfoFromCsvText, toCsvText }
+export { extractInfoFromCsvText, toCsvText, dataToCSV as jsonTextToCsvText }

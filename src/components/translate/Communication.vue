@@ -32,7 +32,7 @@
         <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else>True End →</n-button>
       </n-button-group>
     </div>
-  <div class="event-block" v-if="iframeSrc">
+    <div class="event-block" v-if="iframeSrc">
     <!-- <n-button-group>
         <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}
           <n-icon>
@@ -47,40 +47,29 @@
     <div class="communication" :class="{ 'scroll': hasPreviewed }" v-if="!!data.length">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
       <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
-        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToContent" />
-      <TranslatorLine :name="'译者'" :trans="translator" ref="translator" @save="saveCsvToContent" />
-      <!-- same buttons after whole communication -->
-      <div class="jump" v-if="!!data.length && !hasPreviewed">
-        <n-button @click="changeChapter(firstJsonUrl)" strong round type="warning" v-if="firstJsonUrl">
-          ← {{ $t("control.first") }}
-        </n-button>
-        <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
-          ← {{ $t("control.previous") }}
-        </n-button>
-
-        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"
-          v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
-        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else>True End →</n-button>
-      </div>
+        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToLocalstorage" />
+      <TranslatorLine :name="'译者'" :trans="translator" ref="translator" @save="saveCsvToLocalstorage" />
+      <!-- placeholder for toolbar TODO: CSS change -->
+      <div class="placeHolderLine"></div>
     </div>
+    
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
+import { Download, Launch, Document } from '@vicons/carbon'
+
 import DialogueLine from './DialogueLine.vue'; // import the "DialogueLine" component
-import * as Papa from 'papaparse'; // import PapaParse
 import FileSaver from 'file-saver';
-import Queue from '../../helper/queue';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import IndexModal from "./modal/IndexModal.vue";
+
 import { store, DataSourceType } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, metaInfoFromJsonPathUrl, metaInfoFromGithubCsvUrl, } from '../../helper/path';
-import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
-import { Download, Launch, Document } from '@vicons/carbon'
-import dataToCSV from '../../helper/convert';
-import { CsvDataLine, extractInfoFromCsvText, toCsvText } from '../../helper/csv';
+import { extractInfoFromUrl, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, queryTranslatedCsv, queryRelated, metaInfoFromJsonPathUrl, metaInfoFromGithubCsvUrl, } from '../../helper/path';
+import { CsvDataLine, extractInfoFromCsvText, toCsvText, jsonTextToCsvText } from '../../helper/csv';
 
 export default defineComponent({
   // define the "DialogueLine" component as a child component
@@ -160,7 +149,11 @@ export default defineComponent({
     changeChapter(jsonUrl: string | null) {
       if (!jsonUrl) return
       this.$emit("load-data", jsonUrl)
-      window.scrollTo(0, 0)
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth"
+      })
     },
     previewStory() {
       this.isPreviewing = !this.isPreviewing
@@ -200,7 +193,7 @@ export default defineComponent({
       store.csvFilename = file.name;
       if (file.name.endsWith(".json")) {
         store.csvFilename = file.name.replace(".json", ".csv")
-        text = dataToCSV(JSON.parse(text), null)
+        text = jsonTextToCsvText(JSON.parse(text), null)
       }
 
       store.path = `data/story///${file.name}`
@@ -256,7 +249,7 @@ export default defineComponent({
           return String.fromCharCode(Number('0x' + p1));
         }));
     },
-    saveCsvToContent() {
+    saveCsvToLocalstorage() {
       console.log("saving")
       const csv = this.getCurrentDataString()
       store.base64content = this.b64EncodeUnicode(csv);
@@ -296,6 +289,10 @@ export default defineComponent({
   display: flex;
   width: 100%;
   padding: 10px 0 10px 0;
+}
+
+.placeHolderLine {
+  height: 50px
 }
 
 /* add styles for the "Communication" component here */
@@ -343,4 +340,3 @@ export default defineComponent({
   background: #ededed;
 }
 </style>
-

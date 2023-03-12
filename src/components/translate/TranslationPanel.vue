@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 import Communication from './Communication.vue';
-import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage, NButtonGroup, NDivider } from 'naive-ui';
+import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage, } from 'naive-ui';
 import { LogoGithub, Raw, VolumeFileStorage, Renew, Repeat, UpToTop } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -17,7 +17,7 @@ import CsvFilenameSetter from "./modal/CsvFilenameSetter.vue"
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const showModal = ref(false)
+const showSwitchModal = ref(false)
 const isRotating = ref(false)
 const message = useMessage()
 
@@ -29,6 +29,9 @@ let csvUrl = ref('');
 let communication = ref<InstanceType<typeof Communication> | null>(null);
 let fileInput = ref<InstanceType<typeof HTMLInputElement> | null>(null);
 let urlInput = ref<InstanceType<typeof NInput> | null>(null);
+const showCsvFilenameSetter = ref(false)
+// TODO: use this variable as extra reminder
+const csvFilenameSetterExtraInfo = ref("")
 
 const translatedCsvUrl = computed(() => {
   if (communication.value)
@@ -36,13 +39,20 @@ const translatedCsvUrl = computed(() => {
   return null
 })
 
-const showCsvFilenameSetter = ref(false)
-// TODO: use this variable as extra reminder
-const csvFilenameSetterExtraInfo = ref("")
 
-// if this page is never loaded, onMounted will activate
+// onMounted and watch controls when to reload data
+// if this page is never loaded, onMounted will activate to load data from location url
 onMounted(() => {
   loadDataFromLocation()
+})
+// if this page has been loaded for once, use watch to detect when to reload
+// currently, the reload flag is used when clicking a history save at home page
+watch(routeQuery, async (newQuery) => {
+  if (newQuery.forceReload) {
+    // delete route.query.forceReload
+    // removeForceReloadParamInSearch()
+    await loadDataFromLocation()
+  }
 })
 
 async function loadDataFromLocation() {
@@ -67,26 +77,14 @@ async function loadDataFromLocation() {
   }
 }
 
-// if this page has been loaded for once, use watch to detect page reload requirement
-watch(routeQuery, async (newQuery) => {
-  if (newQuery.forceReload) {
-    // delete route.query.forceReload
-    // removeForceReloadParamInSearch()
-    await loadDataFromLocation()
-  }
-})
-
-function confirm() {
-  csvUrl.value = decodeURI(csvUrl.value)
-  loadDataFromUrl(csvUrl.value)
-}
-
 async function loadDataFromUrl(url: string) {
   csvUrl.value = url
   if (url.endsWith(".csv")) {
+    // a url ends with .csv is expected to be a github url
     store.currentMode = DataSourceType.Server
     await communication.value?.loadDataFromGithubCsvUrl(url)
   } else if (url.endsWith(".json")) {
+    // a url ends with .csv is expected to be a raw json
     store.currentMode = DataSourceType.Raw
     await communication.value?.loadDataFromJsonPathUrl(url)
   } else {
@@ -126,8 +124,13 @@ function handleFileChange(e: Event) {
   }
 }
 
+function confirm() {
+  csvUrl.value = decodeURI(csvUrl.value)
+  loadDataFromUrl(csvUrl.value)
+}
+
 async function to(mode: string, id: string) {
-  showModal.value = false
+  showSwitchModal.value = false
   router.push({
     path: route.path,
     query: {
@@ -146,7 +149,11 @@ async function tryReloadStoryIndex() {
 }
 
 function toTop() {
-  window.scrollTo(0, 0)
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant"
+  })
 }
 
 // function toGithub() {
@@ -171,7 +178,7 @@ function toTop() {
       <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
         <template #trigger>
           <n-badge color="transparent" type="warning">
-            <n-button tertiary type="default" @click="showModal = true" :focusable="false">
+            <n-button tertiary type="default" @click="showSwitchModal = true" :focusable="false">
               <n-icon size="30">
                 <HistoryIcon v-if="store.currentMode === 'history'" />
                 <LogoGithub v-if="store.currentMode === 'server'" />
@@ -195,7 +202,7 @@ function toTop() {
     <label> or </label>
     <input type="file" @change="handleFileChange" class="file-selector" ref="fileInput" />
   </div>
-  <n-modal v-model:show="showModal" preset="card" style="width: 600px; max-width: 100%;"
+  <n-modal v-model:show="showSwitchModal" preset="card" style="width: 600px; max-width: 100%;"
     :title="t(`translate.switch.title`)">
     <n-space vertical>
       <n-space align="center">
@@ -236,7 +243,7 @@ function toTop() {
         </n-tooltip>
       </n-space>
       <n-space align="center">
-        <n-button tertiary type="info" class="mode-switch" @click="fileInput!.click(); showModal = false">
+        <n-button tertiary type="info" class="mode-switch" @click="fileInput!.click(); showSwitchModal = false">
           <template #icon>
             <VolumeFileStorage />
           </template>
@@ -261,7 +268,7 @@ function toTop() {
     </n-space>
   </n-modal>
   <CsvFilenameSetter :show-modal="showCsvFilenameSetter" :extra-info="csvFilenameSetterExtraInfo"
-    @close-csv-filename-setter="() => { showCsvFilenameSetter = false }" @save="() => communication?.saveCsvToContent()">
+    @close-csv-filename-setter="() => { showCsvFilenameSetter = false }" @save="() => communication?.saveCsvToLocalstorage()">
   </CsvFilenameSetter>
   <!-- event from chapter change -->
   <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl" />
@@ -281,7 +288,7 @@ function toTop() {
         <br>
         <n-button text type="default" :focusable="false">{{ t("translate.tab.complete") }}</n-button>
       </div>
-      <div class="clickable" @click="showModal = true">
+      <div class="clickable" @click="showSwitchModal = true">
         <n-icon size="18">
           <Repeat />
         </n-icon><br>

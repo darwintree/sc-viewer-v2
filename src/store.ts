@@ -88,6 +88,8 @@ const store = reactive({
     username: null as string | null,
     avatarUrl: null as string | null,
     base64content: null as string | null,
+
+    // used to push to Github
     owner: "ShinyGroup",
     repo: "SCTranslationData",
     path: "",
