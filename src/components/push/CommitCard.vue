@@ -6,9 +6,16 @@
     <div>Repo: <input v-model="store.repo" /></div>
     <div>Path: {{ store.path }}</div>
     <n-input-group>
-      <n-select v-model:value="pathIdol" :options="idolOptions" :style="{ width: '33%', 'min-width': '120px' }" />
+      <n-select
+        v-model:value="pathIdol"
+        :options="idolOptions"
+        :style="{ width: '33%', 'min-width': '120px' }"
+      />
       <n-input-group-label>/</n-input-group-label>
-      <n-input v-model:value="pathStory" placeholder="Please Input Story Name" />
+      <n-input
+        v-model:value="pathStory"
+        placeholder="Please Input Story Name"
+      />
     </n-input-group>
     <n-input-group>
       <n-input-group-label>/</n-input-group-label>
@@ -16,11 +23,21 @@
     </n-input-group>
   </div>
   <div>
-    <input :placeholder="placeholder" :disabled="isUpdating || !store.base64content" v-model="message" />
-    
+    <input
+      v-model="message"
+      :placeholder="placeholder"
+      :disabled="isUpdating || !store.base64content"
+    />
+
     <n-tooltip trigger="hover">
       <template #trigger>
-        <button @click="update" :disabled="isUpdating || !store.base64content" class="btn btn-primary">{{ updateText }}</button>
+        <button
+          :disabled="isUpdating || !store.base64content"
+          class="btn btn-primary"
+          @click="update"
+        >
+          {{ updateText }}
+        </button>
       </template>
       <span v-if="!store.base64content">No Edit is Found</span>
       <span v-else>Publish to {{ store.owner }}/{{ store.repo }}</span>
@@ -34,60 +51,65 @@
 </template>
 
 <script setup lang="ts">
-import { forkBranch, updateContent } from '../../helper/auth';
-import { NSelect, NInputGroup, NInput, NInputGroupLabel, NTooltip } from 'naive-ui'
+import { forkBranch, updateContent } from '../../helper/auth'
+import {
+  NSelect,
+  NInputGroup,
+  NInput,
+  NInputGroupLabel,
+  NTooltip,
+} from 'naive-ui'
 import { ref, computed, WritableComputedRef } from 'vue'
-import { store } from '../../store';
-import { idolOptions } from '../../helper/path';
+import { store } from '../../store'
+import { idolOptions } from '../../helper/path'
 
-const isUpdating = ref(false);
-const commitUrl = ref("")
-const commitDate = ref("")
-const updateText = computed(()=>{
-  return isUpdating.value?"Updating":"Publish";
+const isUpdating = ref(false)
+const commitUrl = ref('')
+const commitDate = ref('')
+const updateText = computed(() => {
+  return isUpdating.value ? 'Updating' : 'Publish'
 })
-const placeholder = "input commit message"
-const message = ref("")
+const placeholder = 'input commit message'
+const message = ref('')
 
 const pathSplits: WritableComputedRef<string[]> = computed({
-  get(){
-    return store.path.split("/");
+  get() {
+    return store.path.split('/')
   },
   set(newValue: string[]) {
-    store.path = newValue.join("/")
-  }
+    store.path = newValue.join('/')
+  },
 })
 
 const pathIdol = computed({
   get() {
     return pathSplits.value[2]
-  }, 
+  },
   set(newValue: string) {
-    pathSplits.value[2] = newValue;
+    pathSplits.value[2] = newValue
     pathSplits.value = pathSplits.value
-  }
+  },
 })
 
 const pathStory = computed({
   get() {
     return pathSplits.value[3]
-  }, 
+  },
   set(newValue: string) {
-    pathSplits.value[3] = newValue;
+    pathSplits.value[3] = newValue
     pathSplits.value = pathSplits.value
-  }
+  },
 })
 
 const pathChapter = computed({
   get() {
     return pathSplits.value[4]
-  }, 
+  },
   set(newValue: string) {
-    pathSplits.value[4] = newValue;
+    pathSplits.value[4] = newValue
     pathSplits.value = pathSplits.value
-  }
+  },
 })
-
 
 async function fork() {
   const result = await forkBranch(store.accessToken!)
@@ -96,29 +118,36 @@ async function fork() {
 
 function checkInput() {
   if (!pathIdol.value) {
-    alert("idol name in path is not selected!")
-    throw new Error("idol is not selected")
+    alert('idol name in path is not selected!')
+    throw new Error('idol is not selected')
   }
   if (!pathStory.value) {
-    alert("story name in path is empty!")
-    throw new Error("story is empty")
+    alert('story name in path is empty!')
+    throw new Error('story is empty')
   }
   if (!pathChapter.value) {
-    alert("file name in path is empty!")
-    throw new Error("filename is empty")
+    alert('file name in path is empty!')
+    throw new Error('filename is empty')
   }
   if (!message.value) {
-    alert("commit message is empty!")
-    throw new Error("commit message is empty")
+    alert('commit message is empty!')
+    throw new Error('commit message is empty')
   }
 }
 
 async function update() {
   checkInput()
   isUpdating.value = true
-  let result;
+  let result
   try {
-    result = await updateContent(store.accessToken!, store.path, message.value, store.base64content!, store.owner, store.repo)
+    result = await updateContent(
+      store.accessToken!,
+      store.path,
+      message.value,
+      store.base64content!,
+      store.owner,
+      store.repo
+    )
   } catch (e: any) {
     window.alert(e.message)
     console.error(e)
@@ -129,7 +158,7 @@ async function update() {
   console.log(result)
   commitUrl.value = result.commit.html_url
   commitDate.value = new Date(result.commit.author.date).toLocaleTimeString()
-  message.value = ""
+  message.value = ''
 }
 </script>
 
@@ -166,7 +195,6 @@ async function update() {
   display: flex;
   align-items: center;
 }
-
 
 .username {
   margin-left: 10px;

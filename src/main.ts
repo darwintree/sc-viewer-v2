@@ -1,14 +1,15 @@
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 import './style.css'
 import { messages } from './locale'
 import App from './App.vue'
-const TranslationPanel =  () => import('./components/translate/TranslationPanel.vue');
-const About = () => import('./components/About.vue');
-const User = () =>import('./components/push/User.vue');
-const AuthCallback = () => import('./components/push/AuthCallback.vue');
-const HomePage = () => import('./components/home/HomePage.vue');
+const TranslationPanel = () =>
+  import('./components/translate/TranslationPanel.vue')
+const About = () => import('./components/About.vue')
+const User = () => import('./components/push/User.vue')
+const AuthCallback = () => import('./components/push/AuthCallback.vue')
+const HomePage = () => import('./components/home/HomePage.vue')
 
 // create a new router instance
 const router = createRouter({
@@ -34,9 +35,9 @@ const router = createRouter({
     {
       path: '/auth',
       component: AuthCallback,
-    }
-  ]
-});
+    },
+  ],
+})
 
 const i18n = createI18n({
   legacy: false, // you must set `false`, to use Composition API

@@ -1,18 +1,17 @@
 // setter for store.csvFilename
 
 <script setup lang="ts">
-
-import { ref, computed } from "vue";
-import { NInput, NModal, NButton, NInputGroup, NTooltip } from "naive-ui";
-import { store } from "../../../store";
-import { useI18n } from "vue-i18n";
-import { suggestedCommunicationName } from "../../../helper/meta-interfaces";
+import { ref, computed } from 'vue'
+import { NInput, NModal, NButton, NInputGroup, NTooltip } from 'naive-ui'
+import { store } from '../../../store'
+import { useI18n } from 'vue-i18n'
+import { suggestedCommunicationName } from '../../../helper/meta-interfaces'
 
 const { t } = useI18n()
 
 const emit = defineEmits<{
-  (e: 'close-csv-filename-setter',): void
-  (e: 'save',): void
+  (e: 'close-csv-filename-setter'): void
+  (e: 'save'): void
 }>()
 
 const props = defineProps({
@@ -22,22 +21,23 @@ const props = defineProps({
 
 const show = computed({
   get() {
-    tmpCsvFilename.value = store.csvFilename;
+    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+    tmpCsvFilename.value = store.csvFilename
     return props.showModal
   },
   set(newVal) {
     if (newVal === false) {
       emit('close-csv-filename-setter')
     }
-  }
+  },
 })
 
-const tmpCsvFilename = ref("");
+const tmpCsvFilename = ref('')
 
-tmpCsvFilename.value = store.csvFilename;
+tmpCsvFilename.value = store.csvFilename
 
 const disabled = computed(() => {
-  return !tmpCsvFilename.value.endsWith(".csv")
+  return !tmpCsvFilename.value.endsWith('.csv')
 })
 
 function setCsvFilename() {
@@ -48,7 +48,7 @@ function setCsvFilename() {
 
 const suggestedFilename = computed(() => {
   if (store.jsonUrl && store.eventsCollectionMeta) {
-    for (let communication of store.eventsCollectionMeta.communications) {
+    for (const communication of store.eventsCollectionMeta.communications) {
       if (communication.jsonPath == store.jsonUrl) {
         const name = suggestedCommunicationName(communication)
         return `${name}.csv`
@@ -59,34 +59,55 @@ const suggestedFilename = computed(() => {
 })
 
 const defaultFilename = computed(() => {
-  return store.jsonUrl.split("/").reverse()[0].replace(".json", ".csv")
+  return store.jsonUrl.split('/').reverse()[0].replace('.json', '.csv')
 })
-
 </script>
 <template>
-  <n-modal v-model:show="show" :mask-closable=false preset="card" style="width: 600px; max-width: 100%"
-    :title='t("translate.rename.title")'>
+  <n-modal
+    v-model:show="show"
+    :mask-closable="false"
+    preset="card"
+    style="width: 600px; max-width: 100%"
+    :title="t('translate.rename.title')"
+  >
     <n-input-group>
-      <n-input v-model:value="tmpCsvFilename" placeholder="csv filename(.csv)"></n-input>
-      <n-button type="info" @click="setCsvFilename" :disabled="disabled">{{ t('common.confirm') }}</n-button>
+      <n-input
+        v-model:value="tmpCsvFilename"
+        placeholder="csv filename(.csv)"
+      ></n-input>
+      <n-button type="info" :disabled="disabled" @click="setCsvFilename">{{
+        t('common.confirm')
+      }}</n-button>
     </n-input-group>
     <template #footer>
       <n-input-group>
         <n-tooltip trigger="hover">
           <template #trigger>
-            <n-button secondary type="warning" @click="tmpCsvFilename = defaultFilename">{{
-              t('translate.rename.defaultName')
-            }}</n-button>
+            <n-button
+              secondary
+              type="warning"
+              @click="tmpCsvFilename = defaultFilename"
+              >{{ t('translate.rename.defaultName') }}</n-button
+            >
           </template>
           {{ defaultFilename }}
         </n-tooltip>
         <n-tooltip>
           <template #trigger>
-            <n-button secondary type="success" tag="div" :disabled="!suggestedFilename"
-              @click="tmpCsvFilename = suggestedFilename!">{{
-                t('translate.rename.originName') }}</n-button>
+            <n-button
+              secondary
+              type="success"
+              tag="div"
+              :disabled="!suggestedFilename"
+              @click="tmpCsvFilename = suggestedFilename!"
+              >{{ t('translate.rename.originName') }}</n-button
+            >
           </template>
-          {{ suggestedFilename ? suggestedFilename : t("translate.rename.originNameNotFound") }}
+          {{
+            suggestedFilename
+              ? suggestedFilename
+              : t('translate.rename.originNameNotFound')
+          }}
         </n-tooltip>
       </n-input-group>
     </template>

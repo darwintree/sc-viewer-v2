@@ -3,15 +3,22 @@
 <template>
   <div class="user-container">
     <div v-if="!store.username">
-      <button @click="navToAuth" class="btn btn-primary">Login via Github</button>
+      <button class="btn btn-primary" @click="navToAuth">
+        Login via Github
+      </button>
     </div>
     <div v-if="!store.isLoading && store.username" class="full-width">
       <div class="user-info-line">
         <div class="user-info">
-          <img class="avatar" v-if="store.avatarUrl" :src="store.avatarUrl" alt="User avatar" />
+          <img
+            v-if="store.avatarUrl"
+            class="avatar"
+            :src="store.avatarUrl"
+            alt="User avatar"
+          />
           <span class="username">{{ store.username }}</span>
         </div>
-        <button @click="logOut" class="btn btn-secondary">Logout</button>
+        <button class="btn btn-secondary" @click="logOut">Logout</button>
       </div>
       <commit-card v-if="store.path"></commit-card>
     </div>
@@ -19,27 +26,33 @@
 </template>
 
 <script setup lang="ts">
-import { generateState, generateAuthRequest } from '../../helper/auth';
-import { store, tryLogin, logOut } from '../../store';
-import CommitCard from './CommitCard.vue';
+import { generateState, generateAuthRequest } from '../../helper/auth'
+import { store, tryLogin, logOut } from '../../store'
+import CommitCard from './CommitCard.vue'
 
 async function handleVisibilityChangeAfterAuth() {
   if (document.hidden) return
-  if (!localStorage.getItem("accessToken")) return
+  if (!localStorage.getItem('accessToken')) return
   await tryLogin()
-  document.removeEventListener("visibilitychange", handleVisibilityChangeAfterAuth)
+  document.removeEventListener(
+    'visibilitychange',
+    handleVisibilityChangeAfterAuth
+  )
 }
 
 function navToAuth() {
-  let state = generateState()
-  localStorage.setItem("state", state.toString())
+  const state = generateState()
+  localStorage.setItem('state', state.toString())
   window.open(generateAuthRequest(state))
-  document.addEventListener("visibilitychange", handleVisibilityChangeAfterAuth, false);
+  document.addEventListener(
+    'visibilitychange',
+    handleVisibilityChangeAfterAuth,
+    false
+  )
 }
 </script>
 
 <style scoped>
-
 .full-width {
   width: 100%;
 }

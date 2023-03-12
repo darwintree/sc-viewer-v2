@@ -5,21 +5,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
     iframeSrc: {
       type: String,
       required: true,
-    }
+    },
   },
 })
 </script>
 
 <style scoped>
 .aspect-ratio {
-
   position: relative;
 
   width: 100%;
@@ -27,11 +26,9 @@ export default defineComponent({
   height: 0;
 
   padding-bottom: 56%;
-
 }
 
-.aspect-ratio> iframe {
-
+.aspect-ratio > iframe {
   position: absolute;
 
   width: 100%;
@@ -43,6 +40,5 @@ export default defineComponent({
   left: 0;
 
   top: 0;
-
 }
 </style>

@@ -2,22 +2,37 @@
 
 <template>
   <!-- only render the component if all required props are defined -->
-  <div class="line" v-if="text">
+  <div v-if="text" class="line">
     <!-- the avatar is a child component that displays the avatar image -->
     <Avatar :name="name" />
 
     <!-- the "text-container" element contains the name, text, and translation -->
     <div class="text-container">
-      <div class="name" v-if="name">{{ name }} 
+      <div v-if="name" class="name">
+        {{ name }}
         <AudioLabel :id="id" :base="base"></AudioLabel>
       </div>
-      <div :class="{ 'text': !isSelect, 'select': isSelect }" :style="selectBgStyle">{{ display_text }}</div>
+      <div
+        :class="{ text: !isSelect, select: isSelect }"
+        :style="selectBgStyle"
+      >
+        {{ display_text }}
+      </div>
 
       <!-- the "line-controls" element contains the "trans" text and the "edit-toggle" button -->
-      <div :class="{'line-controls': !isSelect, 'select-controls': isSelect}">
+      <div :class="{ 'line-controls': !isSelect, 'select-controls': isSelect }">
         <!-- the "trans" element is shown when the component is not in edit mode -->
-        <div class="trans" v-if="!isEditing">{{ display_trans }}</div>
-        <n-button class="edit-toggle" strong primary circle type="success" @click="toggleEdit" v-if="!isEditing" title="edit">
+        <div v-if="!isEditing" class="trans">{{ display_trans }}</div>
+        <n-button
+          v-if="!isEditing"
+          class="edit-toggle"
+          strong
+          primary
+          circle
+          type="success"
+          title="edit"
+          @click="toggleEdit"
+        >
           <template #icon>
             <n-icon>
               <Edit />
@@ -26,22 +41,38 @@
         </n-button>
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
-        <div class="edit-container" v-else             
-            @keydown.enter="addLineBreak"
-            @keydown.shift.enter="saveEdit"
-            @keydown.esc="cancelEdit">
-          <n-input type="textarea" 
-            v-model:value="edit_trans" 
-            class="edit-textarea" 
-            :placeholder="$t('translate.translatePlaceholder')"
+        <div
+          v-else
+          class="edit-container"
+          @keydown.enter.exact="addLineBreak"
+          @keydown.shift.enter="saveEdit"
+          @keydown.esc="cancelEdit"
+        >
+          <n-input
             ref="edit"
+            v-model:value="edit_trans"
+            type="textarea"
+            class="edit-textarea"
+            :placeholder="$t('translate.translatePlaceholder')"
           />
 
           <!-- the "edit-controls" element contains the "edit-cancel" and "edit-save" buttons -->
           <div class="edit-controls">
             <n-button-group>
-              <n-button class="edit-cancel" type="warning" @click="cancelEdit">{{ $t("common.cancel") }}</n-button>
-              <n-button class="edit-save" secondary strong type="success" @click="trySaveEdit">{{ $t("common.save") }}</n-button>
+              <n-button
+                class="edit-cancel"
+                type="warning"
+                @click="cancelEdit"
+                >{{ $t('common.cancel') }}</n-button
+              >
+              <n-button
+                class="edit-save"
+                secondary
+                strong
+                type="success"
+                @click="trySaveEdit"
+                >{{ $t('common.save') }}</n-button
+              >
             </n-button-group>
           </div>
         </div>
@@ -50,13 +81,18 @@
   </div>
 </template>
 
-
-
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Avatar from './Avatar.vue'; // import the "Avatar" component
-import AudioLabel from './AudioLabel.vue';
-import { NButton, NIcon, NButtonGroup, NInput, useDialog, DialogOptions } from 'naive-ui'
+import { defineComponent } from 'vue'
+import Avatar from './Avatar.vue' // import the "Avatar" component
+import AudioLabel from './AudioLabel.vue'
+import {
+  NButton,
+  NIcon,
+  NButtonGroup,
+  NInput,
+  useDialog,
+  DialogOptions,
+} from 'naive-ui'
 import { Edit } from '@vicons/carbon'
 import { store, DataSourceType } from '../../store'
 
@@ -70,8 +106,8 @@ export default defineComponent({
     NIcon,
     Edit,
     NButtonGroup,
-    NInput
-},
+    NInput,
+  },
   props: {
     index: {
       type: Number,
@@ -99,6 +135,14 @@ export default defineComponent({
     base: {
       type: String,
       required: true,
+    },
+  },
+  setup() {
+    const dialog = useDialog()
+    return {
+      createWarningDialog(options: DialogOptions) {
+        dialog.warning(options)
+      },
     }
   },
   data() {
@@ -107,63 +151,55 @@ export default defineComponent({
       // define the editing state of the component
       isEditing: false,
       // define the edited translation of the message
-      local_trans: "",
-      edit_trans: "",
-    };
-  },
-  mounted() {
-    this.local_trans = this.trans;
-  },
-  setup() {
-    const dialog = useDialog()
-    return {
-      createWarningDialog(options: DialogOptions) {
-        dialog.warning(options)
-      }
-    }
-  },
-  watch: {
-    trans(newValue) {
-      this.local_trans = newValue;
+      local_trans: '',
+      edit_trans: '',
     }
   },
   computed: {
     display_text() {
-      if (this.text)
-        return this.text.replaceAll("\\n", "\n")
-      return ""
+      if (this.text) return this.text.replaceAll('\\n', '\n')
+      return ''
     },
     display_trans() {
-      if (this.local_trans)
-        return this.local_trans.replaceAll("\\n", "\n")
-      return ""
+      if (this.local_trans) return this.local_trans.replaceAll('\\n', '\n')
+      return ''
     },
     isSelect() {
-      return this.id === "select"
+      return this.id === 'select'
     },
     selectBgStyle() {
-      if (this.id === "select"){
-        return { 
-          "background-image": `url("/select_frame/00${this.index%5+1}.png")`,
+      if (this.id === 'select') {
+        return {
+          'background-image': `url("/select_frame/00${
+            (this.index % 5) + 1
+          }.png")`,
         }
       }
       return {}
-    }
+    },
+  },
+  watch: {
+    trans(newValue) {
+      this.local_trans = newValue
+    },
+  },
+  mounted() {
+    this.local_trans = this.trans
   },
   methods: {
     // define the "cancelEdit" method to cancel the edit operation
     cancelEdit() {
-      this.isEditing = false;
+      this.isEditing = false
     },
     changeToHistoryMode() {
       store.currentMode = DataSourceType.History
-        this.$router.replace({
-          path: this.$route.path,
-          hash: `#${this.base}.json`, // for file mode
-          query: {
-            mode: store.currentMode.toString()
-          }
-        })
+      this.$router.replace({
+        path: this.$route.path,
+        hash: `#${this.base}.json`, // for file mode
+        query: {
+          mode: store.currentMode.toString(),
+        },
+      })
     },
     // define the "saveEdit" method to save the edited translation
     trySaveEdit() {
@@ -171,7 +207,7 @@ export default defineComponent({
       // if not in histroy mode and has history, overwrite warning and change mode
       // if not in histroy mode but no history, change mode
       // if in history mode, do nothing
-      if (store.currentMode === "history") {
+      if (store.currentMode === 'history') {
         this.saveEdit()
         return
       }
@@ -179,10 +215,10 @@ export default defineComponent({
       const saveId = `${this.base}.json`
       if (store.saves.getItem(saveId)) {
         this.createWarningDialog({
-          title: this.$t("translate.overwriteWarning"),
-          content: this.$t("translate.overwriteDetails"),
-          positiveText: this.$t("common.confirm"),
-          negativeText: this.$t("common.cancel"),
+          title: this.$t('translate.overwriteWarning'),
+          content: this.$t('translate.overwriteDetails'),
+          positiveText: this.$t('common.confirm'),
+          negativeText: this.$t('common.cancel'),
           onPositiveClick: () => {
             this.saveEdit()
             this.changeToHistoryMode()
@@ -194,23 +230,23 @@ export default defineComponent({
       }
     },
     saveEdit() {
-      this.isEditing = false;
-      this.local_trans = this.edit_trans;
-      this.$emit("save");
+      this.isEditing = false
+      this.local_trans = this.edit_trans
+      this.$emit('save')
     },
     toggleEdit() {
-      this.isEditing = true;
-      this.edit_trans = this.local_trans;
-      this.$nextTick(()=>{
-        (this.$refs.edit as any).focus()
+      this.isEditing = true
+      this.edit_trans = this.local_trans
+      this.$nextTick(() => {
+        ;(this.$refs.edit as any).focus()
       })
     },
     addLineBreak(event: Event) {
       event.preventDefault()
-      this.edit_trans += "\\n"
-    }
+      this.edit_trans += '\\n'
+    },
   },
-});
+})
 </script>
 <style scoped>
 /* define the grid layout for the "DialogueLine" component */
@@ -220,24 +256,24 @@ export default defineComponent({
 }
 
 /* position the avatar in the first column of the grid */
-.line>.avatar {
+.line > .avatar {
   grid-column: 1;
 }
 
 /* position the text elements in the second column of the grid */
-.line>.text-container {
+.line > .text-container {
   grid-column: 2;
   text-align: left;
   white-space: pre-wrap;
 }
 
 /* add styles for the text elements */
-.line>.text-container>.name {
+.line > .text-container > .name {
   font-size: 0.8em;
   padding-top: 10px;
 }
 
-.line>.text-container>.text {
+.line > .text-container > .text {
   padding: 0.5em;
   background-color: #f0f0f0;
   border-radius: 0.25em;
@@ -259,7 +295,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex: 8
+  flex: 8;
 }
 
 .select-controls {
@@ -288,7 +324,7 @@ export default defineComponent({
   margin: 2px 0 0 0;
 }
 
-.select { 
+.select {
   /* background-image: url("/select_frame/001.png"); */
   background-size: contain;
   background-repeat: no-repeat;

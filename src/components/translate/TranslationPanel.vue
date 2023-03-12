@@ -1,18 +1,36 @@
 // TranslationPanel.vue
 
 <script setup lang="ts">
-import Communication from './Communication.vue';
-import { NInput, NInputGroup, NButton, NIcon, NTooltip, NModal, NSpace, NSpin, NBadge, useMessage, } from 'naive-ui';
-import { LogoGithub, Raw, VolumeFileStorage, Renew, Repeat, UpToTop } from '@vicons/carbon'
-import { ref, onMounted, nextTick, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+import Communication from './Communication.vue'
+import {
+  NInput,
+  NInputGroup,
+  NButton,
+  NIcon,
+  NTooltip,
+  NModal,
+  NSpace,
+  NSpin,
+  NBadge,
+  useMessage,
+} from 'naive-ui'
+import {
+  LogoGithub,
+  Raw,
+  VolumeFileStorage,
+  Renew,
+  Repeat,
+  UpToTop,
+} from '@vicons/carbon'
+import { ref, onMounted, nextTick, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { DataSourceType, store } from '../../store'
-import { initTranslatedStoryIndex } from '../../helper/path';
-import HistoryIcon from '../icon/HistoryIcon.vue';
+import { initTranslatedStoryIndex } from '../../helper/path'
+import HistoryIcon from '../icon/HistoryIcon.vue'
 import RenameIcon from '../icon/RenameIcon.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
-import CsvFilenameSetter from "./modal/CsvFilenameSetter.vue"
+import CsvFilenameSetter from './modal/CsvFilenameSetter.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -25,20 +43,18 @@ const routeQuery = computed(() => {
   return route.query
 })
 
-let csvUrl = ref('');
-let communication = ref<InstanceType<typeof Communication> | null>(null);
-let fileInput = ref<InstanceType<typeof HTMLInputElement> | null>(null);
-let urlInput = ref<InstanceType<typeof NInput> | null>(null);
+const csvUrl = ref('')
+const communication = ref<InstanceType<typeof Communication> | null>(null)
+const fileInput = ref<InstanceType<typeof HTMLInputElement> | null>(null)
+const urlInput = ref<InstanceType<typeof NInput> | null>(null)
 const showCsvFilenameSetter = ref(false)
 // TODO: use this variable as extra reminder
-const csvFilenameSetterExtraInfo = ref("")
+const csvFilenameSetterExtraInfo = ref('')
 
 const translatedCsvUrl = computed(() => {
-  if (communication.value)
-    return communication.value.translatedCsvUrl
+  if (communication.value) return communication.value.translatedCsvUrl
   return null
 })
-
 
 // onMounted and watch controls when to reload data
 // if this page is never loaded, onMounted will activate to load data from location url
@@ -58,20 +74,20 @@ watch(routeQuery, async (newQuery) => {
 async function loadDataFromLocation() {
   if (!route.hash) return
   const mode = route.query?.mode
-  if (mode === "history") {
+  if (mode === 'history') {
     store.currentMode = DataSourceType.History
     // why push, use replace is also ok
     router.push({
       path: route.path,
       query: {
-        mode: store.currentMode
+        mode: store.currentMode,
       },
-      hash: `${decodeURIComponent(route.hash)}`
+      hash: `${decodeURIComponent(route.hash)}`,
     })
     const id = decodeURIComponent(route.hash.substring(1))
     nextTick(() => communication.value?.loadDataFromLocalStorage(id))
   }
-  // TODO: specify certain mode 
+  // TODO: specify certain mode
   else {
     nextTick(() => loadDataFromUrl(route.hash.substring(1)))
   }
@@ -79,45 +95,47 @@ async function loadDataFromLocation() {
 
 async function loadDataFromUrl(url: string) {
   csvUrl.value = url
-  if (url.endsWith(".csv")) {
+  if (url.endsWith('.csv')) {
     // a url ends with .csv is expected to be a github url
     store.currentMode = DataSourceType.Server
     await communication.value?.loadDataFromGithubCsvUrl(url)
-  } else if (url.endsWith(".json")) {
+  } else if (url.endsWith('.json')) {
     // a url ends with .csv is expected to be a raw json
     store.currentMode = DataSourceType.Raw
     await communication.value?.loadDataFromJsonPathUrl(url)
   } else {
     console.log(url)
-    alert("unexpected url: should ends with .csv or .json")
+    alert('unexpected url: should ends with .csv or .json')
   }
   router.replace({
     path: route.path,
     hash: decodeURIComponent(`#${url}`),
     query: {
-      mode: store.currentMode.toString()
-    }
+      mode: store.currentMode.toString(),
+    },
   })
-  nextTick(() => urlInput.value?.scrollTo({
-    behavior: 'smooth',
-    left: 10000
-  }))
+  nextTick(() =>
+    urlInput.value?.scrollTo({
+      behavior: 'smooth',
+      left: 10000,
+    })
+  )
 }
 
 function handleFileChange(e: Event) {
-  const files = (e.target as HTMLInputElement).files;
+  const files = (e.target as HTMLInputElement).files
 
   if (files && files.length > 0) {
-    const file = files[0];
+    const file = files[0]
     if (communication.value !== null) {
-      csvUrl.value = ""
+      csvUrl.value = ''
       store.currentMode = DataSourceType.File
       router.replace({
         path: route.path,
         query: {
-          mode: store.currentMode
+          mode: store.currentMode,
         },
-        hash: ""
+        hash: '',
       })
       communication.value?.loadDataFromFile(file)
     }
@@ -135,16 +153,16 @@ async function to(mode: string, id: string) {
     path: route.path,
     query: {
       mode,
-      forceReload: "1"
+      forceReload: '1',
     },
-    hash: `#${id}`
+    hash: `#${id}`,
   })
 }
 
 async function tryReloadStoryIndex() {
   isRotating.value = true
   await initTranslatedStoryIndex()
-  message.success(t("translate.switch.reloadFinished"))
+  message.success(t('translate.switch.reloadFinished'))
   isRotating.value = false
 }
 
@@ -152,7 +170,6 @@ function toTop() {
   window.scrollTo({
     top: 0,
     left: 0,
-    behavior: "instant"
   })
 }
 
@@ -168,17 +185,29 @@ function toTop() {
 // let iconSrc = computed(()=>{
 //   return "github.png"
 // })
-
 </script>
 <template>
   <div class="input-row">
     <n-input-group class="url-input">
-      <n-input v-model:value="csvUrl" placeholder="Json / CSV URL" @keypress.enter="confirm" clearable ref="urlInput" />
-      <n-button type="info" @click="confirm"> {{ t("common.confirm") }} </n-button>
-      <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
+      <n-input
+        ref="urlInput"
+        v-model:value="csvUrl"
+        placeholder="Json / CSV URL"
+        clearable
+        @keypress.enter="confirm"
+      />
+      <n-button type="info" @click="confirm">
+        {{ t('common.confirm') }}
+      </n-button>
+      <n-tooltip v-if="!!store.currentMode" :show-arrow="false" trigger="hover">
         <template #trigger>
           <n-badge color="transparent" type="warning">
-            <n-button tertiary type="default" @click="showSwitchModal = true" :focusable="false">
+            <n-button
+              tertiary
+              type="default"
+              :focusable="false"
+              @click="showSwitchModal = true"
+            >
               <n-icon size="30">
                 <HistoryIcon v-if="store.currentMode === 'history'" />
                 <LogoGithub v-if="store.currentMode === 'server'" />
@@ -195,39 +224,57 @@ function toTop() {
         </template>
         {{ t(`translate.switch.title`) }}
       </n-tooltip>
-
     </n-input-group>
   </div>
   <div class="input-row">
     <label> or </label>
-    <input type="file" @change="handleFileChange" class="file-selector" ref="fileInput" />
+    <input
+      ref="fileInput"
+      type="file"
+      class="file-selector"
+      @change="handleFileChange"
+    />
   </div>
-  <n-modal v-model:show="showSwitchModal" preset="card" style="width: 600px; max-width: 100%;"
-    :title="t(`translate.switch.title`)">
+  <n-modal
+    v-model:show="showSwitchModal"
+    preset="card"
+    style="width: 600px; max-width: 100%"
+    :title="t(`translate.switch.title`)"
+  >
     <n-space vertical>
       <n-space align="center">
-        <n-button tertiary type="info" class="mode-switch" @click="to(`raw`, communication?.jsonUrl!)">
+        <n-button
+          tertiary
+          type="info"
+          class="mode-switch"
+          @click="to(`raw`, communication?.jsonUrl!)"
+        >
           <template #icon>
             <Raw />
           </template>
           raw
         </n-button>
         <span>
-          {{ t("translate.switch.explanation.raw") }}
+          {{ t('translate.switch.explanation.raw') }}
         </span>
       </n-space>
       <n-space align="center">
-        <n-button tertiary type="info" :disabled="!translatedCsvUrl" class="mode-switch"
-          @click="to(`server`, translatedCsvUrl!)">
+        <n-button
+          tertiary
+          type="info"
+          :disabled="!translatedCsvUrl"
+          class="mode-switch"
+          @click="to(`server`, translatedCsvUrl!)"
+        >
           <template #icon>
             <LogoGithub />
           </template>
           server
         </n-button>
         <span>
-          {{ t("translate.switch.explanation.server") }}
+          {{ t('translate.switch.explanation.server') }}
         </span>
-        <n-tooltip :show-arrow="false" trigger="hover" v-if="!translatedCsvUrl">
+        <n-tooltip v-if="!translatedCsvUrl" :show-arrow="false" trigger="hover">
           <template #trigger>
             <n-button circle size="tiny" @click="tryReloadStoryIndex">
               <template #icon>
@@ -239,66 +286,94 @@ function toTop() {
               </template>
             </n-button>
           </template>
-          {{ t("translate.switch.reloadTooltip") }}
+          {{ t('translate.switch.reloadTooltip') }}
         </n-tooltip>
       </n-space>
       <n-space align="center">
-        <n-button tertiary type="info" class="mode-switch" @click="fileInput!.click(); showSwitchModal = false">
+        <n-button
+          tertiary
+          type="info"
+          class="mode-switch"
+          @click="
+            // eslint-disable-next-line prettier/prettier
+            fileInput!.click();
+            showSwitchModal = false
+          "
+        >
           <template #icon>
             <VolumeFileStorage />
           </template>
           file
         </n-button>
         <span>
-          {{ t("translate.switch.explanation.file") }}
+          {{ t('translate.switch.explanation.file') }}
         </span>
       </n-space>
       <n-space align="center">
-        <n-button tertiary type="info" :disabled="!store.saves.getItem(communication?.jsonUrl!)" class="mode-switch"
-          @click="to(`history`, communication?.jsonUrl!)">
+        <n-button
+          tertiary
+          type="info"
+          :disabled="!store.saves.getItem(communication?.jsonUrl!)"
+          class="mode-switch"
+          @click="to(`history`, communication?.jsonUrl!)"
+        >
           <template #icon>
             <HistoryIcon></HistoryIcon>
           </template>
           history
         </n-button>
         <span>
-          {{ t("translate.switch.explanation.history") }}
+          {{ t('translate.switch.explanation.history') }}
         </span>
       </n-space>
     </n-space>
   </n-modal>
-  <CsvFilenameSetter :show-modal="showCsvFilenameSetter" :extra-info="csvFilenameSetterExtraInfo"
-    @close-csv-filename-setter="() => { showCsvFilenameSetter = false }" @save="() => communication?.saveCsvToLocalstorage()">
+  <CsvFilenameSetter
+    :show-modal="showCsvFilenameSetter"
+    :extra-info="csvFilenameSetterExtraInfo"
+    @close-csv-filename-setter="
+      () => {
+        showCsvFilenameSetter = false
+      }
+    "
+    @save="() => communication?.saveCsvToLocalstorage()"
+  >
   </CsvFilenameSetter>
   <!-- event from chapter change -->
-  <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl" />
-  <div class="toolbar" v-if="!!communication?.data.length">
+  <Communication
+    ref="communication"
+    :csv-url="csvUrl"
+    @load-data="loadDataFromUrl"
+  />
+  <div v-if="!!communication?.data.length" class="toolbar">
     <!-- <n-button-group> -->
     <n-space>
       <div class="clickable" @click="showCsvFilenameSetter = true">
-        <n-icon size="18">
-          <RenameIcon />
-        </n-icon><br>
-        <n-button text type="default" :focusable="false"> {{ t("translate.tab.rename") }}</n-button>
+        <n-icon size="18"> <RenameIcon /> </n-icon><br />
+        <n-button text type="default" :focusable="false">
+          {{ t('translate.tab.rename') }}</n-button
+        >
       </div>
       <div class="clickable" @click="communication?.downloadData">
         <n-icon size="18">
           <TaskCompleteIcon />
         </n-icon>
-        <br>
-        <n-button text type="default" :focusable="false">{{ t("translate.tab.complete") }}</n-button>
+        <br />
+        <n-button text type="default" :focusable="false">{{
+          t('translate.tab.complete')
+        }}</n-button>
       </div>
       <div class="clickable" @click="showSwitchModal = true">
-        <n-icon size="18">
-          <Repeat />
-        </n-icon><br>
-        <n-button text type="default" :focusable="false">{{ t("translate.tab.switch") }}</n-button>
+        <n-icon size="18"> <Repeat /> </n-icon><br />
+        <n-button text type="default" :focusable="false">{{
+          t('translate.tab.switch')
+        }}</n-button>
       </div>
       <div class="clickable" @click="toTop">
-        <n-icon size="18">
-          <UpToTop />
-        </n-icon><br>
-        <n-button text type="default" :focusable="false">{{ t("translate.tab.top") }}</n-button>
+        <n-icon size="18"> <UpToTop /> </n-icon><br />
+        <n-button text type="default" :focusable="false">{{
+          t('translate.tab.top')
+        }}</n-button>
       </div>
     </n-space>
 
@@ -336,7 +411,6 @@ function toTop() {
 } */
 
 .file-selector {
-
   appearance: none;
   color: white;
   padding: 8px;

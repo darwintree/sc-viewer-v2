@@ -1,50 +1,62 @@
 // App.vue
 
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { NSelect, NMessageProvider, NDialogProvider } from 'naive-ui';
+import { RouterView, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { NSelect, NMessageProvider, NDialogProvider } from 'naive-ui'
 
 const route = useRoute()
-const { locale, availableLocales, t } = useI18n();
+const { locale, availableLocales, t } = useI18n()
 
-const options = availableLocales.map(
-  (item) => {
-    return {
-      label: item,
-      value: item,
-    }
+const options = availableLocales.map((item) => {
+  return {
+    label: item,
+    value: item,
   }
-)
-
+})
 </script>
 <template>
   <div class="main">
-  <n-message-provider>
-  <n-dialog-provider>
-    <div class="first-line">
-      <nav>
-        <router-link :to="{ path: '/', query: route.query, hash: route.hash }">{{ t("tab.Home") }}</router-link> |
-        <router-link :to="{ path: '/translate', query: route.query, hash: route.hash }">{{ t("tab.Translate") }}</router-link> |
-        <router-link :to="{ path: '/about', query: route.query, hash: route.hash }">{{ t("tab.About") }}</router-link> |
-        <router-link :to="{ path: '/user', query: route.query, hash: route.hash }">{{ t("tab.Github") }}</router-link>
-      </nav>
-      <div class="locale-changer">
-        <n-select v-model:value="locale" :options="options" size="small" />
-      </div>
-    </div>
-    <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
-  </n-dialog-provider>
-  </n-message-provider>
+    <n-message-provider>
+      <n-dialog-provider>
+        <div class="first-line">
+          <nav>
+            <router-link
+              :to="{ path: '/', query: route.query, hash: route.hash }"
+              >{{ t('tab.Home') }}</router-link
+            >
+            |
+            <router-link
+              :to="{ path: '/translate', query: route.query, hash: route.hash }"
+              >{{ t('tab.Translate') }}</router-link
+            >
+            |
+            <router-link
+              :to="{ path: '/about', query: route.query, hash: route.hash }"
+              >{{ t('tab.About') }}</router-link
+            >
+            |
+            <router-link
+              :to="{ path: '/user', query: route.query, hash: route.hash }"
+              >{{ t('tab.Github') }}</router-link
+            >
+          </nav>
+          <div class="locale-changer">
+            <n-select v-model:value="locale" :options="options" size="small" />
+          </div>
+        </div>
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </router-view>
+      </n-dialog-provider>
+    </n-message-provider>
   </div>
 </template>
 <style scoped>
 .main {
-  margin: 0.8em
+  margin: 0.8em;
 }
 
 .first-line {

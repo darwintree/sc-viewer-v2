@@ -25,7 +25,6 @@ public/font
 *.sln
 *.sw?
 .vscode
-yarn.lock
 
 public/CHANGELOG.md
 public/CHANGELOG.html

@@ -1,22 +1,22 @@
 interface CommunicationMeta {
-  title: string,
-  jsonPath: string,
-  name: string | undefined,
+  title: string
+  jsonPath: string
+  name: string | undefined
 }
 
 interface EventsCollectionMeta {
-  characterId: string | undefined,
-  unitId: string,
-  name: string,
-  openAt: number,
-  thumb: string,
+  characterId: string | undefined
+  unitId: string
+  name: string
+  openAt: number
+  thumb: string
   communications: CommunicationMeta[]
 }
 
 // universal meta info for data loading
 interface CommunicationDataMeta {
-  name: string,
-  text: string,
+  name: string
+  text: string
 }
 
 function suggestedCommunicationName(communicationMeta: CommunicationMeta) {
@@ -27,6 +27,4 @@ function suggestedCommunicationName(communicationMeta: CommunicationMeta) {
 }
 
 export type { EventsCollectionMeta, CommunicationMeta, CommunicationDataMeta }
-export {
-  suggestedCommunicationName
-}
+export { suggestedCommunicationName }

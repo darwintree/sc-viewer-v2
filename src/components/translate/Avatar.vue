@@ -1,13 +1,17 @@
 <template>
   <!-- the "avatar" element displays the avatar image -->
-  <div class="avatar" v-if="name">
-    <img :src="avatarUrl" :alt="name" onerror="this.onerror=null;this.src='/icon/dummy.webp'"/>
+  <div v-if="name" class="avatar">
+    <img
+      :src="avatarUrl"
+      :alt="name"
+      onerror="this.onerror=null;this.src='/icon/dummy.webp'"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { getAvatarPath } from '../../helper/path';
+import { defineComponent } from 'vue'
+import { getAvatarPath } from '../../helper/path'
 
 // define the props for the component
 export default defineComponent({
@@ -23,9 +27,9 @@ export default defineComponent({
     avatarUrl() {
       return getAvatarPath(this.name)
       // return `/icon/${this.name}.webp`;
-    }
+    },
   },
-});
+})
 </script>
 
 <style scoped>
