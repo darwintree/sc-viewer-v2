@@ -5,9 +5,9 @@
 import { computed, } from "vue";
 import { NModal, NImage, NSpace, NMenu } from "naive-ui";
 import type { MenuOption } from 'naive-ui'
-import { store } from "../../store";
-import { getRemoteImgPath } from "../../helper/path";
-import { suggestedCommunicationName } from "../../helper/meta-interfaces";
+import { store } from "../../../store";
+import { getRemoteImgPath } from "../../../helper/path";
+import { suggestedCommunicationName } from "../../../helper/meta-interfaces";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n()

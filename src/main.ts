@@ -6,8 +6,8 @@ import { messages } from './locale'
 import App from './App.vue'
 const TranslationPanel =  () => import('./components/translate/TranslationPanel.vue');
 const About = () => import('./components/About.vue');
-const User = () =>import('./components/User.vue');
-const AuthCallback = () => import('./components/AuthCallback.vue');
+const User = () =>import('./components/push/User.vue');
+const AuthCallback = () => import('./components/push/AuthCallback.vue');
 const HomePage = () => import('./components/home/HomePage.vue');
 
 // create a new router instance

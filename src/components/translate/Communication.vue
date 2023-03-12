@@ -75,7 +75,7 @@ import FileSaver from 'file-saver';
 import Queue from '../../helper/queue.js';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
-import IndexModal from "./IndexModal.vue";
+import IndexModal from "./modal/IndexModal.vue";
 import { store, DataSourceType } from '../../store';
 import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';

@@ -12,7 +12,7 @@ import { initTranslatedStoryIndex } from '../../helper/path';
 import HistoryIcon from '../icon/HistoryIcon.vue';
 import RenameIcon from '../icon/RenameIcon.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
-import CsvFilenameSetter from "./CsvFilenameSetter.vue"
+import CsvFilenameSetter from "./modal/CsvFilenameSetter.vue"
 
 const { t } = useI18n()
 const route = useRoute()

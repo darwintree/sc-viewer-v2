@@ -4,9 +4,9 @@
 
 import { ref, computed } from "vue";
 import { NInput, NModal, NButton, NInputGroup, NTooltip } from "naive-ui";
-import { store } from "../../store";
+import { store } from "../../../store";
 import { useI18n } from "vue-i18n";
-import { suggestedCommunicationName } from "../../helper/meta-interfaces";
+import { suggestedCommunicationName } from "../../../helper/meta-interfaces";
 
 const { t } = useI18n()
 

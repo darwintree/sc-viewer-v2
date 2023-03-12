@@ -3,7 +3,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getAudioPath } from '../helper/path'
+import { getAudioPath } from '../../helper/path'
 
 // define the props for the component
 export default defineComponent({

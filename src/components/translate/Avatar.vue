@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getAvatarPath } from '../helper/path';
+import { getAvatarPath } from '../../helper/path';
 
 // define the props for the component
 export default defineComponent({

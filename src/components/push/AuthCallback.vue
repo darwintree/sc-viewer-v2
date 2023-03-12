@@ -4,8 +4,8 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { getQueryVariable } from '../helper/path';
-import { fetchAccessToken } from '../helper/auth';
+import { getQueryVariable } from '../../helper/path';
+import { fetchAccessToken } from '../../helper/auth';
 
 onMounted(async () => {
   const state = getQueryVariable("state")

@@ -54,8 +54,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Avatar from '../Avatar.vue'; // import the "Avatar" component
-import AudioLabel from '../AudioLabel.vue';
+import Avatar from './Avatar.vue'; // import the "Avatar" component
+import AudioLabel from './AudioLabel.vue';
 import { NButton, NIcon, NButtonGroup, NInput, useDialog, DialogOptions } from 'naive-ui'
 import { Edit } from '@vicons/carbon'
 import { store, DataSourceType } from '../../store'

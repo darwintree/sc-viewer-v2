@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { generateState, generateAuthRequest } from '../helper/auth';
-import { store, tryLogin, logOut } from '../store';
+import { generateState, generateAuthRequest } from '../../helper/auth';
+import { store, tryLogin, logOut } from '../../store';
 import CommitCard from './CommitCard.vue';
 
 async function handleVisibilityChangeAfterAuth() {
