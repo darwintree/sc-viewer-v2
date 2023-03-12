@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { units } from '../assets/album-index.json'
 import { reactive } from 'vue'
-import { EventsCollectionMeta } from "./meta-interfaces"
+import { EventsCollectionMeta, CommunicationDataMeta } from "./meta-interfaces"
+import dataToCSV from "./convert"
 
 const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
 const NAME_SERVICE_SERVER = import.meta.env.VITE_NAME_SERVICE_SERVER
@@ -73,6 +74,11 @@ function extractInfoFromUrl(fileUrl: string) {
                 filePath += splits[i]
             }
         }
+        console.log({
+            path: filePath,
+            owner: splits[3],
+            repo: splits[4]
+        })
         return {
             path: filePath,
             owner: splits[3],
@@ -219,6 +225,49 @@ async function firstJsonUrl(jsonUrl: string) {
 // init index
 initTranslatedStoryIndex()
 
+async function metaInfoFromJsonPathUrl(url: string): Promise<CommunicationDataMeta> {
+    let splits = url.split("/").reverse()
+    let relPath = `${splits[1]}/${splits[0]}`
+    let realUrl = url
+    if (!url.startsWith("https://")) {
+        // get remote json source path from relative path
+        realUrl = getJsonPath(relPath)
+    }
+    const response = await fetch(realUrl);
+    if (!response.ok) {
+        alert("load failed")
+        console.log(response)
+        throw new Error("Failed to load json data")
+    }
+    const jsonText = await response.text();
+    const text = dataToCSV(JSON.parse(jsonText), null);
+    const name = splits[0].replace(".json", ".csv")
+    return {
+        name,
+        text
+    }
+}
+
+async function metaInfoFromGithubCsvUrl(url: string): Promise<CommunicationDataMeta> {
+    url = getGithubRawResourcePath(url)
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      alert("load failed")
+      throw new Error("Failed to load github csv data")
+    }
+    if (!url.endsWith(".csv")) {
+        alert("file format not supported: specify .csv")
+        throw new Error("file format not supported: specify .csv")
+    }
+    const name = decodeURI(url.split('/').reverse()[0])
+    const text = await response.text();
+    return {
+        name,
+        text
+    }
+}
+
 export {
     getAvatarPath,
     getAudioPath,
@@ -235,5 +284,7 @@ export {
     queryTranslatedCsv,
     initTranslatedStoryIndex,
     getGithubRawResourcePath,
-    queryCollectionMetaInfo as queryRelated
+    queryCollectionMetaInfo as queryRelated,
+    metaInfoFromJsonPathUrl,
+    metaInfoFromGithubCsvUrl,
 }

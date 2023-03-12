@@ -37,6 +37,7 @@ const translatedCsvUrl = computed(() => {
 })
 
 const showCsvFilenameSetter = ref(false)
+// TODO: use this variable as extra reminder
 const csvFilenameSetterExtraInfo = ref("")
 
 // if this page is never loaded, onMounted will activate

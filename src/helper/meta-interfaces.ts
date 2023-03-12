@@ -13,6 +13,11 @@ interface EventsCollectionMeta {
     communications: CommunicationMeta[]
 }
 
+// universal meta info for data loading
+interface CommunicationDataMeta {
+    name: string,
+    text: string,
+}
 
 function suggestedCommunicationName(communicationMeta: CommunicationMeta) {
     if (communicationMeta.name) {
@@ -21,7 +26,7 @@ function suggestedCommunicationName(communicationMeta: CommunicationMeta) {
       return `${communicationMeta.title}`
 }
 
-export type { EventsCollectionMeta, CommunicationMeta }
+export type { EventsCollectionMeta, CommunicationMeta, CommunicationDataMeta }
 export {
     suggestedCommunicationName
 }

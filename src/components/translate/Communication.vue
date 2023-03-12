@@ -71,23 +71,16 @@ import { defineComponent } from 'vue';
 import DialogueLine from './DialogueLine.vue'; // import the "DialogueLine" component
 import * as Papa from 'papaparse'; // import PapaParse
 import FileSaver from 'file-saver';
-import Queue from '../../helper/queue.js';
+import Queue from '../../helper/queue';
 import EventIframe from './EventIframe.vue';
 import TranslatorLine from './TranslatorLine.vue';
 import IndexModal from "./modal/IndexModal.vue";
 import { store, DataSourceType } from '../../store';
-import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, } from '../../helper/path';
+import { extractInfoFromUrl, getJsonPath, nextJsonUrl, trueEndJsonUrl, previousJsonUrl, firstJsonUrl, getGithubRawResourcePath, queryTranslatedCsv, queryRelated, metaInfoFromJsonPathUrl, metaInfoFromGithubCsvUrl, } from '../../helper/path';
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui';
 import { Download, Launch, Document } from '@vicons/carbon'
 import dataToCSV from '../../helper/convert';
-
-// define the interface for the CSV data
-interface CsvData {
-  id: string;
-  name: string;
-  text: string;
-  trans: string;
-}
+import { CsvDataLine, extractInfoFromCsvText, toCsvText } from '../../helper/csv';
 
 export default defineComponent({
   // define the "DialogueLine" component as a child component
@@ -104,13 +97,6 @@ export default defineComponent({
     Document,
     IndexModal,
   },
-  // the URL of the CSV data will be passed to the component as a prop
-  props: {
-    csvUrl: {
-      type: String,
-      required: true,
-    },
-  },
   setup() {
     const message = useMessage()
     return {
@@ -125,7 +111,7 @@ export default defineComponent({
   data() {
     return {
       // store the parsed CSV data in a local variable
-      data: [] as CsvData[],
+      data: [] as CsvDataLine[],
       // jsonUrl: "", // e.g. produce_events/xxx.json
       previousJsonUrl: null as null | string,
       nextJsonUrl: null as null | string,
@@ -163,6 +149,13 @@ export default defineComponent({
       return store.eventsCollectionMeta
     }
   },
+  watch: {
+    translatedCsvUrl(newVal) {
+      if (newVal && store.currentMode === DataSourceType.Raw) {
+        this.createSuccessMessage(this.$t('translate.remoteTranslationDetected'))
+      }
+    }
+  },
   methods: {
     changeChapter(jsonUrl: string | null) {
       if (!jsonUrl) return
@@ -185,140 +178,65 @@ export default defineComponent({
     },
     async loadDataFromGithubCsvUrl(url: string) {
       this.isLoading = true
-      try {
-        const info = extractInfoFromUrl(url)
-        store.owner = info.owner
-        store.repo = info.repo
-        store.path = decodeURIComponent(info.path)
+      const {name, text} = await metaInfoFromGithubCsvUrl(url)
+      store.csvFilename = name
+      await this.loadDataFromCsvText(text)
 
-        // use the fetch() function to request the CSV data from the URL
-        url = getGithubRawResourcePath(url)
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          alert("load failed")
-          return
-        }
-        // if the response is successful, parse the CSV data
-
-        // get the text of the response
-        if (url.endsWith(".csv")) {
-          store.csvFilename = decodeURI(url.split('/').reverse()[0])
-          const text = await response.text();
-          await this.loadDataFromCsvText(text)
-        }
-        else {
-          alert("file format not supported: specify .csv or .json")
-        }
-      } catch (e) {
-        alert(e)
-      }
+      // TODO
+      const info = extractInfoFromUrl(url)
+      store.owner = info.owner
+      store.repo = info.repo
+      store.path = decodeURIComponent(info.path)
     },
     async loadDataFromJsonPathUrl(url: string) {
       this.isLoading = true
-      let splits = url.split("/").reverse()
-      let relPath = `${splits[1]}/${splits[0]}`
-      let realUrl = url
-      if (!url.startsWith("https://")) {
-        // get remote json source path from relative path
-        realUrl = getJsonPath(relPath)
-      }
-      const response = await fetch(realUrl);
-      if (!response.ok) {
-        alert("load failed")
-        console.log(response)
-        return
-      }
-      const jsonText = await response.text();
-      const csvText = dataToCSV(JSON.parse(jsonText), null);
-      store.csvFilename = splits[0].replace(".json", ".csv")
+      const { name, text } = await metaInfoFromJsonPathUrl(url)
+      store.csvFilename = name
       this.createWarningMessage(this.$t("translate.loadRawWarning"))
-      await this.loadDataFromCsvText(csvText)
+      await this.loadDataFromCsvText(text)
     },
-    loadDataFromFile(file: File) {
-      const reader = new FileReader();
+    async loadDataFromFile(file: File) {
+      let text = await file.text()
+      store.csvFilename = file.name;
+      if (file.name.endsWith(".json")) {
+        store.csvFilename = file.name.replace(".json", ".csv")
+        text = dataToCSV(JSON.parse(text), null)
+      }
 
-      reader.onload = async () => {
-        let text = reader.result as string;
-        store.csvFilename = file.name;
-        if (file.name.endsWith(".json")) {
-          store.csvFilename = file.name.replace(".json", ".csv")
-          text = dataToCSV(JSON.parse(text), null)
-        }
+      store.path = `data/story///${file.name}`
+      await this.loadDataFromCsvText(text);
 
-        store.path = `data/story///${file.name}`
-        await this.loadDataFromCsvText(text);
-      };
-
-      reader.readAsText(file);
     },
     loadDataFromCsvText(text: string) {
       try {
-        const data: CsvData[] = Papa.parse(text, {
-          header: true, // use the first row as the header
-        }).data as CsvData[];
-
-        let queue = new Queue<CsvData>;
-
-        data.forEach((element: CsvData) => {
-          if (element.id === "info") {
-            this.jsonUrl = element.name
-            this.updateRelatedChapterStatus()
-            this.$nextTick(() => {
-              if (this.translatedCsvUrl && store.currentMode === DataSourceType.Raw) {
-                this.createSuccessMessage(this.$t('translate.remoteTranslationDetected'))
-              }
-            })
-          }
-          if (element.id === "译者") {
-            this.translator = element.name
-          }
-          if (element.text) {
-            queue.enqueue(element)
-          }
-        });
-
-        if (!this.jsonUrl) {
-          alert("CSV format wrong")
-        }
-
-        // store the parsed CSV data in the "data" variable
-        this.data = data.filter((item: CsvData) => item.text) as CsvData[];
-        this.isLoading = false
+        const { data, translator, jsonUrl } = extractInfoFromCsvText(text)
+        this.jsonUrl = jsonUrl
+        this.updateRelatedChapterStatus()
+        this.translator = translator;
+        this.data = data;
+        this.isLoading = false;
       } catch (e) {
         alert(e)
       }
-
     },
     getCurrentDataString() {
       // generate the updated CSV data by mapping over the "data" array and
-      // replacing the "trans" property of each item with the updated value
-      // from the "DialogueLine" components
-      const lines: any[] = this.$refs.lines as any[];
-      let updatedData = this.data.map((item, index) => {
+      // using the "local_trans" property of each item
+      const lines = this.$refs.lines as InstanceType<typeof DialogueLine>[];
+      const updatedData = this.data.map((item, index) => {
         return {
           ...item,
           trans: lines[index].local_trans,
         };
       });
 
-      const translatorLine: any = this.$refs.translator
+      const translatorLine = this.$refs.translator as InstanceType<typeof TranslatorLine>
 
-      updatedData.push({
-        "id": "info",
-        "name": this.jsonUrl,
-        "text": "",
-        "trans": ""
+      return toCsvText({
+        data: updatedData,
+        translator: translatorLine.local_trans,
+        jsonUrl: this.jsonUrl
       })
-      updatedData.push({
-        "id": "译者",
-        "name": translatorLine.local_trans,
-        "text": "",
-        "trans": ""
-      })
-
-      // convert the updated data array to a CSV string using the PapaParse library
-      return Papa.unparse(updatedData);
     },
     downloadData() {
       const csv = this.getCurrentDataString()
