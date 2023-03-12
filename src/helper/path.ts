@@ -3,6 +3,14 @@ import { units } from '../assets/album-index.json'
 import { reactive } from 'vue'
 import { EventsCollectionMeta } from "./meta-interfaces"
 
+const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
+const NAME_SERVICE_SERVER = import.meta.env.VITE_NAME_SERVICE_SERVER
+const GITHUB_RAW_PROXY = import.meta.env.VITE_GITHUB_RAW_PROXY
+const TRANSLATION_INDEX_URL = import.meta.env.VITE_TRANSLATION_INDEX_URL
+const TRANSLATION_DIR = import.meta.env.VITE_TRANSLATION_DIR
+const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
+let useGithubProxy = true
+
 let idolList: string[] = []
 let unitList: string[] = []
 
@@ -19,25 +27,17 @@ function getAvatarPath(name: string) {
     return "/icon/dummy.webp"
 }
 
-const ASSETSERVER = 'https://strawberrytree.top/convert/cache'
-
-const NAME_SERVICE_URL = 'https://strawberrytree.top/name'
-
-const RAW_CONTENT_PROXY = "https://strawberrytree.top/raw"
-
-const TranslationIndexUrl = 'https://raw.githubusercontent.com/biuuu/ShinyColors/gh-pages/story.json'
-
 function getAudioPath(id: string, base: string) {
-    return `${ASSETSERVER}/sounds/voice/events/${base}/${id}.m4a`
+    return `${ASSETS_SERVER}/sounds/voice/events/${base}/${id}.m4a`
 }
 
 // relPath includes .json postfix
 function getJsonPath(relPath: string) {
-    return `${ASSETSERVER}/json/${relPath}`
+    return `${ASSETS_SERVER}/json/${relPath}`
 }
 
 function getRemoteImgPath(relPath: string) {
-    return `${ASSETSERVER}/${relPath}`
+    return `${ASSETS_SERVER}/${relPath}`
 }
 
 function getQueryVariable(variable: string) {
@@ -51,12 +51,13 @@ function getQueryVariable(variable: string) {
     }
 }
 
-function getGithubRawResourcePath(url: string, useProxy=true) {
+function getGithubRawResourcePath(url: string) {
+    const useProxy = useGithubProxy;
     if (url.startsWith("https://github.com")) {
         url = url.replace("https://github.com", "https://raw.githubusercontent.com").replace("/blob/", "/")
     }
     if (useProxy && url.startsWith("https://raw.githubusercontent")) {
-        url = url.replace("https://raw.githubusercontent.com", RAW_CONTENT_PROXY)
+        url = url.replace("https://raw.githubusercontent.com", GITHUB_RAW_PROXY)
     }
     return url
 }
@@ -138,8 +139,8 @@ let translatedStoryIndex:{
     [key: string]: string
 } = reactive({})
 
-async function initTranslatedStoryIndex(useProxy=true) {
-    const res = await fetch(getGithubRawResourcePath(TranslationIndexUrl, useProxy))
+async function initTranslatedStoryIndex() {
+    const res = await fetch(getGithubRawResourcePath(TRANSLATION_INDEX_URL))
     if (!res.ok) {
         console.log("fetch fail")
         return
@@ -149,18 +150,25 @@ async function initTranslatedStoryIndex(useProxy=true) {
     raw.map((element: any) => {
         translatedStoryIndex[element[0]] = element[1]
     })
-    // console.log(translatedStoryIndex)
 }
 
 function queryTranslatedCsv(jsonUrl: string): string|null {
     if (!translatedStoryIndex[jsonUrl]) return null
-    return `https://github.com/biuuu/ShinyColors/blob/gh-pages/data/story/${translatedStoryIndex[jsonUrl]}.csv`
+    return `${TRANSLATION_DIR}/${translatedStoryIndex[jsonUrl]}.csv`
+}
+
+function getIframeSrc(jsonUrl: string) {
+    if (!jsonUrl) return null
+    const eventType = jsonUrl.split("/")[0]
+    const eventId = jsonUrl.split("/")[1].split(".")[0]
+    return `${EVENT_VIEWER_SITE}/?eventType=${eventType}&eventId=${eventId}`
 }
 
 async function queryCollectionMetaInfo(jsonUrl: string) {
+    if (!NAME_SERVICE_SERVER) return null
     const prefix = jsonUrl.substring(0, jsonUrl.length - 7)
     try {
-        const res = await axios(`${NAME_SERVICE_URL}/${prefix}`)
+        const res = await axios(`${NAME_SERVICE_SERVER}/${prefix}`)
         return(res.data as EventsCollectionMeta)
     }
     catch(e) {
@@ -170,9 +178,10 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
 }
 
 async function previousJsonUrl(jsonUrl: string) {
-    if (jsonUrl.endsWith("01.json")) return null
+    // performance optimization: block furthur request
+    if (jsonUrl.endsWith("01.json")) return null 
     const rtn = changedJsonUrlByNumber(jsonUrl, -1)
-    if (jsonUrl.endsWith("11.json") && !await hasContentForJsonUrl(rtn)) {
+    if (!await hasContentForJsonUrl(rtn)) {
         return null
     }
     return rtn
@@ -201,8 +210,10 @@ async function trueEndJsonUrl(jsonUrl: string) {
 // provided when jsonUrl is te to go back to first chapter
 async function firstJsonUrl(jsonUrl: string) {
     if (!jsonUrl.endsWith("11.json")) return null
-    if (await trueEndJsonUrl(jsonUrl)) return null
-    return jsonUrl.replace("11.json", "01.json")
+    const rtn = jsonUrl.replace("11.json", "01.json")
+    // check if this story has te
+    if (!(await trueEndJsonUrl(rtn))) return null
+    return rtn
 }
 
 // init index
@@ -213,6 +224,7 @@ export {
     getAudioPath,
     getQueryVariable,
     getRemoteImgPath,
+    getIframeSrc,
     extractInfoFromUrl,
     idolOptions,
     getJsonPath,

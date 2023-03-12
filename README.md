@@ -30,15 +30,19 @@ yarn dev
 - [x] update browser extension
   - [ ] fix browser extension installation
 - [ ] Util bar hiding
-- [ ] recover review-story-in-new-page button
+- [ ] recover review-story-in-new-page button user js
 - [ ] modal font
 - [x] tips
+- [ ] optimize chapter jumping logic
 
 ### High Priority
 
 - [ ] unit test
 - [ ] **ready for open source**
-  - [ ] use .env for some const
+  - [x] use .env for some const
+  - [ ] implementation refactoring
+  - [ ] lisence
+  - [ ] documents
 - [ ] fix local_trans bug
   - change trans and save
   - go to next chapter and back

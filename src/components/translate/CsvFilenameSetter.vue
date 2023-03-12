@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 
-import { defineProps, ref, computed, defineEmits } from "vue";
+import { ref, computed } from "vue";
 import { NInput, NModal, NButton, NInputGroup, NTooltip } from "naive-ui";
 import { store } from "../../store";
 import { useI18n } from "vue-i18n";

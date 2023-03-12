@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 
-import { defineProps, computed, defineEmits } from "vue";
+import { computed, } from "vue";
 import { NModal, NImage, NSpace, NMenu } from "naive-ui";
 import type { MenuOption } from 'naive-ui'
 import { store } from "../../store";
