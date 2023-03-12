@@ -21,7 +21,7 @@ const showModal = ref(false)
 const isRotating = ref(false)
 const message = useMessage()
 
-const routeQuery = computed(()=>{
+const routeQuery = computed(() => {
   return route.query
 })
 
@@ -40,7 +40,7 @@ const showCsvFilenameSetter = ref(false)
 const csvFilenameSetterExtraInfo = ref("")
 
 // if this page is never loaded, onMounted will activate
-onMounted(()=>{
+onMounted(() => {
   loadDataFromLocation()
 })
 
@@ -58,11 +58,11 @@ async function loadDataFromLocation() {
       hash: `${decodeURIComponent(route.hash)}`
     })
     const id = decodeURIComponent(route.hash.substring(1))
-    nextTick(()=>communication.value?.loadDataFromLocalStorage(id))
-  } 
+    nextTick(() => communication.value?.loadDataFromLocalStorage(id))
+  }
   // TODO: specify certain mode 
   else {
-    nextTick(()=>loadDataFromUrl(route.hash.substring(1)))
+    nextTick(() => loadDataFromUrl(route.hash.substring(1)))
   }
 }
 
@@ -99,7 +99,7 @@ async function loadDataFromUrl(url: string) {
       mode: store.currentMode.toString()
     }
   })
-  nextTick(()=> urlInput.value?.scrollTo({
+  nextTick(() => urlInput.value?.scrollTo({
     behavior: 'smooth',
     left: 10000
   }))
@@ -145,7 +145,7 @@ async function tryReloadStoryIndex() {
 }
 
 function toTop() {
-  window.scrollTo(0,0)
+  window.scrollTo(0, 0)
 }
 
 // function toGithub() {
@@ -163,127 +163,124 @@ function toTop() {
 
 </script>
 <template>
-    <div class="input-row">
-      <n-input-group class="url-input">
-        <n-input v-model:value="csvUrl" placeholder="Json / CSV URL"  @keypress.enter="confirm" clearable ref="urlInput" />
-        <n-button type="info" @click="confirm"> {{ t("common.confirm") }} </n-button>
-        <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
-          <template #trigger>
-            <n-badge color="transparent" type="warning" >
-              <n-button tertiary type="default" @click="showModal = true" :focusable="false">
-                <n-icon size="30">
-                  <HistoryIcon v-if="store.currentMode === 'history'" />
-                  <LogoGithub v-if="store.currentMode === 'server'" />
-                  <Raw v-if="store.currentMode === 'raw'" />
-                  <VolumeFileStorage v-if="store.currentMode === 'file'" />
-                </n-icon>
-              </n-button>
-              <template #value >
-                <n-icon color="black" size="15">
-                  <Repeat />
-                </n-icon>
-              </template>
-            </n-badge>
-          </template>
-          {{ t(`translate.switch.title`) }}
-        </n-tooltip>
+  <div class="input-row">
+    <n-input-group class="url-input">
+      <n-input v-model:value="csvUrl" placeholder="Json / CSV URL" @keypress.enter="confirm" clearable ref="urlInput" />
+      <n-button type="info" @click="confirm"> {{ t("common.confirm") }} </n-button>
+      <n-tooltip :show-arrow="false" trigger="hover" v-if="!!store.currentMode">
+        <template #trigger>
+          <n-badge color="transparent" type="warning">
+            <n-button tertiary type="default" @click="showModal = true" :focusable="false">
+              <n-icon size="30">
+                <HistoryIcon v-if="store.currentMode === 'history'" />
+                <LogoGithub v-if="store.currentMode === 'server'" />
+                <Raw v-if="store.currentMode === 'raw'" />
+                <VolumeFileStorage v-if="store.currentMode === 'file'" />
+              </n-icon>
+            </n-button>
+            <template #value>
+              <n-icon color="black" size="15">
+                <Repeat />
+              </n-icon>
+            </template>
+          </n-badge>
+        </template>
+        {{ t(`translate.switch.title`) }}
+      </n-tooltip>
 
-      </n-input-group>
-    </div>
-    <div class="input-row">
-      <label> or </label>
-      <input type="file" @change="handleFileChange" class="file-selector" ref="fileInput" />
-    </div>
-    <n-modal v-model:show="showModal" preset="card" style="width: 600px; max-width: 100%;"
-      :title="t(`translate.switch.title`)">
-      <n-space vertical>
-        <n-space align="center">
-          <n-button tertiary type="info" class="mode-switch" @click="to(`raw`, communication?.jsonUrl!)">
-            <template #icon>
-              <Raw />
-            </template>
-            raw
-          </n-button>
-          <span>
-            {{ t("translate.switch.explanation.raw") }}
-          </span>
-        </n-space>
-        <n-space align="center">
-          <n-button tertiary type="info" :disabled="!translatedCsvUrl" class="mode-switch"
-            @click="to(`server`, translatedCsvUrl!)">
-            <template #icon>
-              <LogoGithub />
-            </template>
-            server
-          </n-button>
-          <span>
-            {{ t("translate.switch.explanation.server") }}
-          </span>
-          <n-tooltip :show-arrow="false" trigger="hover" v-if="!translatedCsvUrl">
-            <template #trigger>
-              <n-button circle size="tiny" @click="tryReloadStoryIndex">
-                <template #icon>
-                  <n-spin :rotate="isRotating" :size="12">
-                    <template #icon>
-                      <Renew class="mirror" />
-                    </template>
-                  </n-spin>
-                </template>
-              </n-button>
-            </template>
-            {{ t("translate.switch.reloadTooltip") }}
-          </n-tooltip>
-        </n-space>
-        <n-space align="center">
-          <n-button tertiary type="info" class="mode-switch" @click="fileInput!.click();showModal=false">
-            <template #icon>
-              <VolumeFileStorage />
-            </template>
-            file
-          </n-button>
-          <span>
-            {{ t("translate.switch.explanation.file") }}
-          </span>
-        </n-space>
-        <n-space align="center">
-          <n-button tertiary type="info" :disabled="!store.saves.getItem(communication?.jsonUrl!)" class="mode-switch"
-            @click="to(`history`, communication?.jsonUrl!)">
-            <template #icon>
-              <HistoryIcon></HistoryIcon>
-            </template>
-            history
-          </n-button>
-          <span>
-            {{ t("translate.switch.explanation.history") }}
-          </span>
-        </n-space>
+    </n-input-group>
+  </div>
+  <div class="input-row">
+    <label> or </label>
+    <input type="file" @change="handleFileChange" class="file-selector" ref="fileInput" />
+  </div>
+  <n-modal v-model:show="showModal" preset="card" style="width: 600px; max-width: 100%;"
+    :title="t(`translate.switch.title`)">
+    <n-space vertical>
+      <n-space align="center">
+        <n-button tertiary type="info" class="mode-switch" @click="to(`raw`, communication?.jsonUrl!)">
+          <template #icon>
+            <Raw />
+          </template>
+          raw
+        </n-button>
+        <span>
+          {{ t("translate.switch.explanation.raw") }}
+        </span>
       </n-space>
-    </n-modal>
-    <CsvFilenameSetter 
-      :show-modal="showCsvFilenameSetter" :extra-info="csvFilenameSetterExtraInfo"
-      @close-csv-filename-setter="()=>{showCsvFilenameSetter=false}"
-      @save="()=>communication?.saveCsvToContent()"
-      >
-    </CsvFilenameSetter>
-    <!-- event from chapter change -->
-    <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl"/>
+      <n-space align="center">
+        <n-button tertiary type="info" :disabled="!translatedCsvUrl" class="mode-switch"
+          @click="to(`server`, translatedCsvUrl!)">
+          <template #icon>
+            <LogoGithub />
+          </template>
+          server
+        </n-button>
+        <span>
+          {{ t("translate.switch.explanation.server") }}
+        </span>
+        <n-tooltip :show-arrow="false" trigger="hover" v-if="!translatedCsvUrl">
+          <template #trigger>
+            <n-button circle size="tiny" @click="tryReloadStoryIndex">
+              <template #icon>
+                <n-spin :rotate="isRotating" :size="12">
+                  <template #icon>
+                    <Renew class="mirror" />
+                  </template>
+                </n-spin>
+              </template>
+            </n-button>
+          </template>
+          {{ t("translate.switch.reloadTooltip") }}
+        </n-tooltip>
+      </n-space>
+      <n-space align="center">
+        <n-button tertiary type="info" class="mode-switch" @click="fileInput!.click(); showModal = false">
+          <template #icon>
+            <VolumeFileStorage />
+          </template>
+          file
+        </n-button>
+        <span>
+          {{ t("translate.switch.explanation.file") }}
+        </span>
+      </n-space>
+      <n-space align="center">
+        <n-button tertiary type="info" :disabled="!store.saves.getItem(communication?.jsonUrl!)" class="mode-switch"
+          @click="to(`history`, communication?.jsonUrl!)">
+          <template #icon>
+            <HistoryIcon></HistoryIcon>
+          </template>
+          history
+        </n-button>
+        <span>
+          {{ t("translate.switch.explanation.history") }}
+        </span>
+      </n-space>
+    </n-space>
+  </n-modal>
+  <CsvFilenameSetter :show-modal="showCsvFilenameSetter" :extra-info="csvFilenameSetterExtraInfo"
+    @close-csv-filename-setter="() => { showCsvFilenameSetter = false }" @save="() => communication?.saveCsvToContent()">
+  </CsvFilenameSetter>
+  <!-- event from chapter change -->
+  <Communication :csvUrl="csvUrl" ref="communication" @load-data="loadDataFromUrl" />
   <div class="toolbar" v-if="!!communication?.data.length">
     <!-- <n-button-group> -->
     <n-space>
-      <div class="clickable" @click="showCsvFilenameSetter=true">
+      <div class="clickable" @click="showCsvFilenameSetter = true">
         <n-icon size="18">
           <RenameIcon />
         </n-icon><br>
         <n-button text type="default" :focusable="false"> {{ t("translate.tab.rename") }}</n-button>
       </div>
       <div class="clickable" @click="communication?.downloadData">
-        <n-icon size="18" >
+        <n-icon size="18">
           <TaskCompleteIcon />
         </n-icon>
         <br>
         <n-button text type="default" :focusable="false">{{ t("translate.tab.complete") }}</n-button>
       </div>
-      <div class="clickable" @click="showModal=true">
+      <div class="clickable" @click="showModal = true">
         <n-icon size="18">
           <Repeat />
         </n-icon><br>
@@ -297,7 +294,7 @@ function toTop() {
       </div>
     </n-space>
 
-  <!-- </n-button-group> -->
+    <!-- </n-button-group> -->
   </div>
 </template>
 <style scoped>

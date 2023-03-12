@@ -5,10 +5,7 @@
     <div v-if="isLoading" class="loading">
       <n-spin size="large"></n-spin>
     </div>
-    <IndexModal :show-modal="showIndexModal"
-      @close="()=>{showIndexModal=false}"
-      @change-chapter="changeChapter"
-    >
+    <IndexModal :show-modal="showIndexModal" @close="() => { showIndexModal = false }" @change-chapter="changeChapter">
     </IndexModal>
     <!-- the "communication" element contains the list of messages -->
     <div class="jump" v-if="!!data.length">
@@ -20,7 +17,7 @@
           ← {{ $t("control.previous") }}
         </n-button>
 
-        <n-button strong bordered type="default" :disabled="!eventsCollectionMeta" @click="showIndexModal=true">
+        <n-button strong bordered type="default" :disabled="!eventsCollectionMeta" @click="showIndexModal = true">
           <template #icon>
             <n-icon>
               <Document />
@@ -29,27 +26,28 @@
           {{ $t("control.index") }}
         </n-button>
         <n-button @click="previewStory" strong bordered class="preview-button">{{ $t("control.review") }}⤵</n-button>
-        
-        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
-        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >True End →</n-button>
+
+        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"
+          v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
+        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else>True End →</n-button>
       </n-button-group>
     </div>
-    <div class="event-block" v-if="iframeSrc">
-      <!-- <n-button-group>
+  <div class="event-block" v-if="iframeSrc">
+    <!-- <n-button-group>
         <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}
           <n-icon>
             <Launch />
           </n-icon>
         </n-button>
-        <n-button @click="previewStory" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤵</n-button>
-      </n-button-group> -->
+          <n-button @click="previewStory" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤵</n-button>
+        </n-button-group> -->
       <EventIframe :iframe-src="iframeSrc" v-if="isPreviewing"></EventIframe>
     </div>
-    
+
     <div class="communication" :class="{ 'scroll': hasPreviewed }" v-if="!!data.length">
       <!-- use the "v-for" directive to loop over the "data" array and render a "DialogueLine" component for each item -->
       <DialogueLine v-for="(item, index) in data" :key="index" :index="index" :id="item.id" :name="item.name"
-        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToContent"  />
+        :text="item.text" :trans="item.trans" :base="jsonUrl.split('.')[0]" ref="lines" @save="saveCsvToContent" />
       <TranslatorLine :name="'译者'" :trans="translator" ref="translator" @save="saveCsvToContent" />
       <!-- same buttons after whole communication -->
       <div class="jump" v-if="!!data.length && !hasPreviewed">
@@ -59,9 +57,10 @@
         <n-button @click="changeChapter(previousJsonUrl)" strong round type="info" :disabled="!previousJsonUrl" v-else>
           ← {{ $t("control.previous") }}
         </n-button>
-        
-        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"  v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
-        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else >True End →</n-button>
+
+        <n-button @click="changeChapter(nextJsonUrl)" strong round type="info" :disabled="!nextJsonUrl"
+          v-if="nextJsonUrl || !trueEndJsonUrl">{{ $t("control.next") }} →</n-button>
+        <n-button @click="changeChapter(trueEndJsonUrl)" strong round type="primary" v-else>True End →</n-button>
       </div>
     </div>
   </div>
@@ -115,7 +114,7 @@ export default defineComponent({
   setup() {
     const message = useMessage()
     return {
-      createSuccessMessage (content: string) {
+      createSuccessMessage(content: string) {
         message.success(content)
       },
       createWarningMessage(content: string) {
@@ -128,10 +127,10 @@ export default defineComponent({
       // store the parsed CSV data in a local variable
       data: [] as CsvData[],
       // jsonUrl: "", // e.g. produce_events/xxx.json
-      previousJsonUrl: null as null|string,
-      nextJsonUrl: null as null|string,
-      trueEndJsonUrl: null as null|string,
-      firstJsonUrl: null as null|string,
+      previousJsonUrl: null as null | string,
+      nextJsonUrl: null as null | string,
+      trueEndJsonUrl: null as null | string,
+      firstJsonUrl: null as null | string,
       translator: "",
       isLoading: false,
       isPreviewing: false,
@@ -165,10 +164,10 @@ export default defineComponent({
     }
   },
   methods: {
-    changeChapter(jsonUrl: string|null) {
+    changeChapter(jsonUrl: string | null) {
       if (!jsonUrl) return
       this.$emit("load-data", jsonUrl)
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
     },
     previewStory() {
       this.isPreviewing = !this.isPreviewing
@@ -207,7 +206,7 @@ export default defineComponent({
           store.csvFilename = decodeURI(url.split('/').reverse()[0])
           const text = await response.text();
           await this.loadDataFromCsvText(text)
-        } 
+        }
         else {
           alert("file format not supported: specify .csv or .json")
         }
@@ -265,7 +264,7 @@ export default defineComponent({
           if (element.id === "info") {
             this.jsonUrl = element.name
             this.updateRelatedChapterStatus()
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
               if (this.translatedCsvUrl && store.currentMode === DataSourceType.Raw) {
                 this.createSuccessMessage(this.$t('translate.remoteTranslationDetected'))
               }
@@ -336,8 +335,8 @@ export default defineComponent({
       // can be fed into btoa.
       return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
         function toSolidBytes(match, p1) {
-        return String.fromCharCode(Number('0x' + p1));
-      }));
+          return String.fromCharCode(Number('0x' + p1));
+        }));
     },
     saveCsvToContent() {
       console.log("saving")
