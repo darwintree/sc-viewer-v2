@@ -58,7 +58,7 @@ export default defineComponent({
       audio.addEventListener('ended', () => {
         // when the audio ends, update the audio button title to the default value
         this.isPlaying = false
-        audio.removeEventListener('ended', () => {})
+        audio.removeEventListener('ended', () => null)
       })
 
       // play the audio file

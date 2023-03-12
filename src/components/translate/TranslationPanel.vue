@@ -1,7 +1,7 @@
 // TranslationPanel.vue
 
 <script setup lang="ts">
-import Communication from './Communication.vue'
+import Communication from './CommunicationLogs.vue'
 import {
   NInput,
   NInputGroup,

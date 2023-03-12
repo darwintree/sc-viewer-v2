@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Avatar from './Avatar.vue' // import the "Avatar" component
+import Avatar from './DialogueAvatar.vue' // import the "Avatar" component
 import AudioLabel from './AudioLabel.vue'
 import {
   NButton,

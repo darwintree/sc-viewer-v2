@@ -6,8 +6,8 @@ import { messages } from './locale'
 import App from './App.vue'
 const TranslationPanel = () =>
   import('./components/translate/TranslationPanel.vue')
-const About = () => import('./components/About.vue')
-const User = () => import('./components/push/User.vue')
+const About = () => import('./components/AboutPanel.vue')
+const User = () => import('./components/push/UserPanel.vue')
 const AuthCallback = () => import('./components/push/AuthCallback.vue')
 const HomePage = () => import('./components/home/HomePage.vue')
 

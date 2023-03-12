@@ -68,7 +68,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { NButton, NIcon, NButtonGroup, NInput } from 'naive-ui'
-import Avatar from './Avatar.vue' // import the "Avatar" component
+import Avatar from './DialogueAvatar.vue' // import the "Avatar" component
 import { Edit } from '@vicons/carbon'
 
 // define the props for the component
