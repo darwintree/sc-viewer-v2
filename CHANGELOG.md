@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/3/12
+
+* use linter
+* move consts to `.env`
+
 ## 2023/3/11
 
 * feat: support filename editing and recommendation

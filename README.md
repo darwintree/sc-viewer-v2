@@ -1,10 +1,54 @@
 # README
 
-## installation
+## Quickstart
+
+### install dependencies
 
 ``` bash
 yarn
+```
+
+### build
+
+``` bash
+yarn build
+```
+
+### development
+
+``` bash
 yarn dev
+```
+
+The app will run on port `5173`
+
+#### development vscode plugins
+
+- volar (refer to official documents for guides)
+- prettier
+
+#### configuration
+
+Configure `.env` for belowing consts
+
+```js
+// assets server: used for voice, raw json(including chapter navigation), index thumb
+const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
+// name service server: used for index, name suggestion
+const NAME_SERVICE_SERVER = import.meta.env.VITE_NAME_SERVICE_SERVER
+
+// transaction index: used to query if translation exists
+const TRANSLATION_INDEX_URL = import.meta.env.VITE_TRANSLATION_INDEX_URL
+// translation dir: used to fetch translation from translation query result
+const TRANSLATION_DIR = import.meta.env.VITE_TRANSLATION_DIR
+
+// github raw proxy: used as raw.githubusercontent.com proxy
+const GITHUB_RAW_PROXY = import.meta.env.VITE_GITHUB_RAW_PROXY
+// whether uses github raw proxy
+const useGithubProxy = true
+
+// event viewer site: used as iframe source to review story
+const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 ```
 
 ## TODOs
