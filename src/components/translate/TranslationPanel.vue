@@ -82,9 +82,10 @@ async function loadDataFromLocation() {
       query: {
         mode: store.currentMode,
       },
-      hash: `${decodeURIComponent(route.hash)}`,
+      hash: route.hash,
     })
     const id = decodeURIComponent(route.hash.substring(1))
+    csvUrl.value = id
     nextTick(() => communication.value?.loadDataFromLocalStorage(id))
   }
   // TODO: specify certain mode
@@ -94,7 +95,7 @@ async function loadDataFromLocation() {
 }
 
 async function loadDataFromUrl(url: string) {
-  csvUrl.value = url
+  csvUrl.value = decodeURIComponent(url)
   if (url.endsWith('.csv')) {
     // a url ends with .csv is expected to be a github url
     store.currentMode = DataSourceType.Server
@@ -109,7 +110,7 @@ async function loadDataFromUrl(url: string) {
   }
   router.replace({
     path: route.path,
-    hash: decodeURIComponent(`#${url}`),
+    hash: route.hash,
     query: {
       mode: store.currentMode.toString(),
     },
@@ -143,7 +144,6 @@ function handleFileChange(e: Event) {
 }
 
 function confirm() {
-  csvUrl.value = decodeURI(csvUrl.value)
   loadDataFromUrl(csvUrl.value)
 }
 

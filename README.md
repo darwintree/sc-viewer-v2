@@ -78,6 +78,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 - [ ] modal font
 - [x] tips
 - [ ] optimize chapter jumping logic
+- [ ] original translation dir
 
 ### High Priority
 

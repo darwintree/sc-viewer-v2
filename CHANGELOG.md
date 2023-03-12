@@ -4,6 +4,8 @@
 
 * use linter
 * move consts to `.env`
+* update: github extension
+* fix: csv url display
 
 ## 2023/3/11
 
