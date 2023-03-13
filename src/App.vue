@@ -35,11 +35,11 @@ const options = availableLocales.map((item) => {
               :to="{ path: '/about', query: route.query, hash: route.hash }"
               >{{ t('tab.About') }}</router-link
             >
-            |
+            <!-- |
             <router-link
               :to="{ path: '/user', query: route.query, hash: route.hash }"
               >{{ t('tab.Github') }}</router-link
-            >
+            > -->
           </nav>
           <div class="locale-changer">
             <n-select v-model:value="locale" :options="options" size="small" />
