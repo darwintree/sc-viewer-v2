@@ -195,7 +195,14 @@ async function initTranslatedStoryIndex() {
 
 function queryTranslatedCsv(jsonUrl: string): string | null {
   if (!translatedStoryIndex[jsonUrl]) return null
-  return `${TRANSLATION_DIR}/${translatedStoryIndex[jsonUrl]}.csv`
+
+  const tmp = translatedStoryIndex[jsonUrl]
+    .split('/')
+    .filter(Boolean)
+    .map(encodeURIComponent)
+    .join('/')
+  console.log(`${TRANSLATION_DIR}/${tmp}`)
+  return `${TRANSLATION_DIR}/${tmp}`
 }
 
 async function queryCollectionMetaInfo(jsonUrl: string) {
