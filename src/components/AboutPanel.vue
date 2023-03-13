@@ -7,7 +7,7 @@
     </div>
     <div>
       <a href="https://static.strawberrytree.top/viewer-button.user.js"
-        >Github Translate Viewer Link Extension</a
+        >Browser Extension: Add link to github csv pages</a
       >
     </div>
     <div>
