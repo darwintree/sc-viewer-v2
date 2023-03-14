@@ -268,7 +268,7 @@ const createColumns = (): any => {
       align: 'center',
     },
     {
-      title: 'translated',
+      title: t('list.translatedStatus.title'),
       render(row: EventsCollectionMeta) {
         const translatedStatus = computed(() => {
           if (row.communications.length === 0)

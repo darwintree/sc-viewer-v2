@@ -72,6 +72,7 @@ const messages = {
       name: 'Name',
       openAt: 'Release',
       translatedStatus: {
+        title: 'Translation',
         all: 'Translated',
         part: 'Partially Translated',
         no: 'Not Translated',
@@ -157,6 +158,7 @@ const messages = {
       name: '名称',
       openAt: '实装',
       translatedStatus: {
+        title: '翻译',
         all: '已翻译',
         part: '部分翻译',
         no: '未翻译',
