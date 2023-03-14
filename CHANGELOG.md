@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/3/15
+
+* feat: translation status tag for list panel on PC
+
 ## 2023/3/14
 
 * feat: list panel

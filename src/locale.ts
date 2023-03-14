@@ -71,6 +71,12 @@ const messages = {
       icon: 'Icon',
       name: 'Name',
       openAt: 'Release',
+      translatedStatus: {
+        all: 'Translated',
+        part: 'Partially Translated',
+        no: 'Not Translated',
+        empty: 'No Communication',
+      },
     },
   },
   zh: {
@@ -150,6 +156,12 @@ const messages = {
       icon: '图标',
       name: '名称',
       openAt: '实装',
+      translatedStatus: {
+        all: '已翻译',
+        part: '部分翻译',
+        no: '未翻译',
+        empty: '无剧情',
+      },
     },
   },
 }

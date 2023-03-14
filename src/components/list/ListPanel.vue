@@ -40,22 +40,23 @@
 <script setup lang="ts">
 import { h, ref, computed, onMounted } from 'vue'
 import {
-  NButton,
   NDataTable,
   NSelect,
   NImage,
   NInputGroup,
   NInputGroupLabel,
+  NTag,
 } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { DataSourceType } from '../../store'
+import { DataSourceType, store } from '../../store'
 import { EventsCollectionMeta, IndexData } from '../../helper/meta-interfaces'
 import {
   getRemoteImgPath,
   unitList,
   characters,
   NAME_SERVICE_SERVER,
+  queryTranslatedCsv,
 } from '../../helper/path'
 
 enum EventCategory {
@@ -267,6 +268,45 @@ const createColumns = (): any => {
       align: 'center',
     },
     {
+      title: 'translated',
+      render(row: EventsCollectionMeta) {
+        const translatedStatus = computed(() => {
+          if (row.communications.length === 0)
+            return {
+              type: 'default',
+              text: t('list.translatedStatus.empty'),
+            }
+          const translatedUrls = row.communications.map((communication) =>
+            queryTranslatedCsv(communication.jsonPath)
+          )
+          if (translatedUrls.every(Boolean))
+            return {
+              type: 'success',
+              text: t('list.translatedStatus.all'),
+            }
+          if (translatedUrls.some(Boolean))
+            return {
+              type: 'warning',
+              text: t('list.translatedStatus.part'),
+            }
+          return {
+            type: 'error',
+            text: t('list.translatedStatus.no'),
+          }
+        })
+        return h(
+          NTag as any,
+          {
+            type: translatedStatus.value.type,
+          },
+          {
+            default: () => translatedStatus.value.text,
+          }
+        )
+      },
+      align: 'center',
+    },
+    {
       title: t('list.openAt'),
       key: 'openAt',
       defaultSortOrder: 'descend',
@@ -281,6 +321,9 @@ const createColumns = (): any => {
       align: 'center',
     },
   ]
+  if (store.isMobile) {
+    base.splice(2, 1)
+  }
   return base
 }
 
