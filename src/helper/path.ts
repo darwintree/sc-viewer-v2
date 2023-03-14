@@ -306,6 +306,7 @@ async function metaInfoFromGithubCsvUrl(
 export {
   unitList,
   characters,
+  NAME_SERVICE_SERVER,
   getAvatarPath,
   getAudioPath,
   getQueryVariable,

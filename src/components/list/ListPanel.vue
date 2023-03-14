@@ -49,13 +49,14 @@ import {
 } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { store, DataSourceType } from '../../store'
+import { DataSourceType } from '../../store'
+import { EventsCollectionMeta, IndexData } from '../../helper/meta-interfaces'
 import {
-  EventsCollectionMeta,
-  CommunicationMeta,
-  IndexData,
-} from '../../helper/meta-interfaces'
-import { getRemoteImgPath, unitList, characters } from '../../helper/path'
+  getRemoteImgPath,
+  unitList,
+  characters,
+  NAME_SERVICE_SERVER,
+} from '../../helper/path'
 
 enum EventCategory {
   produceIdolEvents = 'produceIdolEvents',
@@ -181,7 +182,7 @@ const filterOptions = computed(() => {
 })
 
 onMounted(async () => {
-  const res = await fetch('./index.json')
+  const res = await fetch(NAME_SERVICE_SERVER)
   if (!res.ok) {
     return
   }

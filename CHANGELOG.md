@@ -1,5 +1,11 @@
 # Changelog
 
+## 2023/3/14
+
+* feat: list panel
+* hide github panel
+* update: translation tooltip
+
 ## 2023/3/12
 
 * use linter
