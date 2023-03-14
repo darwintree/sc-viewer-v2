@@ -61,7 +61,7 @@ onMounted(() => {
 async function loadChangelog() {
   const res = await fetch('./CHANGELOG.html')
   if (!res.ok) {
-    console.log('CHNANGELOG Missing')
+    console.error('CHNANGELOG Missing')
     return
   }
   const text = await res.text()
@@ -84,7 +84,7 @@ function visitedAfterUpdate(
 async function loadGameUpdates() {
   const res = await fetch('./GAMEUPDATES.html')
   if (!res.ok) {
-    console.log('CHNANGELOG Missing')
+    console.error('CHNANGELOG Missing')
     return
   }
   const text = await res.text()

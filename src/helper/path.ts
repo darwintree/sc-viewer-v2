@@ -90,7 +90,7 @@ function extractInfoFromUrl(fileUrl: string) {
         filePath += splits[i]
       }
     }
-    console.log({
+    console.table({
       path: filePath,
       owner: splits[3],
       repo: splits[4],
@@ -148,7 +148,7 @@ function changedJsonUrlByNumber(jsonUrl: string, change: number) {
     const index = Number(splits[1].split('.')[0])
     return `${splits[0]}/${index + change}.json`
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return null
   }
 }
@@ -180,7 +180,7 @@ const translatedStoryIndex: {
 async function initTranslatedStoryIndex() {
   const res = await fetch(getGithubRawResourcePath(TRANSLATION_INDEX_URL))
   if (!res.ok) {
-    console.log('fetch fail')
+    console.error('fetch fail')
     return
   }
   const text = await res.text()
@@ -198,7 +198,6 @@ function queryTranslatedCsv(jsonUrl: string): string | null {
     .filter(Boolean)
     .map(encodeURIComponent)
     .join('/')
-  console.log(`${TRANSLATION_DIR}/${tmp}`)
   return `${TRANSLATION_DIR}/${tmp}`
 }
 
@@ -209,7 +208,7 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
     const res = await axios(`${NAME_SERVICE_SERVER}/${prefix}`)
     return res.data as EventsCollectionMeta
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return null
   }
 }
@@ -239,7 +238,7 @@ async function trueEndJsonUrl(jsonUrl: string) {
     const trueEndIndex = `${index.substring(0, 7)}11`
     return `${splits[0]}/${trueEndIndex}.json`
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return null
   }
 }
@@ -269,7 +268,6 @@ async function metaInfoFromJsonPathUrl(
   const response = await fetch(realUrl)
   if (!response.ok) {
     alert('load failed')
-    console.log(response)
     throw new Error('Failed to load json data')
   }
   const jsonText = await response.text()

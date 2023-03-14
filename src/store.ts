@@ -123,7 +123,7 @@ async function tryLogin() {
     store.setAvatarUrl(userInfo.avatar_url)
   } catch (e) {
     alert(e)
-    console.log(e)
+    console.error(e)
     logOut()
   }
   store.isLoading = false
