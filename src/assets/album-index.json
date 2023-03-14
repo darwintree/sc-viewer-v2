@@ -1,5 +1,11 @@
 {
   "units": {
+    "283 PRO": [
+      "プロデューサー",
+      "はづき",
+      "社長",
+      "283"
+    ],
     "イルミネーションスターズ": [
       "灯織",
       "真乃",
@@ -39,14 +45,130 @@
       "にちか",
       "美琴"
     ],
-    "283_production": [
-      "プロデューサー",
-      "はづき",
-      "社長",
-      "283"
-    ],
     "luca": [
       "ルカ"
     ]
-  }
+  },
+  "characters": [
+    {
+      "firstName": "真乃",
+      "id": "1"
+    },
+    {
+      "firstName": "灯織",
+      "id": "2"
+    },
+    {
+      "firstName": "めぐる",
+      "id": "3"
+    },
+    {
+      "firstName": "恋鐘",
+      "id": "4"
+    },
+    {
+      "firstName": "摩美々",
+      "id": "5"
+    },
+    {
+      "firstName": "咲耶",
+      "id": "6"
+    },
+    {
+      "firstName": "結華",
+      "id": "7"
+    },
+    {
+      "firstName": "霧子",
+      "id": "8"
+    },
+    {
+      "firstName": "果穂",
+      "id": "9"
+    },
+    {
+      "firstName": "智代子",
+      "id": "10"
+    },
+    {
+      "firstName": "樹里",
+      "id": "11"
+    },
+    {
+      "firstName": "凛世",
+      "id": "12"
+    },
+    {
+      "firstName": "夏葉",
+      "id": "13"
+    },
+    {
+      "firstName": "甘奈",
+      "id": "14"
+    },
+    {
+      "firstName": "甜花",
+      "id": "15"
+    },
+    {
+      "firstName": "千雪",
+      "id": "16"
+    },
+    {
+      "firstName": "あさひ",
+      "id": "17"
+    },
+    {
+      "firstName": "冬優子",
+      "id": "18"
+    },
+    {
+      "firstName": "愛依",
+      "id": "19"
+    },
+    {
+      "firstName": "透",
+      "id": "20"
+    },
+    {
+      "firstName": "円香",
+      "id": "21"
+    },
+    {
+      "firstName": "小糸",
+      "id": "22"
+    },
+    {
+      "firstName": "雛菜",
+      "id": "23"
+    },
+    {
+      "firstName": "にちか",
+      "id": "24"
+    },
+    {
+      "firstName": "美琴",
+      "id": "25"
+    },
+    {
+      "firstName": "ルカ",
+      "id": "30"
+    },
+    {
+      "firstName": "プロデューサー",
+      "id": "31"
+    },
+    {
+      "firstName": "はづき",
+      "id": "32"
+    },
+    {
+      "firstName": "社長",
+      "id": "33"
+    },
+    {
+      "firstName": "283",
+      "id": "34"
+    }
+  ]
 }

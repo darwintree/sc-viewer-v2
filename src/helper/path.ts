@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { units } from '../assets/album-index.json'
+import { units, characters } from '../assets/album-index.json'
 import { reactive } from 'vue'
 import { EventsCollectionMeta, CommunicationDataMeta } from './meta-interfaces'
 import dataToCSV from './convert'
@@ -22,17 +22,14 @@ const useGithubProxy = true
 // event viewer site: used as iframe source to review story
 const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 
-let idolList: string[] = []
 const unitList: string[] = []
 
 for (const unit of Object.keys(units)) {
   unitList.push(unit)
-  const idols = (units as any)[unit]
-  idolList = idolList.concat(idols)
 }
 
 function getAvatarPath(name: string) {
-  if (idolList.indexOf(name) >= 0) {
+  if (characters.some((character) => character.firstName === name)) {
     return `/icon/${name}.webp`
   }
   return '/icon/dummy.webp'
@@ -307,6 +304,8 @@ async function metaInfoFromGithubCsvUrl(
 }
 
 export {
+  unitList,
+  characters,
   getAvatarPath,
   getAudioPath,
   getQueryVariable,

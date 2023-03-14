@@ -10,6 +10,7 @@ const About = () => import('./components/AboutPanel.vue')
 const User = () => import('./components/push/UserPanel.vue')
 const AuthCallback = () => import('./components/push/AuthCallback.vue')
 const HomePage = () => import('./components/home/HomePage.vue')
+const ListPanel = () => import('./components/list/ListPanel.vue')
 
 // create a new router instance
 const router = createRouter({
@@ -35,6 +36,10 @@ const router = createRouter({
     {
       path: '/auth',
       component: AuthCallback,
+    },
+    {
+      path: '/list',
+      component: ListPanel,
     },
   ],
 })

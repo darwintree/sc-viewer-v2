@@ -10,6 +10,7 @@ const messages = {
       Home: 'Home',
       Translate: 'Translate',
       About: 'About',
+      List: 'List',
     },
     control: {
       first: 'First',
@@ -66,6 +67,11 @@ const messages = {
       updates: 'Game Updates',
       changelog: 'Changelog',
     },
+    list: {
+      icon: 'Icon',
+      name: 'Name',
+      openAt: 'Release',
+    },
   },
   zh: {
     common: {
@@ -78,6 +84,7 @@ const messages = {
       Home: '主页',
       Translate: '翻译',
       About: '关于',
+      List: '列表',
     },
     control: {
       first: '回到最初',
@@ -138,6 +145,11 @@ const messages = {
       switch:
         '在翻译文件加载后，可以点击URL输入行最右侧的按钮来切换不同版本的文件',
       extension: '可以安装浏览器扩展以便快速从github页面导航至本网站',
+    },
+    list: {
+      icon: '图标',
+      name: '名称',
+      openAt: '实装',
     },
   },
 }

@@ -19,6 +19,10 @@ interface CommunicationDataMeta {
   text: string
 }
 
+interface IndexData {
+  [eventsCategory: string]: EventsCollectionMeta[]
+}
+
 function suggestedCommunicationName(communicationMeta: CommunicationMeta) {
   if (communicationMeta.name) {
     return `${communicationMeta.name}-${communicationMeta.title}`
@@ -26,5 +30,10 @@ function suggestedCommunicationName(communicationMeta: CommunicationMeta) {
   return `${communicationMeta.title}`
 }
 
-export type { EventsCollectionMeta, CommunicationMeta, CommunicationDataMeta }
+export type {
+  EventsCollectionMeta,
+  CommunicationMeta,
+  CommunicationDataMeta,
+  IndexData,
+}
 export { suggestedCommunicationName }
