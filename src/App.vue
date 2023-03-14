@@ -1,6 +1,7 @@
 // App.vue
 
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { NSelect, NMessageProvider, NDialogProvider } from 'naive-ui'
@@ -13,6 +14,16 @@ const options = availableLocales.map((item) => {
     label: item,
     value: item,
   }
+})
+
+onMounted(() => {
+  if (localStorage.getItem('locale')) {
+    locale.value = localStorage.getItem('locale')!
+  }
+})
+
+watch(locale, (newVal) => {
+  localStorage.setItem('locale', newVal)
 })
 </script>
 <template>
