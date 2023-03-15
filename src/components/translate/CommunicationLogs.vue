@@ -75,7 +75,7 @@
         >
       </n-button-group>
     </div>
-    <div v-if="iframeSrc" class="event-block">
+    <div class="event-block">
       <!-- <n-button-group>
         <n-button @click="openEvent" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}
           <n-icon>
@@ -84,7 +84,7 @@
         </n-button>
           <n-button @click="previewStory" tertiary strong bordered round class="preview-button">{{ $t("control.review") }}⤵</n-button>
         </n-button-group> -->
-      <EventIframe v-if="isPreviewing" :iframe-src="iframeSrc"></EventIframe>
+      <EventIframe v-if="isPreviewing" ref="eventIframe"></EventIframe>
     </div>
 
     <div
@@ -139,6 +139,7 @@ import {
   queryRelated,
   metaInfoFromJsonPathUrl,
   metaInfoFromGithubCsvUrl,
+  jsonTextFromPathUrl,
 } from '../../helper/path'
 import {
   CsvDataLine,
@@ -199,12 +200,6 @@ export default defineComponent({
         store.jsonUrl = newVal
       },
     },
-    iframeSrc() {
-      if (!this.jsonUrl) return null
-      const eventType = this.jsonUrl.split('/')[0]
-      const eventId = this.jsonUrl.split('/')[1].split('.')[0]
-      return `https://event.strawberrytree.top/?eventType=${eventType}&eventId=${eventId}`
-    },
     translatedCsvUrl() {
       return queryTranslatedCsv(this.jsonUrl)
     },
@@ -231,13 +226,22 @@ export default defineComponent({
         behavior: 'smooth',
       })
     },
-    previewStory() {
+    async previewStory() {
       this.isPreviewing = !this.isPreviewing
       this.hasPreviewed = true
+      if (!this.isPreviewing) return
+      const text = await jsonTextFromPathUrl(this.jsonUrl)
+      const eventIframe = this.$refs.eventIframe as InstanceType<
+        typeof EventIframe
+      >
+      eventIframe.postMessageOnPlayer({
+        iframeJson: JSON.parse(text),
+        csvText: this.getCurrentDataString(),
+      })
     },
-    openEvent() {
-      window.open(this.iframeSrc!)
-    },
+    // openEvent() {
+    //   window.open(this.iframeSrc!)
+    // },
     loadDataFromLocalStorage(jsonUrl: string) {
       this.isLoading = true
       const text = store.saves.saveDict[jsonUrl].csv

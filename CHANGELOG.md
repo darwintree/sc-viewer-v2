@@ -3,6 +3,7 @@
 ## 2023/3/15
 
 * feat: translation status tag for list panel on PC
+* feat: post message (json and csv) on iframe
 
 ## 2023/3/14
 

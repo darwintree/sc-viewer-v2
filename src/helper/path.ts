@@ -255,6 +255,23 @@ async function firstJsonUrl(jsonUrl: string) {
 // init index
 initTranslatedStoryIndex()
 
+async function jsonTextFromPathUrl(url: string): Promise<string> {
+  const splits = url.split('/').reverse()
+  const relPath = `${splits[1]}/${splits[0]}`
+  let realUrl = url
+  if (!url.startsWith('https://')) {
+    // get remote json source path from relative path
+    realUrl = getJsonPath(relPath)
+  }
+  const response = await fetch(realUrl)
+  if (!response.ok) {
+    alert('load failed')
+    throw new Error('Failed to load json data')
+  }
+  const jsonText = await response.text()
+  return jsonText
+}
+
 async function metaInfoFromJsonPathUrl(
   url: string
 ): Promise<CommunicationDataMeta> {
@@ -323,4 +340,5 @@ export {
   queryCollectionMetaInfo as queryRelated,
   metaInfoFromJsonPathUrl,
   metaInfoFromGithubCsvUrl,
+  jsonTextFromPathUrl,
 }

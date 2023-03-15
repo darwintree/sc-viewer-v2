@@ -1,19 +1,73 @@
 <template>
-  <div class="aspect-ratio">
-    <iframe :src="iframeSrc" frameborder="0"></iframe>
+  <div ref="frame" class="aspect-ratio">
+    <iframe
+      ref="player"
+      :hidden="!loaded"
+      :src="iframeSrc"
+      frameborder="0"
+    ></iframe>
+    <NSkeleton v-if="!loaded" :height="skeletonHeight"></NSkeleton>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { NSkeleton } from 'naive-ui'
 
-export default defineComponent({
-  props: {
-    iframeSrc: {
-      type: String,
-      required: true,
-    },
-  },
+onMounted(() => {
+  window.onmessage = (event) => {
+    console.log(event)
+    if (event.data.eventViewerIframeLoaded) {
+      loaded.value = true
+    }
+  }
+})
+
+const frame = ref<InstanceType<typeof HTMLDivElement> | null>(null)
+
+const skeletonHeight = computed(() => {
+  if (!frame?.value) {
+    return 0
+  }
+  return (frame.value.clientWidth * 640) / 1136
+})
+
+const loaded = ref(false)
+
+const iframeSrc = ref(undefined as string | undefined)
+
+const player = ref<InstanceType<typeof HTMLIFrameElement> | null>(null)
+
+function postMessageOnPlayer({
+  iframeJson,
+  csvText,
+}: {
+  iframeJson: object
+  csvText: string
+}) {
+  iframeSrc.value = `https://event.strawberrytree.top/?iframeMode=1`
+  if (loaded.value) {
+    player?.value?.contentWindow?.postMessage(
+      {
+        iframeJson,
+        csvText,
+      },
+      '*'
+    )
+
+    return
+  }
+  window.setTimeout(() => {
+    postMessageOnPlayer({
+      iframeJson,
+      csvText,
+    })
+  }, 1000)
+}
+
+defineExpose({
+  postMessageOnPlayer,
+  iframeSrc,
 })
 </script>
 
