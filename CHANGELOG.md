@@ -3,6 +3,7 @@
 ## 2023/3/16
 
 * update: change list page size to 5
+* feat: complete button to dropdown menu
 
 ## 2023/3/15
 

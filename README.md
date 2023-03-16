@@ -57,8 +57,8 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 
 - [x] index
 - [ ] Use github interface to push csv directly
-  - [ ] use popselect component for download csv
-    - [ ] download or push to github
+  - [x] use dropdown component for download csv
+    - [x] download or push to github
   - [ ] Use N-Step for pushing to Github
   - [ ] fix no github push panel problem
 - [ ] machine translate

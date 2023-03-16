@@ -13,6 +13,7 @@ import {
   NSpin,
   NBadge,
   useMessage,
+  NDropdown,
 } from 'naive-ui'
 import {
   LogoGithub,
@@ -21,8 +22,10 @@ import {
   Renew,
   Repeat,
   UpToTop,
+  Download,
 } from '@vicons/carbon'
-import { ref, onMounted, nextTick, computed, watch } from 'vue'
+import { ref, onMounted, nextTick, computed, watch, h } from 'vue'
+import type { Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { DataSourceType, store } from '../../store'
@@ -42,6 +45,36 @@ const message = useMessage()
 const routeQuery = computed(() => {
   return route.query
 })
+
+const renderIcon = (icon: Component) => {
+  return () => {
+    return h(NIcon, null, {
+      default: () => h(icon),
+    })
+  }
+}
+
+const completeOptions = [
+  {
+    label: '推送',
+    key: 'push',
+    disabled: true,
+    icon: renderIcon(LogoGithub),
+  },
+  {
+    label: '下载',
+    key: 'download',
+    icon: renderIcon(Download),
+  },
+]
+
+const showCompleteDropdown = ref(false)
+
+function handleCompleteSelect(key: string) {
+  if (key === 'download') {
+    communication?.value?.downloadData()
+  }
+}
 
 const csvUrl = ref('')
 const communication = ref<InstanceType<typeof Communication> | null>(null)
@@ -289,14 +322,14 @@ function toTop() {
           {{ t('translate.switch.reloadTooltip') }}
         </n-tooltip>
       </n-space>
-      <n-space align="center">
+      <!-- <n-space align="center">
         <n-button
           tertiary
           type="info"
           class="mode-switch"
           @click="
             // eslint-disable-next-line prettier/prettier
-            fileInput!.click();
+            fileInput!.click()
             showSwitchModal = false
           "
         >
@@ -308,7 +341,7 @@ function toTop() {
         <span>
           {{ t('translate.switch.explanation.file') }}
         </span>
-      </n-space>
+      </n-space> -->
       <n-space align="center">
         <n-button
           tertiary
@@ -354,14 +387,22 @@ function toTop() {
           {{ t('translate.tab.rename') }}</n-button
         >
       </div>
-      <div class="clickable" @click="communication?.downloadData">
+      <div class="clickable" @click="showCompleteDropdown = true">
         <n-icon size="18">
           <TaskCompleteIcon />
         </n-icon>
         <br />
-        <n-button text type="default" :focusable="false">{{
-          t('translate.tab.complete')
-        }}</n-button>
+        <n-dropdown
+          :show="showCompleteDropdown"
+          text
+          type="default"
+          :focusable="false"
+          :options="completeOptions"
+          @select="handleCompleteSelect"
+          @clickoutside="showCompleteDropdown = false"
+        >
+          {{ t('translate.tab.complete') }}
+        </n-dropdown>
       </div>
       <div class="clickable" @click="showSwitchModal = true">
         <n-icon size="18"> <Repeat /> </n-icon><br />
