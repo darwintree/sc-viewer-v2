@@ -91,7 +91,7 @@ function filteredCommunicationMetaList(
 }
 
 const pagination = ref({
-  pageSize: 6,
+  pageSize: 5,
 })
 
 type FilterSelectOption = {
