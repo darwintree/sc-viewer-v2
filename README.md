@@ -55,10 +55,6 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 
 ### New Feature
 
-- [ ] file name edit
-  - [x] file name suggest
-  - [x] file name input
-  - [ ] force select file name when first save / download
 - [x] index
 - [ ] Use github interface to push csv directly
   - [ ] use popselect component for download csv
@@ -66,8 +62,8 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
   - [ ] Use N-Step for pushing to Github
   - [ ] fix no github push panel problem
 - [ ] machine translate
-- [ ] render translation to review
-- [ ] `make deploy` command
+- [x] render translation to review
+- [x] `make deploy` command
 
 ### Improvements
 
@@ -80,6 +76,10 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 - [ ] optimize chapter jumping logic
 - [ ] original translation dir
 - [ ] list filter with icon
+- [ ] file name edit
+  - [x] file name suggest
+  - [x] file name input
+  - [ ] force select file name when first save / download
 
 ### High Priority
 
@@ -105,7 +105,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
     - [ ] remove specific item
     - [x] remove all
 
-- [ ] Error process for remote json files
+- [x] Error process for remote json files
 - [x] Check select label
 - [ ] p's voice (sound effect/tts)
 - [ ] Hide preview until login

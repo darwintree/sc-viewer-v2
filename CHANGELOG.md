@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/3/16
+
+* update: change list page size to 5
+
 ## 2023/3/15
 
 * feat: translation status tag for list panel on PC
