@@ -7,8 +7,8 @@ import App from './App.vue'
 const TranslationPanel = () =>
   import('./components/translate/TranslationPanel.vue')
 const About = () => import('./components/AboutPanel.vue')
-const User = () => import('./components/push/UserPanel.vue')
-const AuthCallback = () => import('./components/push/AuthCallback.vue')
+// const User = () => import('./components/push/UserPanel.vue')
+const AuthCallback = () => import('./components/AuthCallback.vue')
 const HomePage = () => import('./components/home/HomePage.vue')
 const ListPanel = () => import('./components/list/ListPanel.vue')
 
@@ -29,10 +29,10 @@ const router = createRouter({
       path: '/about',
       component: About,
     },
-    {
-      path: '/user',
-      component: User,
-    },
+    // {
+    //   path: '/user',
+    //   component: User,
+    // },
     {
       path: '/auth',
       component: AuthCallback,
