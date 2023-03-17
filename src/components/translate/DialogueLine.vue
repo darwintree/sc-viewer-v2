@@ -45,7 +45,7 @@
           v-else
           class="edit-container"
           @keydown.enter.exact="addLineBreak"
-          @keydown.shift.enter="saveEdit"
+          @keydown.shift.enter="trySaveEdit"
           @keydown.esc="cancelEdit"
         >
           <n-input
@@ -219,6 +219,7 @@ export default defineComponent({
           content: this.$t('translate.overwriteDetails'),
           positiveText: this.$t('common.confirm'),
           negativeText: this.$t('common.cancel'),
+          autoFocus: false,
           onPositiveClick: () => {
             this.saveEdit()
             this.changeToHistoryMode()
