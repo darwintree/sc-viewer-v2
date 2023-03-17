@@ -96,7 +96,7 @@
       <DialogueLine
         v-for="(item, index) in data"
         :id="item.id"
-        :key="index"
+        :key="index + item.text"
         ref="lines"
         :index="index"
         :name="item.name"
