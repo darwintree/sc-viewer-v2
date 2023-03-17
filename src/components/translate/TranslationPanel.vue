@@ -123,27 +123,28 @@ async function loadDataFromLocation() {
   }
   // TODO: specify certain mode
   else {
-    nextTick(() => loadDataFromUrl(route.hash.substring(1)))
+    nextTick(() => loadDataFromEncodedUrl(route.hash.substring(1)))
   }
 }
 
-async function loadDataFromUrl(url: string) {
-  csvUrl.value = decodeURIComponent(url)
-  if (url.endsWith('.csv')) {
+async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
+  // csvUrl.value = decodeURIComponent(encodedSrcUrl)
+  csvUrl.value = encodedSrcUrl
+  if (csvUrl.value.endsWith('.csv')) {
     // a url ends with .csv is expected to be a github url
     store.currentMode = DataSourceType.Server
-    await communication.value?.loadDataFromGithubCsvUrl(url)
-  } else if (url.endsWith('.json')) {
+    await communication.value?.loadDataFromGithubCsvUrl(encodedSrcUrl)
+  } else if (csvUrl.value.endsWith('.json')) {
     // a url ends with .csv is expected to be a raw json
     store.currentMode = DataSourceType.Raw
-    await communication.value?.loadDataFromJsonPathUrl(url)
+    await communication.value?.loadDataFromJsonPathUrl(encodedSrcUrl)
   } else {
-    console.log(url)
+    console.log(csvUrl.value)
     alert('unexpected url: should ends with .csv or .json')
   }
   router.replace({
     path: route.path,
-    hash: route.hash,
+    hash: `#${encodedSrcUrl}`,
     query: {
       mode: store.currentMode.toString(),
     },
@@ -177,7 +178,9 @@ function handleFileChange(e: Event) {
 }
 
 function confirm() {
-  loadDataFromUrl(csvUrl.value)
+  // assume this url is directly copied from address bar
+  // so this is an encoded url
+  loadDataFromEncodedUrl(csvUrl.value)
 }
 
 async function to(mode: string, id: string) {
@@ -376,7 +379,7 @@ function toTop() {
   <Communication
     ref="communication"
     :csv-url="csvUrl"
-    @load-data="loadDataFromUrl"
+    @load-data="loadDataFromEncodedUrl"
   />
   <div v-if="!!communication?.data.length" class="toolbar">
     <!-- <n-button-group> -->

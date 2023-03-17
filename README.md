@@ -72,10 +72,13 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 - [ ] Util bar hiding
 - [ ] recover review-story-in-new-page button user js
 - [ ] modal font
-- [x] tips
+- [ ] tips
 - [ ] optimize chapter jumping logic
 - [ ] original translation dir
 - [ ] list filter with icon
+- [ ] perf: CSV display for complex csv name
+  - [ ] test: direct location redirect
+  - [ ] confirm button redirect (https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/283%E6%B4%BB%E5%8A%A8%E5%89%A7%E6%83%85/%23%EF%BC%92%EF%BC%98%EF%BC%93%E3%82%92%E3%81%B2%E3%82%8D%E3%81%92%E3%82%88%E3%81%86/%E7%AC%AC1%E8%A9%B1-MEETING.csv)
 - [ ] file name edit
   - [x] file name suggest
   - [x] file name input
@@ -113,6 +116,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 ### example url inputs
 
 - `http://127.0.0.1:5173/translate#https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/七草にちか/【あっかい】七草にちか/1%20ポップ'n%20pop.csv`
+- https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/283活动剧情/#２８３をひろげよう/第1話-MEETING.csv
 - `http://127.0.0.1:5173/translate#produce_events/100200506.json`
 
 ## test cases
