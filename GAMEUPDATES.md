@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/3/17
+
+* [kogane-p-ssr](/translate#produce_events/200401501.json)
+* [hiori-p-ssr](/translate#produce_events/200201601.json)
+* [hinana-p-ssr](/translate#produce_events/202301001.json)
+* [ash-p-sr](/translate#produce_events/201701501.json)
+* ~~[luka-special](/translate#special_communications/490103901.json)~~ (NOT RECOMMENDED)
+
 ## 2023/3/10
 
 * [kaho-step](/translate#produce_events/100900501.json)

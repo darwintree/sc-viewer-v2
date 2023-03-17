@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/3/17
+
+* fix: save warning not activated when using shift+enter to save
+* fix: page hash didn't change after pressing confirm button
+
 ## 2023/3/16
 
 * update: change list page size to 5
