@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { forkBranch, updateContent } from '../../helper/auth'
+import { forkBranch, updateContent } from '../../../helper/auth'
 import {
   NSelect,
   NInputGroup,
@@ -60,8 +60,8 @@ import {
   NTooltip,
 } from 'naive-ui'
 import { ref, computed, WritableComputedRef } from 'vue'
-import { store } from '../../store'
-import { idolOptions } from '../../helper/path'
+import { store } from '../../../store'
+import { idolOptions } from '../../../helper/path'
 
 const isUpdating = ref(false)
 const commitUrl = ref('')
