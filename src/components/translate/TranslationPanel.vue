@@ -32,6 +32,7 @@ import { DataSourceType, store } from '../../store'
 import { initTranslatedStoryIndex } from '../../helper/path'
 import HistoryIcon from '../icon/HistoryIcon.vue'
 import RenameIcon from '../icon/RenameIcon.vue'
+import LoadingSpin from '../icon/LoadingSpin.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
 import CsvFilenameSetter from './modal/CsvFilenameSetter.vue'
 
@@ -314,11 +315,15 @@ function toTop() {
           <template #trigger>
             <n-button circle size="tiny" @click="tryReloadStoryIndex">
               <template #icon>
-                <n-spin :rotate="isRotating" :size="12">
+                <loading-spin
+                  :is-rotating="isRotating"
+                  :size="12"
+                ></loading-spin>
+                <!-- <n-spin :rotate="isRotating" :size="12">
                   <template #icon>
                     <Renew class="mirror" />
                   </template>
-                </n-spin>
+                </n-spin> -->
               </template>
             </n-button>
           </template>
