@@ -1,34 +1,48 @@
 // User.vue
 
 <template>
-  <div class="user-container">
-    <div v-if="!store.username">
+  <div vertical class="user-container">
+    <div v-if="!store.octokitWrapper?.userMeta">
+      <!-- TODO：提醒需要管理员权限 -->
       <button class="btn btn-primary" @click="navToAuth">
         Login via Github
       </button>
     </div>
-    <div v-if="!store.isLoading && store.username" class="full-width">
+    <div
+      v-if="!store.isLoading && store.octokitWrapper?.userMeta"
+      class="full-width"
+    >
       <div class="user-info-line">
         <div class="user-info">
           <img
-            v-if="store.avatarUrl"
+            v-if="store.octokitWrapper?.userMeta.avatarUrl"
             class="avatar"
-            :src="store.avatarUrl"
+            :src="store.octokitWrapper?.userMeta.avatarUrl"
             alt="User avatar"
           />
-          <span class="username">{{ store.username }}</span>
+          <span class="username">{{
+            store.octokitWrapper?.userMeta.username
+          }}</span>
         </div>
         <button class="btn btn-secondary" @click="logOut">Logout</button>
       </div>
+      <push-steps></push-steps>
       <commit-card v-if="store.path"></commit-card>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { generateState, generateAuthRequest } from '../../../helper/auth'
 import { store, tryLogin, logOut } from '../../../store'
+import { NSpace } from 'naive-ui'
 import CommitCard from './CommitCard.vue'
+import PushSteps from './PushSteps.vue'
+
+// const current = ref(1)
+// const currentStatus = ref('Finish')
+// const current
 
 async function handleVisibilityChangeAfterAuth() {
   if (document.hidden) return
@@ -43,6 +57,7 @@ async function handleVisibilityChangeAfterAuth() {
 function navToAuth() {
   const state = generateState()
   localStorage.setItem('state', state.toString())
+  console.log(state)
   window.open(generateAuthRequest(state))
   document.addEventListener(
     'visibilitychange',
@@ -57,12 +72,12 @@ function navToAuth() {
   width: 100%;
 }
 
-.user-container {
+/* .user-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-}
+} */
 
 .logged-out {
   display: flex;

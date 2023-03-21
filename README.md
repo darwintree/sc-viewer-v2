@@ -60,7 +60,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
   - [x] use dropdown component for download csv
     - [x] download or push to github
   - [ ] Use N-Step for pushing to Github
-  - [ ] fix no github push panel problem
+  - [ ] ~~fix no github push panel problem~~
 - [ ] machine translate
 - [x] render translation to review
 - [x] `make deploy` command
@@ -76,6 +76,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 - [ ] optimize chapter jumping logic
 - [ ] original translation dir
 - [ ] list filter with icon
+- [ ] force branch update
 - [ ] perf: CSV display for complex csv name
   - [ ] test: direct location redirect
   - [ ] confirm button redirect (https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/283%E6%B4%BB%E5%8A%A8%E5%89%A7%E6%83%85/%23%EF%BC%92%EF%BC%98%EF%BC%93%E3%82%92%E3%81%B2%E3%82%8D%E3%81%92%E3%82%88%E3%81%86/%E7%AC%AC1%E8%A9%B1-MEETING.csv)
@@ -86,17 +87,19 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 
 ### High Priority
 
-- [ ] unit test
+- [ ] BUG FIX: reversed translations
+- [ ] ~~unit test~~
 - [ ] **ready for open source**
   - [x] use .env for some const
   - [ ] implementation refactoring
-  - [ ] lisence
+  - [ ] license
   - [ ] documents
-- [ ] fix local_trans bug
+- [x] fix local_trans bug
   - change trans and save
   - go to next chapter and back
-- [ ] reset reviewing status when switch to other place
+- [x] reset reviewing status when switch to other place
 - [x] PWA support
+  - [ ] **cache and mode**(https://developer.chrome.com/docs/workbox/modules/workbox-build/#which-mode-to-use)
 - [x] badge for switch button
 - [x] raw.githubcontents proxy
   - [x] font source switch

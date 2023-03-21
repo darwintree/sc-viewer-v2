@@ -2,6 +2,7 @@
 
 <script setup lang="ts">
 import Communication from './CommunicationLogs.vue'
+import PushPanel from './push/PushPanel.vue'
 import {
   NInput,
   NInputGroup,
@@ -14,6 +15,8 @@ import {
   NBadge,
   useMessage,
   NDropdown,
+  NDrawer,
+  NDrawerContent,
 } from 'naive-ui'
 import {
   LogoGithub,
@@ -59,7 +62,7 @@ const completeOptions = [
   {
     label: '推送',
     key: 'push',
-    disabled: true,
+    disabled: true, // keep disabled as the functions are still in dev
     icon: renderIcon(LogoGithub),
   },
   {
@@ -70,10 +73,14 @@ const completeOptions = [
 ]
 
 const showCompleteDropdown = ref(false)
+const showPushDrawer = ref(false)
 
 function handleCompleteSelect(key: string) {
   if (key === 'download') {
     communication?.value?.downloadData()
+  }
+  if (key === 'push') {
+    showPushDrawer.value = true
   }
 }
 
@@ -380,6 +387,17 @@ function toTop() {
     @save="() => communication?.saveCsvToLocalstorage()"
   >
   </CsvFilenameSetter>
+  <n-drawer
+    placement="bottom"
+    v-model:show="showPushDrawer"
+    height="90%"
+    closable
+    :auto-focus="false"
+  >
+    <n-drawer-content title="Push to Github" :native-scrollbar="false">
+      <PushPanel></PushPanel>
+    </n-drawer-content>
+  </n-drawer>
   <!-- event from chapter change -->
   <Communication
     ref="communication"

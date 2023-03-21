@@ -1,4 +1,7 @@
 import axios from 'axios'
+import { RequestInterface } from '@octokit/types'
+// @ts-ignore
+import { Octokit } from 'https://cdn.skypack.dev/octokit'
 
 const clientId =
   process.env.NODE_ENV === 'development'
@@ -13,6 +16,170 @@ const clientSecret =
 const defaultGithubProxy = 'https://strawberrytree.top'
 const useGithubProxy = true
 const cancelLoginUrl = `https://github.com/settings/connections/applications/${clientId}`
+const rootRepoName = 'SCTranslationData'
+const rootOwner = 'ShinyGroup'
+
+interface BranchComparison {
+  aheadBy: number
+  behindBy: number
+  status: 'diverged' | 'ahead' | 'behind' | 'identical'
+}
+
+class OctokitWrapper {
+  request: RequestInterface
+  headers = {
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Cache-Control': 'private, no-store, max-age=0',
+  }
+  userMeta: {
+    username: string
+    avatarUrl: string
+  } | null = null
+
+  constructor(accessToken: string, baseUrl = `${defaultGithubProxy}/api`) {
+    const octokit = new Octokit({
+      auth: accessToken,
+      baseUrl,
+    })
+    this.request = octokit.request
+  }
+
+  async updateUserMeta() {
+    this.userMeta = await this.getUserMeta()
+  }
+
+  async getUserMeta() {
+    const { data } = await this.request('GET /user', {
+      headers: this.headers,
+    })
+    return {
+      username: data.login,
+      avatarUrl: data.avatar_url,
+    }
+  }
+
+  // select information to use from data
+  async getRepoMeta(owner: string, repo: string) {
+    const { data } = await this.request('GET /repos/{owner}/{repo}', {
+      owner,
+      repo,
+      headers: this.headers,
+    })
+    return data
+  }
+
+  async createFork(owner: string, repo: string) {
+    const { data } = await this.request('POST /repos/{owner}/{repo}/forks', {
+      owner,
+      repo,
+      default_branch_only: true,
+      headers: this.headers,
+    })
+    return data
+  }
+
+  // TODO: return compared commits info (ahead)
+  async getCompare(
+    owner: string,
+    repo: string,
+    base: string,
+    head: string
+  ): Promise<BranchComparison> {
+    const { data } = await this.request(
+      'GET /repos/{owner}/{repo}/compare/{basehead}',
+      {
+        owner,
+        repo,
+        basehead: `${base}...${head}`,
+        headers: this.headers,
+      }
+    )
+    console.log(data)
+    return {
+      aheadBy: data.ahead_by,
+      behindBy: data.behind_by,
+      status: data.status,
+    }
+  }
+
+  async listBrancheNames(owner: string, repo: string) {
+    const { data } = await this.request('GET /repos/{owner}/{repo}/branches', {
+      owner,
+      repo,
+      headers: this.headers,
+    })
+    return data.map((item) => item.name)
+  }
+
+  async syncBranch(owner: string, repo: string, branch: string) {
+    const { data } = await this.request(
+      'POST /repos/{owner}/{repo}/merge-upstream',
+      {
+        owner,
+        repo,
+        branch,
+        headers: this.headers,
+      }
+    )
+    return data
+  }
+
+  async createRef(
+    owner: string,
+    repo: string,
+    branch: string,
+    sourceOwner: string,
+    sourceRepo: string,
+    sourceBranch: string
+  ) {
+    const { data } = await this.request(
+      'GET /repos/{owner}/{repo}/git/ref/{ref}',
+      {
+        owner: sourceOwner,
+        repo: sourceRepo,
+        ref: `heads/${sourceBranch}`,
+        headers: this.headers,
+      }
+    )
+
+    await this.request('POST /repos/{owner}/{repo}/git/refs', {
+      owner,
+      repo,
+      ref: `refs/heads/${branch}`,
+      sha: data['object'].sha,
+      headers: this.headers,
+    })
+  }
+
+  // to test
+  async forceSyncRef(
+    owner: string,
+    repo: string,
+    branch: string,
+    sourceOwner: string,
+    sourceRepo: string,
+    sourceBranch: string
+  ) {
+    const { data } = await this.request(
+      'GET /repos/{owner}/{repo}/git/ref/{ref}',
+      {
+        owner: sourceOwner,
+        repo: sourceRepo,
+        ref: `heads/${sourceBranch}`,
+        headers: this.headers,
+      }
+    )
+
+    await this.request('PATCH /repos/{owner}/{repo}/git/refs/{ref}', {
+      owner,
+      repo,
+      ref: `refs/heads/${branch}`,
+      sha: data['object'].sha,
+      force: true,
+      headers: this.headers,
+    })
+  }
+}
 
 const endpoints = {
   accessToken: () => 'https://github.com/login/oauth/access_token',
@@ -21,6 +188,10 @@ const endpoints = {
     `https://api.github.com/repos/${owner}/${repo}/forks`,
   content: (owner: string, repo: string, path: string) =>
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+  compare: (owner: string, repo: string, base: string, head: string) =>
+    `https://api.github.com/repos/${owner}/${repo}/compare/${base}...${head}`,
+  repo: (owner: string, repo: string) =>
+    `https://api.github.com/repos/${owner}/${repo}`,
 }
 
 function generateState() {
@@ -152,6 +323,7 @@ async function updateContent(
 }
 
 export {
+  OctokitWrapper,
   generateState,
   generateAuthRequest,
   fetchAccessToken,
@@ -160,4 +332,7 @@ export {
   forkBranch,
   getContent,
   updateContent,
+  rootRepoName,
+  rootOwner,
 }
+export type { BranchComparison }

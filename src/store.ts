@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { fetchUserInfo, proxiedGithubUrl } from './helper/auth'
+import { fetchUserInfo, proxiedGithubUrl, OctokitWrapper } from './helper/auth'
 import { EventsCollectionMeta } from './helper/meta-interfaces'
 
 enum DataSourceType {
@@ -85,9 +85,10 @@ const store = reactive({
   accessToken: null as string | null,
   isLoading: false,
   isMobile: false,
-  username: null as string | null,
-  avatarUrl: null as string | null,
+  // username: null as string | null,
+  // avatarUrl: null as string | null,
   base64content: null as string | null,
+  octokitWrapper: null as OctokitWrapper | null,
 
   // used to push to Github
   owner: 'ShinyGroup',
@@ -97,13 +98,13 @@ const store = reactive({
   saves: {} as LocalStorageSaveManager,
   latestUpdate: '',
 
-  setAvatarUrl(currentAvatarUrl: string | null) {
-    if (currentAvatarUrl === null) {
-      this.avatarUrl = null
-      return
-    }
-    this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
-  },
+  // setAvatarUrl(currentAvatarUrl: string | null) {
+  //   if (currentAvatarUrl === null) {
+  //     this.avatarUrl = null
+  //     return
+  //   }
+  //   this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
+  // },
   currentMode: '' as DataSourceType,
 
   // current translation panel info
@@ -114,13 +115,11 @@ const store = reactive({
 
 async function tryLogin() {
   store.accessToken = localStorage.getItem('accessToken')
-  if (!store.accessToken) return
-
+  if (store.accessToken === null) return
   store.isLoading = true
   try {
-    const userInfo = await fetchUserInfo(store.accessToken!)
-    store.username = userInfo.login
-    store.setAvatarUrl(userInfo.avatar_url)
+    store.octokitWrapper = new OctokitWrapper(store.accessToken)
+    await store.octokitWrapper.updateUserMeta()
   } catch (e) {
     alert(e)
     console.error(e)
@@ -131,8 +130,7 @@ async function tryLogin() {
 
 function logOut() {
   localStorage.removeItem('accessToken')
-  store.username = null
-  store.avatarUrl = null
+  store.octokitWrapper = null
 }
 
 // ensure savemanager is ready
