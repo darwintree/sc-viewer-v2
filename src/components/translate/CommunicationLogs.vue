@@ -96,7 +96,7 @@
       <DialogueLine
         v-for="(item, index) in data"
         :id="item.id"
-        :key="index + item.text"
+        :key="index"
         ref="lines"
         :index="index"
         :name="item.name"
@@ -118,7 +118,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui'
 import { Document } from '@vicons/carbon'
 
@@ -215,6 +215,9 @@ export default defineComponent({
         )
       }
     },
+    data() {
+      this.isPreviewing = false
+    },
   },
   methods: {
     changeChapter(jsonUrl: string | null) {
@@ -266,9 +269,10 @@ export default defineComponent({
       const { name, text } = await metaInfoFromJsonPathUrl(url)
       store.csvFilename = name
       this.createWarningMessage(this.$t('translate.loadRawWarning'))
-      await this.loadDataFromCsvText(text)
+      this.loadDataFromCsvText(text)
     },
     async loadDataFromFile(file: File) {
+      this.isLoading = true
       let text = await file.text()
       store.csvFilename = file.name
       if (file.name.endsWith('.json')) {
@@ -277,16 +281,20 @@ export default defineComponent({
       }
 
       store.path = `data/story///${file.name}`
-      await this.loadDataFromCsvText(text)
+      this.loadDataFromCsvText(text)
     },
+    // todo: make this async
     loadDataFromCsvText(text: string) {
       try {
+        this.data = [] // force remove rendered elements to disable reuse
         const { data, translator, jsonUrl } = extractInfoFromCsvText(text)
         this.jsonUrl = jsonUrl
         this.updateRelatedChapterStatus()
         this.translator = translator
-        this.data = data
-        this.isLoading = false
+        nextTick(() => {
+          this.data = data
+          this.isLoading = false
+        })
       } catch (e) {
         alert(e)
       }
