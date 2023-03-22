@@ -270,11 +270,12 @@ const createColumns = (): any => {
     {
       title: t('list.translatedStatus.title'),
       render(row: EventsCollectionMeta) {
+        const version = store.isMobile ? 'short' : 'full'
         const translatedStatus = computed(() => {
           if (row.communications.length === 0)
             return {
               type: 'default',
-              text: t('list.translatedStatus.empty'),
+              text: t(`list.translatedStatus.${version}.empty`),
             }
           const translatedUrls = row.communications.map((communication) =>
             queryTranslatedCsv(communication.jsonPath)
@@ -282,16 +283,16 @@ const createColumns = (): any => {
           if (translatedUrls.every(Boolean))
             return {
               type: 'success',
-              text: t('list.translatedStatus.all'),
+              text: t(`list.translatedStatus.${version}.all`),
             }
           if (translatedUrls.some(Boolean))
             return {
               type: 'warning',
-              text: t('list.translatedStatus.part'),
+              text: t(`list.translatedStatus.${version}.part`),
             }
           return {
             type: 'error',
-            text: t('list.translatedStatus.no'),
+            text: t(`list.translatedStatus.${version}.no`),
           }
         })
         return h(
@@ -314,16 +315,19 @@ const createColumns = (): any => {
       render(row: EventsCollectionMeta) {
         return h(
           'div',
-          new Date(row.openAt * 1000).toLocaleString().split(' ')[0]
+          new Date(row.openAt * 1000)
+            .toLocaleString()
+            .split(' ')[0]
+            .substring(2)
         )
       },
-      width: '120',
+      width: '90',
       align: 'center',
     },
   ]
-  if (store.isMobile) {
-    base.splice(2, 1)
-  }
+  // if (store.isMobile) {
+  //   base.splice(2, 1)
+  // }
   return base
 }
 
