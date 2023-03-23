@@ -316,7 +316,7 @@ const createColumns = (): any => {
         return h(
           'div',
           new Date(row.openAt * 1000)
-            .toLocaleString()
+            .toLocaleString('jp')
             .split(' ')[0]
             .substring(2)
         )
