@@ -1,76 +1,94 @@
 // CommitCard.vue
 
 <template>
-  <div class="repository-info">
-    <div>Owner: <input v-model="store.owner" /></div>
-    <div>Repo: <input v-model="store.repo" /></div>
-    <div>Path: {{ store.path }}</div>
-    <n-input-group>
-      <n-select
-        v-model:value="pathIdol"
-        :options="idolOptions"
-        :style="{ width: '33%', 'min-width': '120px' }"
-      />
-      <n-input-group-label>/</n-input-group-label>
-      <n-input
-        v-model:value="pathStory"
-        placeholder="Please Input Story Name"
-      />
-    </n-input-group>
-    <n-input-group>
-      <n-input-group-label>/</n-input-group-label>
-      <n-input v-model:value="pathChapter" />
-    </n-input-group>
-  </div>
-  <div>
-    <input
-      v-model="message"
-      :placeholder="placeholder"
-      :disabled="isUpdating || !store.base64content"
-    />
-
-    <n-tooltip trigger="hover">
-      <template #trigger>
-        <button
-          :disabled="isUpdating || !store.base64content"
-          class="btn btn-primary"
-          @click="update"
+  <div v-if="current === 2">
+    <div class="repository-info">
+      <n-input-group>
+        <n-input v-model:value="store.path" type="textarea" disabled></n-input>
+        <n-button
+          type="info"
+          :disabled="!suggestedFilename"
+          :style="{ 'max-width': '200px' }"
+          @click="useRecommend"
+          >使用推荐路径</n-button
         >
-          {{ updateText }}
-        </button>
-      </template>
-      <span v-if="!store.base64content">No Edit is Found</span>
-      <span v-else>Publish to {{ store.owner }}/{{ store.repo }}</span>
-    </n-tooltip>
-  </div>
-  <div v-if="commitUrl">
-    <span>Commit Success!</span>
-    <a :href="commitUrl" target="_blank" class="commit-url"> Github Link ↗</a>
-    <span>{{ commitDate }}</span>
+      </n-input-group>
+      <!-- <div>Path: {{ store.path }}</div> -->
+      <n-select
+        v-model:value="pathCharacter"
+        :options="idolOptions"
+        :style="{ width: '80%', 'min-width': '120px' }"
+      />
+      <n-input-group>
+        <n-input-group-label>/</n-input-group-label>
+        <n-input
+          v-model:value="pathStory"
+          placeholder="Please Input Story Name"
+        />
+      </n-input-group>
+      <n-input-group>
+        <n-input-group-label>/</n-input-group-label>
+        <n-input v-model:value="pathFilename" />
+      </n-input-group>
+    </div>
+    <div>
+      <n-input-group>
+        <n-input
+          v-model:value="message"
+          type="textarea"
+          :placeholder="placeholder"
+          :disabled="isPushing || !store.base64content"
+        />
+
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-button
+              :disabled="isPushing || !store.base64content"
+              @click="push"
+            >
+              {{ updateText }}
+            </n-button>
+          </template>
+          <span v-if="!store.base64content">No Edit is Found</span>
+          <span v-else>Publish to {{ store.owner }}/{{ store.repo }}</span>
+        </n-tooltip>
+      </n-input-group>
+    </div>
+    <div v-if="commitUrl">
+      <span>Commit Success!</span>
+      <a :href="commitUrl" target="_blank" class="commit-url"> Github Link ↗</a>
+      <span>{{ commitDate }}</span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { forkBranch, updateContent } from '../../../helper/auth'
+import { forkBranch, rootRepoName, updateContent } from '../../../helper/auth'
 import {
   NSelect,
   NInputGroup,
   NInput,
   NInputGroupLabel,
   NTooltip,
+  NButton,
 } from 'naive-ui'
 import { ref, computed, WritableComputedRef } from 'vue'
 import { store } from '../../../store'
+import { suggestedCommunicationName } from '../../../helper/meta-interfaces'
 import { idolOptions } from '../../../helper/path'
 
-const isUpdating = ref(false)
+const isPushing = ref(false)
 const commitUrl = ref('')
 const commitDate = ref('')
 const updateText = computed(() => {
-  return isUpdating.value ? 'Updating' : 'Publish'
+  return isPushing.value ? 'Updating' : 'Publish'
 })
 const placeholder = 'input commit message'
 const message = ref('')
+
+defineProps<{
+  current: number
+}>()
 
 const pathSplits: WritableComputedRef<string[]> = computed({
   get() {
@@ -81,7 +99,27 @@ const pathSplits: WritableComputedRef<string[]> = computed({
   },
 })
 
-const pathIdol = computed({
+const pathCharacter = computed({
+  get() {
+    return pathSplits.value[0]
+  },
+  set(newValue: string) {
+    pathSplits.value[0] = newValue
+    pathSplits.value = pathSplits.value
+  },
+})
+
+const pathStory = computed({
+  get() {
+    return pathSplits.value[1]
+  },
+  set(newValue: string) {
+    pathSplits.value[1] = newValue
+    pathSplits.value = pathSplits.value
+  },
+})
+
+const pathFilename = computed({
   get() {
     return pathSplits.value[2]
   },
@@ -91,33 +129,8 @@ const pathIdol = computed({
   },
 })
 
-const pathStory = computed({
-  get() {
-    return pathSplits.value[3]
-  },
-  set(newValue: string) {
-    pathSplits.value[3] = newValue
-    pathSplits.value = pathSplits.value
-  },
-})
-
-const pathChapter = computed({
-  get() {
-    return pathSplits.value[4]
-  },
-  set(newValue: string) {
-    pathSplits.value[4] = newValue
-    pathSplits.value = pathSplits.value
-  },
-})
-
-async function fork() {
-  const result = await forkBranch(store.accessToken!)
-  console.log(result)
-}
-
 function checkInput() {
-  if (!pathIdol.value) {
+  if (!pathCharacter.value) {
     alert('idol name in path is not selected!')
     throw new Error('idol is not selected')
   }
@@ -125,7 +138,7 @@ function checkInput() {
     alert('story name in path is empty!')
     throw new Error('story is empty')
   }
-  if (!pathChapter.value) {
+  if (!pathFilename.value) {
     alert('file name in path is empty!')
     throw new Error('filename is empty')
   }
@@ -135,31 +148,101 @@ function checkInput() {
   }
 }
 
-async function update() {
+const suggestedStoryname = computed(() => {
+  if (store.eventsCollectionMeta) {
+    return store.eventsCollectionMeta.name
+  }
+  return null
+})
+
+const suggestedFilename = computed(() => {
+  if (store.jsonUrl && store.eventsCollectionMeta) {
+    for (const communication of store.eventsCollectionMeta.communications) {
+      if (communication.jsonPath == store.jsonUrl) {
+        const name = suggestedCommunicationName(communication)
+        return `${name}.csv`
+      }
+    }
+  }
+  return null
+})
+
+const suggestedCharacter = computed(() => {
+  if (store.eventsCollectionMeta) {
+    const { characterId } = store.eventsCollectionMeta
+    if (characterId !== undefined) {
+      return idolOptions[Number(characterId)].label
+    }
+    // 283 活动剧情
+    return idolOptions[0].label
+  }
+  return null
+})
+
+function useRecommend() {
+  if (
+    !suggestedCharacter.value ||
+    !suggestedFilename.value ||
+    !suggestedStoryname.value
+  )
+    throw Error('unexpected null')
+  pathCharacter.value = suggestedCharacter.value
+  pathStory.value = suggestedStoryname.value
+  pathFilename.value = suggestedFilename.value
+}
+
+async function push() {
   checkInput()
-  isUpdating.value = true
+  isPushing.value = true
   let result
+  if (!store.octokitWrapper || !store.octokitWrapper?.userMeta)
+    throw Error('unexpected empty username')
+  if (!store.base64content) throw Error('Content is not set')
   try {
-    result = await updateContent(
-      store.accessToken!,
-      store.path,
+    result = await store.octokitWrapper.updateContent(
+      store.octokitWrapper.userMeta.username,
+      rootRepoName,
+      `data/story/${store.path}`,
       message.value,
-      store.base64content!,
-      store.owner,
-      store.repo
+      store.base64content
     )
-  } catch (e: any) {
-    window.alert(e.message)
-    console.error(e)
+  } catch (e) {
+    alert(e)
     throw e
   }
-  isUpdating.value = false
-  store.base64content = null
   console.log(result)
+  if (!result.commit.html_url) {
+    console.error('no result commit html')
+    return
+  }
   commitUrl.value = result.commit.html_url
-  commitDate.value = new Date(result.commit.author.date).toLocaleTimeString()
-  message.value = ''
 }
+
+// async function update() {
+//   checkInput()
+//   isPushing.value = true
+//   let result
+//   try {
+//     result = await updateContent(
+//       store.accessToken!,
+//       `data/store/${store.path}`,
+//       message.value,
+//       store.base64content!,
+//       store.owner,
+//       store.repo
+//     )
+//   } catch (e: any) {
+//     window.alert(e.message)
+//     console.error(e)
+//     throw e
+//   }
+//   isPushing.value = false
+//   store.base64content = null
+//   console.log(result)
+//   commitUrl.value = result.commit.html_url
+//   commitDate.value = new Date(result.commit.author.date).toLocaleTimeString()
+//   message.value = ''
+// }
 </script>
 
 <style scoped>

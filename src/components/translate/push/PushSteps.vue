@@ -2,17 +2,22 @@
   <n-steps vertical :current="current" :status="currentStatus">
     <n-step title="创建仓库副本">
       <div class="n-step-description">
-        <fork-step-controller :current="current" @next="handleButtonClick" />
+        <fork-step-controller
+          ref="forkStep"
+          :current="current"
+          @next="handleButtonClick"
+        />
       </div>
     </n-step>
     <n-step title="将翻译推送至创建的副本">
       <div class="n-step-description">
-        <p>1. dropdown选择branch（如果选择的分支过老/为main分支会警告）</p>
+        <!-- <p>1. dropdown选择branch（如果选择的分支过老/为main分支会警告）</p>
         <p>
           2. 选择提交路径（metadata service可用时有准确路径，也可以自行指定）
         </p>
         <p>3. 填commit message（有默认模板），也可以自己填，用tab切换</p>
-        <p>4. 给commit链接。并提醒可以先不提PR</p>
+        <p>4. 给commit链接。并提醒可以先不提PR</p> -->
+        <commit-card :current="current"></commit-card>
         <n-button
           v-if="current === 2"
           :type="buttonType"
@@ -25,9 +30,13 @@
     </n-step>
     <n-step title="提交合并请求">
       <div class="n-step-description">
-        <p>1. 创建PR（有默认模板），也可以自己填，用tab切换</p>
+        <!-- <p>1. 创建PR（有默认模板），也可以自己填，用tab切换</p>
         <p>2. 提醒管理员合并。合并前可以继续推送更改</p>
-        <p>如果已提交过PR展示PR相关信息</p>
+        <p>如果已提交过PR展示PR相关信息</p> -->
+        <pull-controller
+          :current="current"
+          :current-branch="currentBranch"
+        ></pull-controller>
         <n-button
           v-if="current === 3"
           :type="buttonType"
@@ -77,8 +86,10 @@ import {
   NTag,
 } from 'naive-ui'
 import ForkStepController from './ForkStepController.vue'
+import CommitCard from './CommitCard.vue'
 import { store } from '../../../store'
 import { rootRepoName, rootOwner, BranchComparison } from '../../../helper/auth'
+import PullController from './PullController.vue'
 
 const current = ref(1)
 const currentStatus = ref<StepsProps['status']>('process')
@@ -92,6 +103,13 @@ const buttonType = computed(() => {
     default:
       return 'default'
   }
+})
+
+const forkStep = ref<InstanceType<typeof ForkStepController>>()
+
+const currentBranch = computed(() => {
+  if (!forkStep?.value?.currentBranch) return null
+  return forkStep.value.currentBranch
 })
 
 function handleButtonClick() {

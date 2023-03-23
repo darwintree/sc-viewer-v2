@@ -107,33 +107,36 @@ function extractInfoFromUrl(fileUrl: string) {
 // idol options are used as options to push file to github
 const idolOptionKeys = [
   '283活动剧情',
-  '七草にちか',
-  '三峰結華',
-  '八宮めぐる',
-  '和泉愛依',
-  '園田智代子',
-  '大崎甘奈',
-  '大崎甜花',
-  '小宮果穂',
-  '市川雛菜',
-  '幽谷霧子',
-  '月岡恋鐘',
-  '有栖川夏葉',
-  '杜野凛世',
-  '桑山千雪',
-  '樋口円香',
   '櫻木真乃',
-  '浅倉透',
+  '風野灯織',
+  '八宮めぐる',
+  '月岡恋鐘',
   '田中摩美々',
   '白瀬咲耶',
-  '福丸小糸',
-  '緋田美琴',
-  '芹沢あさひ',
+  '三峰結華',
+  '幽谷霧子',
+  '小宮果穂',
+  '園田智代子',
   '西城樹里',
-  '風野灯織',
+  '杜野凛世',
+  '有栖川夏葉',
+  '大崎甘奈',
+  '大崎甜花',
+  '桑山千雪',
+  '芹沢あさひ',
   '黛冬優子',
+  '和泉愛依',
+  '浅倉透',
+  '樋口円香',
+  '福丸小糸',
+  '市川雛菜',
+  '緋田美琴',
+  '七草にちか',
 ]
-const idolOptions: any[] = []
+const idolOptions: {
+  value: string
+  label: string
+}[] = []
 idolOptionKeys.forEach((item) => {
   idolOptions.push({
     value: item,

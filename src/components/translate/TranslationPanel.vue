@@ -62,7 +62,7 @@ const completeOptions = [
   {
     label: '推送',
     key: 'push',
-    disabled: true, // keep disabled as the functions are still in dev
+    // disabled: true, // keep disabled as the functions are still in dev
     icon: renderIcon(LogoGithub),
   },
   {
@@ -73,13 +73,18 @@ const completeOptions = [
 ]
 
 const showCompleteDropdown = ref(false)
-const showPushDrawer = ref(false)
+const showPushDrawer = ref(true)
 
 function handleCompleteSelect(key: string) {
   if (key === 'download') {
     communication?.value?.downloadData()
   }
   if (key === 'push') {
+    if (!communication.value) {
+      alert('error: communication component not loaded')
+      return
+    }
+    communication.value.updateBase64Content()
     showPushDrawer.value = true
   }
 }
@@ -388,8 +393,8 @@ function toTop() {
   >
   </CsvFilenameSetter>
   <n-drawer
-    placement="bottom"
     v-model:show="showPushDrawer"
+    placement="bottom"
     height="90%"
     closable
     :auto-focus="false"

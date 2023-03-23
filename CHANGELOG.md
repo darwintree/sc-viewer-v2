@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/3/22
+
+* fix: communication log render bug caused by Dialogue key
+* perf: mobile list ui of "translated" column
+
 ## 2023/3/17
 
 * fix: save warning not activated when using shift+enter to save

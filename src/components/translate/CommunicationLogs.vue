@@ -249,7 +249,7 @@ export default defineComponent({
       this.isLoading = true
       const text = store.saves.saveDict[jsonUrl].csv
       store.csvFilename = store.saves.saveDict[jsonUrl].name || jsonUrl
-      store.path = `data/story///${jsonUrl}`
+      store.path = `//${store.csvFilename}`
       this.loadDataFromCsvText(text)
     },
     async loadDataFromGithubCsvUrl(url: string) {
@@ -280,7 +280,7 @@ export default defineComponent({
         text = jsonTextToCsvText(JSON.parse(text), null)
       }
 
-      store.path = `data/story///${file.name}`
+      store.path = `//${file.name}`
       this.loadDataFromCsvText(text)
     },
     // todo: make this async
@@ -342,12 +342,15 @@ export default defineComponent({
         )
       )
     },
-    saveCsvToLocalstorage() {
-      console.log('saving')
+    updateBase64Content() {
       const csv = this.getCurrentDataString()
       store.base64content = this.b64EncodeUnicode(csv)
+    },
+    saveCsvToLocalstorage() {
+      console.log('saving')
+      this.updateBase64Content()
       store.saves.setItem(this.jsonUrl, {
-        csv,
+        csv: this.getCurrentDataString(),
         timeLabel: new Date().toLocaleString(),
         name: store.csvFilename,
       })

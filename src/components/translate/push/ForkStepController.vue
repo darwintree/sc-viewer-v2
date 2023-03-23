@@ -27,17 +27,24 @@
       <!-- <n-button @click="syncBranch(true)">force update branch</n-button> -->
     </n-input-group>
     <div v-if="current === 1">
-      <n-input-group v-if="!!forkStatus">
-        <n-input-group-label> or </n-input-group-label>
-        <n-input
-          v-model:value="newBranchName"
-          placeholder="new branch name"
-          :disabled="isLoading"
-        />
-        <n-button type="primary" :disabled="isLoading" @click="createBranch">
-          新建分支
-        </n-button>
-      </n-input-group>
+      <n-collapse>
+        <n-collapse-item title="create branch">
+          <n-input-group v-if="!!forkStatus">
+            <n-input
+              v-model:value="newBranchName"
+              placeholder="new branch name"
+              :disabled="isLoading"
+            />
+            <n-button
+              type="primary"
+              :disabled="isLoading"
+              @click="createBranch"
+            >
+              新建分支
+            </n-button>
+          </n-input-group>
+        </n-collapse-item>
+      </n-collapse>
       <div v-if="!forkStatus">
         <n-button @click="createFork">create fork</n-button>
       </div>
@@ -69,6 +76,8 @@ import {
   NInputGroupLabel,
   NInput,
   NPopconfirm,
+  NCollapse,
+  NCollapseItem,
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import LoadingSpin from '../../icon/LoadingSpin.vue'
@@ -303,4 +312,13 @@ onMounted(async () => {
 defineEmits<{
   (e: 'next'): void
 }>()
+
+defineExpose({
+  currentBranch,
+})
 </script>
+<style scoped>
+.n-input-group {
+  max-width: 600px;
+}
+</style>

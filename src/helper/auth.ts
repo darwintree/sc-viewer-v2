@@ -179,6 +179,87 @@ class OctokitWrapper {
       headers: this.headers,
     })
   }
+
+  async getContent(owner: string, repo: string, path: string) {
+    const { data } = await this.request(
+      'GET /repos/{owner}/{repo}/contents/{path}',
+      {
+        owner,
+        repo,
+        path,
+        headers: this.headers,
+      }
+    )
+    return data
+  }
+
+  async updateContent(
+    owner: string,
+    repo: string,
+    path: string,
+    message: string,
+    content: string
+  ) {
+    let sha = null
+    try {
+      const previousData = await this.getContent(owner, repo, path)
+      // @ts-ignore
+      sha = previousData.sha
+    } catch (e: any) {
+      if (e?.response?.status === 404) {
+        console.log('original resource not found, creating file...')
+      } else {
+        console.error(e)
+        throw e
+      }
+    }
+
+    const { data } = await this.request(
+      'PUT /repos/{owner}/{repo}/contents/{path}',
+      {
+        owner,
+        repo,
+        path,
+        sha,
+        message,
+        content,
+        headers: this.headers,
+      }
+    )
+    return data
+  }
+
+  async getOpenPR(owner: string, repo: string, head: string) {
+    const { data } = await this.request('GET /repos/{owner}/{repo}/pulls', {
+      owner,
+      repo,
+      state: 'open',
+      head,
+      headers: this.headers,
+    })
+    return data
+  }
+
+  async createPR(
+    owner: string,
+    repo: string,
+    title: string,
+    body: string,
+    head: string,
+    base: string
+  ) {
+    const { data } = await this.request('POST /repos/{owner}/{repo}/pulls', {
+      owner,
+      repo,
+      title,
+      body,
+      head,
+      base,
+      headers: this.headers,
+    })
+
+    return data
+  }
 }
 
 const endpoints = {

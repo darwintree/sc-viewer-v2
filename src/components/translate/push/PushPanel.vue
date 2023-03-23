@@ -27,7 +27,6 @@
         <button class="btn btn-secondary" @click="logOut">Logout</button>
       </div>
       <push-steps></push-steps>
-      <commit-card v-if="store.path"></commit-card>
     </div>
   </div>
 </template>
@@ -37,7 +36,6 @@ import { ref } from 'vue'
 import { generateState, generateAuthRequest } from '../../../helper/auth'
 import { store, tryLogin, logOut } from '../../../store'
 import { NSpace } from 'naive-ui'
-import CommitCard from './CommitCard.vue'
 import PushSteps from './PushSteps.vue'
 
 // const current = ref(1)
