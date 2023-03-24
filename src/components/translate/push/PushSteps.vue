@@ -26,6 +26,9 @@
         </p>
         <p>3. 填commit message（有默认模板），也可以自己填，用tab切换</p>
         <p>4. 给commit链接。并提醒可以先不提PR</p> -->
+        <p v-if="current === 2 && pullController?.pullUrl">
+          已发现合并请求，上传的新内容将自动包含在现有请求中
+        </p>
         <commit-card
           :current="current"
           :current-branch="currentBranch"
@@ -43,6 +46,7 @@
         <p>2. 提醒管理员合并。合并前可以继续推送更改</p>
         <p>如果已提交过PR展示PR相关信息</p> -->
         <pull-controller
+          ref="pullController"
           :current="current"
           :current-branch="currentBranch"
         ></pull-controller>
@@ -86,7 +90,6 @@ import {
 import ForkStepController from './ForkStepController.vue'
 import CommitCard from './CommitCard.vue'
 import { store } from '../../../store'
-import { rootRepoName, rootOwner, BranchComparison } from '../../../helper/auth'
 import PullController from './PullController.vue'
 
 const current = ref(1)
@@ -104,6 +107,7 @@ const buttonType = computed(() => {
 })
 
 const forkStep = ref<InstanceType<typeof ForkStepController>>()
+const pullController = ref<InstanceType<typeof PullController>>()
 
 const currentBranch = computed(() => {
   if (!forkStep?.value?.currentBranch) return null

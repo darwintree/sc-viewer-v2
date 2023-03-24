@@ -1,22 +1,54 @@
 <template>
-  <NTag>{{ pullStatus }}</NTag>
-  <n-input-group>
-    <n-input v-model:value="title"></n-input>
-    <n-button @click="createPull"> create PR </n-button>
-  </n-input-group>
-  <a v-if="pullUrl" :href="pullUrl" target="_blank"> Github PR Link ↗</a>
+  <n-space vertical>
+    <NTag>{{ pullStatus }}</NTag>
+    <a v-if="pullUrl" :href="pullUrl" target="_blank">
+      {{ directionMessage }}
+    </a>
+    <n-input-group v-else>
+      <n-input v-model:value="title" placeholder="input PR title"></n-input>
+      <n-popconfirm
+        :positive-text="t('common.confirm')"
+        :negative-text="t('common.cancel')"
+        @positive-click="createPull"
+      >
+        <template #trigger>
+          <n-button type="info"> create </n-button>
+        </template>
+        {{ directionMessage }}
+      </n-popconfirm>
+    </n-input-group>
+  </n-space>
 </template>
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue'
-import { NTag, NButton, NInput, NInputGroup } from 'naive-ui'
+import { useI18n } from 'vue-i18n'
+import {
+  NTag,
+  NButton,
+  NInput,
+  NInputGroup,
+  NSpace,
+  NPopconfirm,
+} from 'naive-ui'
 import { store } from '../../../store'
 import { rootOwner, rootRepoName } from '../../../helper/auth'
+
+const { t } = useI18n()
 const props = defineProps<{
   current: number
   currentBranch: string | null
 }>()
 
 const title = ref('')
+
+const directionMessage = computed(() => {
+  return `${rootOwner}:master ← ${username.value}:${props.currentBranch}`
+})
+
+const username = computed(() => {
+  if (!store.octokitWrapper?.userMeta) return null
+  return store.octokitWrapper.userMeta.username
+})
 
 const currentBranch = computed(() => {
   return props.currentBranch
@@ -74,6 +106,11 @@ async function createPull() {
 const pullUrl = ref(null as string | null)
 
 const pullStatus = computed(() => {
-  return 'PR 未创建'
+  if (!pullUrl.value) return '输入标题，创建合并请求'
+  return '等待管理员审批'
+})
+
+defineExpose({
+  pullUrl,
 })
 </script>
