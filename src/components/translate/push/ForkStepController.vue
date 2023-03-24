@@ -72,7 +72,12 @@ import {
 } from 'naive-ui'
 import { Add } from '@vicons/carbon'
 import { useI18n } from 'vue-i18n'
-import { BranchComparison, rootOwner, rootRepoName } from '../../../helper/auth'
+import {
+  BranchComparison,
+  rootOwner,
+  rootRepoName,
+  rootBranch,
+} from '../../../helper/auth'
 import { store } from '../../../store'
 
 // workflow:
@@ -186,7 +191,7 @@ async function updateBranchComparison(branch: string) {
     const data = await store.octokitWrapper.getCompare(
       username.value,
       forkStatus.value.name,
-      'ShinyGroup:master',
+      `${rootOwner}:${rootBranch}`,
       `${username.value}:${branch}`
     )
     branchComparison.value = data
@@ -256,7 +261,7 @@ async function createBranch() {
       newBranchName.value,
       rootOwner,
       rootRepoName,
-      'master'
+      rootBranch
     )
     await updateAvailableBranches()
     currentBranch.value = newBranchName.value

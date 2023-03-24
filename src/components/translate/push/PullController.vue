@@ -31,7 +31,7 @@ import {
   NPopconfirm,
 } from 'naive-ui'
 import { store } from '../../../store'
-import { rootOwner, rootRepoName } from '../../../helper/auth'
+import { rootOwner, rootRepoName, rootBranch } from '../../../helper/auth'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -42,7 +42,7 @@ const props = defineProps<{
 const title = ref('')
 
 const directionMessage = computed(() => {
-  return `${rootOwner}:master ← ${username.value}:${props.currentBranch}`
+  return `${rootOwner}:${rootBranch} ← ${username.value}:${props.currentBranch}`
 })
 
 const username = computed(() => {
@@ -94,7 +94,7 @@ async function createPull() {
       title.value,
       '',
       `${store.octokitWrapper?.userMeta?.username}:${currentBranch.value}`,
-      'master'
+      `${rootBranch}`
     )
     console.log(data)
     pullUrl.value = data.html_url

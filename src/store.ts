@@ -91,8 +91,6 @@ const store = reactive({
   octokitWrapper: null as OctokitWrapper | null,
 
   // used to push to Github
-  owner: 'ShinyGroup',
-  repo: 'SCTranslationData',
   path: '',
 
   saves: {} as LocalStorageSaveManager,
