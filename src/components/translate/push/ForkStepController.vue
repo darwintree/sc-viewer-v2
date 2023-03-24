@@ -21,48 +21,36 @@
         </template>
         远端分支将拉取主仓库更新
       </n-popconfirm>
-      <n-input-group-label>
-        <loading-spin :size="12" :is-rotating="isLoading"></loading-spin
-      ></n-input-group-label>
+      <n-popconfirm
+        :positive-text="t('common.confirm')"
+        :negative-text="t('common.cancel')"
+        :show-icon="false"
+        @positive-click="syncBranch"
+      >
+        <template #trigger>
+          <n-button type="info" :disabled="current !== 1 || isLoading">
+            <template #icon>
+              <add></add>
+            </template>
+          </n-button>
+        </template>
+        <n-input
+          v-model:value="newBranchName"
+          placeholder="new branch name"
+          :disabled="isLoading"
+        />
+        <template #action>
+          <n-button type="primary" :disabled="isLoading" @click="createBranch">
+            新建分支
+          </n-button>
+        </template>
+      </n-popconfirm>
       <!-- <n-button @click="syncBranch(true)">force update branch</n-button> -->
     </n-input-group>
-    <div v-if="current === 1">
-      <n-collapse>
-        <n-collapse-item title="create branch">
-          <n-input-group v-if="!!forkStatus">
-            <n-input
-              v-model:value="newBranchName"
-              placeholder="new branch name"
-              :disabled="isLoading"
-            />
-            <n-button
-              type="primary"
-              :disabled="isLoading"
-              @click="createBranch"
-            >
-              新建分支
-            </n-button>
-          </n-input-group>
-        </n-collapse-item>
-      </n-collapse>
-      <div v-if="!forkStatus">
-        <n-button @click="createFork">create fork</n-button>
-      </div>
-      <div v-else>
-        <div v-if="branchComparison && !isLoading">
-          <n-tag size="tiny">aheadBy: {{ branchComparison.aheadBy }} </n-tag>
-          <n-tag size="tiny">behindBy:{{ branchComparison.behindBy }} </n-tag>
-          <n-tag size="tiny">status:{{ branchComparison.status }} </n-tag>
-        </div>
-        <n-button
-          :disabled="!branchComparison"
-          size="small"
-          type="success"
-          @click="$emit('next')"
-        >
-          Next
-        </n-button>
-      </div>
+    <div v-if="current === 1 && branchComparison && !isLoading">
+      <n-tag size="tiny">aheadBy: {{ branchComparison.aheadBy }} </n-tag>
+      <n-tag size="tiny">behindBy:{{ branchComparison.behindBy }} </n-tag>
+      <n-tag size="tiny">status:{{ branchComparison.status }} </n-tag>
     </div>
   </div>
 </template>
@@ -79,8 +67,8 @@ import {
   NCollapse,
   NCollapseItem,
 } from 'naive-ui'
+import { Add } from '@vicons/carbon'
 import { useI18n } from 'vue-i18n'
-import LoadingSpin from '../../icon/LoadingSpin.vue'
 import { BranchComparison, rootOwner, rootRepoName } from '../../../helper/auth'
 import { store } from '../../../store'
 
@@ -129,7 +117,7 @@ const progressInfo = computed(
     if (!currentBranch.value) return { text: '请选择分支', type: 'info' }
     if (!branchComparison.value)
       return {
-        text: '当前分支与主仓库分支没有关系，请选择其他分支',
+        text: '不符要求的分支，请选择其他分支',
         type: 'error',
       }
     return { text: '当前分支符合要求，请进入下一步', type: 'success' }
@@ -315,6 +303,7 @@ defineEmits<{
 
 defineExpose({
   currentBranch,
+  branchComparison,
 })
 </script>
 <style scoped>

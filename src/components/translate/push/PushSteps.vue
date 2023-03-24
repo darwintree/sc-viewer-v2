@@ -1,6 +1,15 @@
 <template>
-  <n-steps vertical :current="current" :status="currentStatus">
-    <n-step title="创建仓库副本">
+  <n-steps
+    :vertical="store.isMobile"
+    :current="current"
+    :status="currentStatus"
+    @update:current="
+      (currentStep) => {
+        current = currentStep
+      }
+    "
+  >
+    <n-step title="选择工作分支">
       <div class="n-step-description">
         <fork-step-controller
           ref="forkStep"
@@ -9,7 +18,7 @@
         />
       </div>
     </n-step>
-    <n-step title="将翻译推送至创建的副本">
+    <n-step :disabled="!hasWorkingBranch" title="将翻译推送至工作分支">
       <div class="n-step-description">
         <!-- <p>1. dropdown选择branch（如果选择的分支过老/为main分支会警告）</p>
         <p>
@@ -28,7 +37,7 @@
         </n-button>
       </div>
     </n-step>
-    <n-step title="提交合并请求">
+    <n-step :disabled="!hasWorkingBranch" title="提交合并请求">
       <div class="n-step-description">
         <!-- <p>1. 创建PR（有默认模板），也可以自己填，用tab切换</p>
         <p>2. 提醒管理员合并。合并前可以继续推送更改</p>
@@ -37,19 +46,8 @@
           :current="current"
           :current-branch="currentBranch"
         ></pull-controller>
-        <n-button
-          v-if="current === 3"
-          :type="buttonType"
-          size="small"
-          @click="handleButtonClick"
-        >
-          Next
-        </n-button>
       </div>
     </n-step>
-    <n-button :type="buttonType" size="small" @click="handleButtonClick">
-      Next
-    </n-button>
     <!-- <n-step title="Something">
       <div class="n-step-description">
         <p>Something in the way she moves Attracts me like no other lover</p>
@@ -110,6 +108,10 @@ const forkStep = ref<InstanceType<typeof ForkStepController>>()
 const currentBranch = computed(() => {
   if (!forkStep?.value?.currentBranch) return null
   return forkStep.value.currentBranch
+})
+
+const hasWorkingBranch = computed(() => {
+  return !!forkStep.value?.branchComparison
 })
 
 function handleButtonClick() {

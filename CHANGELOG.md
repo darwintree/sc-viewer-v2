@@ -1,5 +1,10 @@
 # Changelog
 
+## 2023/3/23
+
+* fix: unexpected date format in list
+* feat: push panel functions
+
 ## 2023/3/22
 
 * fix: communication log render bug caused by Dialogue key
