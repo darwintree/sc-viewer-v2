@@ -265,7 +265,6 @@ async function push() {
     alert(e)
     throw e
   }
-  console.log(result)
   if (!result.commit.html_url) {
     console.error('no result commit html')
     return

@@ -99,7 +99,6 @@ class OctokitWrapper {
         headers: this.headers,
       }
     )
-    console.log(data)
     return {
       aheadBy: data.ahead_by,
       behindBy: data.behind_by,
@@ -212,7 +211,7 @@ class OctokitWrapper {
       sha = previousData.sha
     } catch (e: any) {
       if (e?.response?.status === 404) {
-        console.log('original resource not found, creating file...')
+        // console.log('original resource not found, creating file...')
       } else {
         console.error(e)
         throw e

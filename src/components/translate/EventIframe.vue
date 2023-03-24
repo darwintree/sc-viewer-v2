@@ -16,7 +16,6 @@ import { NSkeleton } from 'naive-ui'
 
 onMounted(() => {
   window.onmessage = (event) => {
-    console.log(event)
     if (event.data.eventViewerIframeLoaded) {
       loaded.value = true
     }

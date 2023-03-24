@@ -90,9 +90,9 @@ function extractInfoFromUrl(fileUrl: string) {
         filePath += splits[i]
       }
     }
-    console.table({
-      path: filePath,
-    })
+    // console.table({
+    //   path: filePath,
+    // })
     return {
       path: filePath,
     }

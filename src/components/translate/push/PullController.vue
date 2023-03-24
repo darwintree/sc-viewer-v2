@@ -66,7 +66,6 @@ async function updatePullUrl(newBranch: null | string) {
   if (!newBranch) newBranch = props.currentBranch
   try {
     if (!newBranch) {
-      console.log('branch not set')
       pullUrl.value = null
       return
     }
@@ -97,7 +96,6 @@ async function createPull() {
       `${store.octokitWrapper?.userMeta?.username}:${currentBranch.value}`,
       `${rootBranch}`
     )
-    console.log(data)
     pullUrl.value = data.html_url
   } catch (e) {
     alert(e)

@@ -55,7 +55,7 @@ async function handleVisibilityChangeAfterAuth() {
 function navToAuth() {
   const state = generateState()
   localStorage.setItem('state', state.toString())
-  console.log(state)
+  // console.log(state)
   window.open(generateAuthRequest(state))
   document.addEventListener(
     'visibilitychange',

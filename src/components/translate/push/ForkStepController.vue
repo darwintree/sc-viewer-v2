@@ -143,7 +143,6 @@ watch(forkStatus, async (newVal) => {
   }
   // if forkStatus
   await updateAvailableBranches()
-  console.log(newVal.defaultBranch)
   currentBranch.value = newVal.defaultBranch
 })
 
@@ -237,14 +236,12 @@ async function updateForkStatus() {
     rootRepoName
   )
   if (!repoMeta) throw new Error('Fork does not exists')
-  console.log(repoMeta)
   if (repoMeta.fork && repoMeta.parent?.owner.login === rootOwner) {
     forkStatus.value = {
       name: repoMeta.name,
       defaultBranch: repoMeta.default_branch,
       owner: username.value,
     }
-    console.log('fork exists')
   } else {
     console.error("fork's parent is not ShinyGroup")
   }
