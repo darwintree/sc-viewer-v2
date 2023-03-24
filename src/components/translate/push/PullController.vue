@@ -20,7 +20,7 @@
   </n-space>
 </template>
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   NTag,
@@ -54,17 +54,18 @@ const currentBranch = computed(() => {
   return props.currentBranch
 })
 
-watch(currentBranch, async () => {
-  await updatePullUrl()
+watch(currentBranch, async (newVal) => {
+  await updatePullUrl(newVal)
 })
 
 onMounted(async () => {
-  await updatePullUrl()
+  await updatePullUrl(null)
 })
 
-async function updatePullUrl() {
+async function updatePullUrl(newBranch: null | string) {
+  if (!newBranch) newBranch = props.currentBranch
   try {
-    if (!props.currentBranch) {
+    if (!newBranch) {
       console.log('branch not set')
       pullUrl.value = null
       return
@@ -72,7 +73,7 @@ async function updatePullUrl() {
     const data = await store.octokitWrapper?.getOpenPR(
       rootOwner,
       rootRepoName,
-      props.currentBranch
+      `${username.value}:${newBranch}`
     )
     if (!data || data.length == 0) {
       console.log(data)
