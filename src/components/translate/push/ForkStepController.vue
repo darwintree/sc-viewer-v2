@@ -47,7 +47,7 @@
       </n-popconfirm>
       <!-- <n-button @click="syncBranch(true)">force update branch</n-button> -->
     </n-input-group>
-    <div v-if="current === 1 && branchComparison && !isLoading">
+    <div v-if="branchComparison && !isLoading">
       <n-tag size="tiny">aheadBy: {{ branchComparison.aheadBy }} </n-tag>
       <n-tag size="tiny">behindBy:{{ branchComparison.behindBy }} </n-tag>
       <n-tag size="tiny">status:{{ branchComparison.status }} </n-tag>
@@ -304,6 +304,7 @@ defineEmits<{
 defineExpose({
   currentBranch,
   branchComparison,
+  updateBranchComparison,
 })
 </script>
 <style scoped>

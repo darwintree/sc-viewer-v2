@@ -18,7 +18,7 @@
         />
       </div>
     </n-step>
-    <n-step :disabled="!hasWorkingBranch" title="将翻译推送至工作分支">
+    <n-step :disabled="!hasWorkingBranch" title="将翻译上传至工作分支">
       <div class="n-step-description">
         <!-- <p>1. dropdown选择branch（如果选择的分支过老/为main分支会警告）</p>
         <p>
@@ -26,15 +26,15 @@
         </p>
         <p>3. 填commit message（有默认模板），也可以自己填，用tab切换</p>
         <p>4. 给commit链接。并提醒可以先不提PR</p> -->
-        <commit-card :current="current"></commit-card>
-        <n-button
-          v-if="current === 2"
-          :type="buttonType"
-          size="small"
-          @click="handleButtonClick"
-        >
-          Next
-        </n-button>
+        <commit-card
+          :current="current"
+          :current-branch="currentBranch"
+          @commit="
+            () => {
+              forkStep?.updateBranchComparison(currentBranch!)
+            }
+          "
+        ></commit-card>
       </div>
     </n-step>
     <n-step :disabled="!hasWorkingBranch" title="提交合并请求">

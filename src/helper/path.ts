@@ -83,22 +83,18 @@ function getIframeSrc(jsonUrl: string) {
 function extractInfoFromUrl(fileUrl: string) {
   if (fileUrl.startsWith('https://github.com')) {
     const splits = fileUrl.split('/')
-    let filePath = splits[7]
+    let filePath = splits[9]
     for (let i = 0; i < splits.length; i++) {
-      if (i > 7) {
+      if (i > 9) {
         filePath += '/'
         filePath += splits[i]
       }
     }
     console.table({
       path: filePath,
-      owner: splits[3],
-      repo: splits[4],
     })
     return {
       path: filePath,
-      owner: splits[3],
-      repo: splits[4],
     }
   }
   throw new Error('wrong prefix')
@@ -130,8 +126,8 @@ const idolOptionKeys = [
   '樋口円香',
   '福丸小糸',
   '市川雛菜',
-  '緋田美琴',
   '七草にちか',
+  '緋田美琴',
 ]
 const idolOptions: {
   value: string

@@ -260,8 +260,6 @@ export default defineComponent({
 
       // TODO
       const info = extractInfoFromUrl(url)
-      store.owner = info.owner
-      store.repo = info.repo
       store.path = decodeURIComponent(info.path)
     },
     async loadDataFromJsonPathUrl(url: string) {
@@ -269,6 +267,7 @@ export default defineComponent({
       const { name, text } = await metaInfoFromJsonPathUrl(url)
       store.csvFilename = name
       this.createWarningMessage(this.$t('translate.loadRawWarning'))
+      store.path = `//${url.split('/').reverse()[0].replace('.json', '.csv')}`
       this.loadDataFromCsvText(text)
     },
     async loadDataFromFile(file: File) {
