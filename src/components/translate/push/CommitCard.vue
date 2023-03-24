@@ -65,19 +65,22 @@
           :disabled="isPushing || !store.base64content"
         />
 
-        <n-tooltip trigger="hover">
+        <n-popconfirm
+          :positive-text="t('common.confirm')"
+          :negative-text="t('common.cancel')"
+          @positive-click="push"
+        >
           <template #trigger>
             <n-button
               type="info"
               tag="div"
               :disabled="!message || isPushing || !store.base64content"
-              @click="push"
             >
               {{ updateText }}
             </n-button>
           </template>
           <span>{{ publishTooltipMessage }}</span>
-        </n-tooltip>
+        </n-popconfirm>
       </div>
     </n-step>
   </n-steps>
@@ -95,13 +98,16 @@ import {
   NSteps,
   NStep,
   NTag,
+  NPopconfirm,
 } from 'naive-ui'
 import { ref, computed, WritableComputedRef } from 'vue'
+import { I18n, useI18n } from 'vue-i18n'
 import { store } from '../../../store'
 import { suggestedCommunicationName } from '../../../helper/meta-interfaces'
 import { idolOptions } from '../../../helper/path'
 import { emit } from 'process'
 
+const { t } = useI18n()
 const isPushing = ref(false)
 const commitUrl = ref('')
 const commitDate = ref('')
@@ -118,8 +124,6 @@ const props = defineProps<{
 }>()
 
 const publishTooltipMessage = computed(() => {
-  if (!store.base64content) return 'no edit is found'
-  if (!message.value) return 'commit message is empty'
   return `Publish to ${username.value}:${props.currentBranch}`
 })
 
