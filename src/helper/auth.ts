@@ -344,70 +344,6 @@ async function fetchUserInfo(accessToken: string) {
   return response.data
 }
 
-// async function forkBranch(
-//   accessToken: string,
-//   owner = 'ShinyGroup',
-//   repo = 'SCTranslationData'
-// ) {
-//   const endpointUrl = proxiedGithubUrl(endpoints.fork(owner, repo))
-//   const response = await axios.post(
-//     endpointUrl,
-//     {},
-//     {
-//       headers: githubApiHeaders(accessToken),
-//     }
-//   )
-//   return response.data
-// }
-
-// async function getContent(
-//   accessToken: string,
-//   path: string,
-//   owner = 'ShinyGroup',
-//   repo = 'SCTranslationData'
-// ) {
-//   const endpointUrl = proxiedGithubUrl(endpoints.content(owner, repo, path))
-//   const response = await axios.get(endpointUrl, {
-//     headers: githubApiHeaders(accessToken),
-//   })
-//   return response.data
-// }
-
-// async function updateContent(
-//   accessToken: string,
-//   path: string,
-//   message: string,
-//   content: string,
-//   owner = 'ShinyGroup',
-//   repo = 'SCTranslationData'
-// ) {
-//   const endpointUrl = proxiedGithubUrl(endpoints.content(owner, repo, path))
-//   let sha = null
-//   try {
-//     const existedContent = await getContent(accessToken, path, owner, repo)
-//     sha = existedContent.sha
-//   } catch (e: any) {
-//     if (e?.response?.status === 404) {
-//       console.log('original resource not found, creating file...')
-//     } else {
-//       console.error(e)
-//       throw e
-//     }
-//   }
-//   const response = await axios.put(
-//     endpointUrl,
-//     {
-//       message,
-//       content,
-//       sha,
-//     },
-//     {
-//       headers: githubApiHeaders(accessToken),
-//     }
-//   )
-//   return response.data
-// }
-
 export {
   OctokitWrapper,
   generateState,
@@ -415,9 +351,6 @@ export {
   fetchAccessToken,
   fetchUserInfo,
   proxiedGithubUrl,
-  forkBranch,
-  getContent,
-  updateContent,
   rootRepoName,
   rootOwner,
   rootBranch,

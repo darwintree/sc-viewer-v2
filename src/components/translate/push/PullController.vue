@@ -1,10 +1,10 @@
 <template>
   <n-space vertical>
-    <NTag>{{ pullStatus }}</NTag>
+    <NTag v-if="current === 3">{{ pullStatus }}</NTag>
     <a v-if="pullUrl" :href="pullUrl" target="_blank">
       {{ directionMessage }}
     </a>
-    <n-input-group v-else>
+    <n-input-group v-if="!pullUrl && current === 3">
       <n-input v-model:value="title" placeholder="input PR title"></n-input>
       <n-popconfirm
         :positive-text="t('common.confirm')"
@@ -20,7 +20,7 @@
   </n-space>
 </template>
 <script setup lang="ts">
-import { computed, ref, onMounted, watch, } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   NTag,

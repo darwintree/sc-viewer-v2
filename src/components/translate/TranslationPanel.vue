@@ -73,7 +73,7 @@ const completeOptions = [
 ]
 
 const showCompleteDropdown = ref(false)
-const showPushDrawer = ref(true)
+const showPushDrawer = ref(false)
 
 function handleCompleteSelect(key: string) {
   if (key === 'download') {

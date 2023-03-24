@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { forkBranch, rootRepoName, updateContent } from '../../../helper/auth'
+import { rootRepoName } from '../../../helper/auth'
 import {
   NSelect,
   NInputGroup,
