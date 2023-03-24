@@ -16,8 +16,12 @@ const clientSecret =
 const defaultGithubProxy = 'https://strawberrytree.top'
 const useGithubProxy = true
 const cancelLoginUrl = `https://github.com/settings/connections/applications/${clientId}`
-const rootRepoName = 'SCTranslationData'
-const rootOwner = 'ShinyGroup'
+const rootRepoName =
+  process.env.NODE_ENV === 'development'
+    ? 'SCTranslationDataTest'
+    : 'SCTranslationData'
+const rootOwner =
+  process.env.NODE_ENV === 'development' ? 'sc-viewer' : 'ShinyGroup'
 const rootBranch = 'master'
 
 interface BranchComparison {
