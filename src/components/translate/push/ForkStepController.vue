@@ -3,6 +3,9 @@
     progressInfo.text
   }}</n-tag>
   <div v-if="initialized">
+    <div v-if="!forkStatus">
+      <n-button @click="createFork">create fork</n-button>
+    </div>
     <n-input-group v-if="!!forkStatus">
       <n-select
         v-model:value="currentBranch"
@@ -19,7 +22,7 @@
             更新
           </n-button>
         </template>
-        远端分支将拉取主仓库更新
+        工作分支将拉取主仓库更新
       </n-popconfirm>
       <n-popconfirm
         :positive-text="t('common.confirm')"
