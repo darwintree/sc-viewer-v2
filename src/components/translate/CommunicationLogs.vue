@@ -71,7 +71,7 @@
           round
           type="primary"
           @click="changeChapter(trueEndJsonUrl)"
-          >True End →</n-button
+          >TE →</n-button
         >
       </n-button-group>
     </div>

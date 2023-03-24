@@ -16,7 +16,7 @@ const messages = {
       first: 'First',
       next: 'Next',
       previous: 'Previous',
-      review: 'Review',
+      review: 'Preview',
       index: 'Index',
     },
     translate: {
@@ -105,7 +105,7 @@ const messages = {
       first: '回到最初',
       next: '下一节',
       previous: '上一节',
-      review: '回顾故事',
+      review: '预览',
       index: '目录',
     },
     translate: {
