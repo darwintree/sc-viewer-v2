@@ -17,7 +17,7 @@
       }
     "
   >
-    <n-step title="选择上传路径">
+    <n-step :title="t('push.steps.upload.selectUploadPath')">
       <div class="repository-info">
         <n-input
           v-if="subCurrent !== 1"
@@ -39,7 +39,7 @@
             <n-input-group-label>/</n-input-group-label>
             <n-input
               v-model:value="pathStory"
-              placeholder="Please Input Story Name"
+              :placeholder="t('push.steps.upload.inputStoryName')"
             />
           </n-input-group>
           <n-input-group>
@@ -51,17 +51,20 @@
             :disabled="!suggestedFilename"
             :style="{ 'max-width': '200px' }"
             @click="useRecommend"
-            >使用推荐路径</n-button
+            >{{ t('push.steps.upload.useRecommendedPath') }}</n-button
           >
         </div>
       </div>
     </n-step>
-    <n-step title="上传" :disabled="!isLegalPath">
+    <n-step
+      :title="t('push.steps.upload.uploadSubstepTitle')"
+      :disabled="!isLegalPath"
+    >
       <div v-if="subCurrent === 2">
         <n-input
           v-model:value="message"
           type="textarea"
-          :placeholder="placeholder"
+          :placeholder="t('push.steps.upload.inputCommitMessage')"
           :disabled="isPushing || !store.base64content"
         />
 
@@ -101,20 +104,20 @@ import {
   NPopconfirm,
 } from 'naive-ui'
 import { ref, computed, WritableComputedRef } from 'vue'
-import { I18n, useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import { store } from '../../../store'
 import { suggestedCommunicationName } from '../../../helper/meta-interfaces'
 import { idolOptions } from '../../../helper/path'
-import { emit } from 'process'
 
 const { t } = useI18n()
 const isPushing = ref(false)
 const commitUrl = ref('')
 const commitDate = ref('')
 const updateText = computed(() => {
-  return isPushing.value ? 'Updating' : 'Publish'
+  return isPushing.value
+    ? t('push.steps.upload.uploading')
+    : t('push.steps.upload.uploadSubstepTitle')
 })
-const placeholder = 'input commit message'
 const message = ref('')
 const subCurrent = ref(1)
 
@@ -124,7 +127,9 @@ const props = defineProps<{
 }>()
 
 const publishTooltipMessage = computed(() => {
-  return `Publish to ${username.value}:${props.currentBranch}`
+  return `${t('push.steps.upload.publishPrefix')} ${username.value}:${
+    props.currentBranch
+  }`
 })
 
 const pathSplits: WritableComputedRef<string[]> = computed({

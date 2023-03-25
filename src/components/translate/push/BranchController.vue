@@ -4,7 +4,9 @@
   }}</n-tag>
   <div v-if="initialized">
     <div v-if="!!store.octokitWrapper?.userMeta && !forkStatus">
-      <n-button @click="createFork">创建初始分支</n-button>
+      <n-button @click="createFork">{{
+        t('push.steps.branch.createFork')
+      }}</n-button>
     </div>
     <n-input-group v-if="!!forkStatus">
       <n-select
@@ -19,10 +21,10 @@
       >
         <template #trigger>
           <n-button type="warning" :disabled="current !== 1 || isLoading">
-            更新
+            {{ t('push.steps.branch.update') }}
           </n-button>
         </template>
-        工作分支将拉取主仓库更新
+        {{ t('push.steps.branch.updateConfirm') }}
       </n-popconfirm>
       <n-popconfirm
         :positive-text="t('common.confirm')"
@@ -39,12 +41,12 @@
         </template>
         <n-input
           v-model:value="newBranchName"
-          placeholder="new branch name"
+          :placeholder="t('push.steps.branch.createBranchPlaceholder')"
           :disabled="isLoading"
         />
         <template #action>
           <n-button type="primary" :disabled="isLoading" @click="createBranch">
-            新建分支
+            {{ t('push.steps.branch.new') }}
           </n-button>
         </template>
       </n-popconfirm>
@@ -119,16 +121,28 @@ const username = computed(() => {
 const progressInfo = computed(
   (): { text: string; type: 'warning' | 'error' | 'info' | 'success' } => {
     if (!initialized.value || isLoading.value)
-      return { text: '加载中，请稍后', type: 'warning' }
-    if (!store.octokitWrapper) return { text: '请登录', type: 'error' }
-    if (!forkStatus.value) return { text: '请创建初始分支', type: 'error' }
-    if (!currentBranch.value) return { text: '请选择分支', type: 'info' }
-    if (!branchComparison.value)
+      return { text: t('push.steps.branch.progress.loading'), type: 'warning' }
+    if (!store.octokitWrapper)
       return {
-        text: '不符要求的分支，请选择其他分支',
+        text: t('push.steps.branch.progress.promptLogin'),
         type: 'error',
       }
-    return { text: '当前分支符合要求，请进入下一步', type: 'success' }
+    if (!forkStatus.value)
+      return { text: t('push.steps.branch.progress.promptFork'), type: 'error' }
+    if (!currentBranch.value)
+      return {
+        text: t('push.steps.branch.progress.selectBranch'),
+        type: 'info',
+      }
+    if (!branchComparison.value)
+      return {
+        text: t('push.steps.branch.progress.illegalBranch'),
+        type: 'error',
+      }
+    return {
+      text: t('push.steps.branch.progress.legalBranch'),
+      type: 'success',
+    }
   }
 )
 
@@ -313,8 +327,4 @@ defineExpose({
   updateBranchComparison,
 })
 </script>
-<style scoped>
-.n-input-group {
-  max-width: 600px;
-}
-</style>
+<style scoped></style>

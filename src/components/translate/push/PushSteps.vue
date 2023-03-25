@@ -9,7 +9,7 @@
       }
     "
   >
-    <n-step :title="t('push.steps.chooseBranch')">
+    <n-step :title="t('push.steps.branch.title')">
       <div class="n-step-description">
         <branch-controller
           ref="branchController"
@@ -18,7 +18,7 @@
         />
       </div>
     </n-step>
-    <n-step :disabled="!hasWorkingBranch" :title="t('push.steps.upload')">
+    <n-step :disabled="!hasWorkingBranch" :title="t('push.steps.upload.title')">
       <div class="n-step-description">
         <!-- <p>1. dropdown选择branch（如果选择的分支过老/为main分支会警告）</p>
         <p>
@@ -27,7 +27,7 @@
         <p>3. 填commit message（有默认模板），也可以自己填，用tab切换</p>
         <p>4. 给commit链接。并提醒可以先不提PR</p> -->
         <p v-if="current === 2 && pullController?.pullUrl">
-          {{ t('push.steps.prDetected') }}
+          {{ t('push.steps.pr.detected') }}
         </p>
         <commit-card
           :current="current"
@@ -40,7 +40,7 @@
         ></commit-card>
       </div>
     </n-step>
-    <n-step :disabled="!hasWorkingBranch" :title="t('push.steps.pr')">
+    <n-step :disabled="!hasWorkingBranch" :title="t('push.steps.pr.title')">
       <div class="n-step-description">
         <!-- <p>1. 创建PR（有默认模板），也可以自己填，用tab切换</p>
         <p>2. 提醒管理员合并。合并前可以继续推送更改</p>

@@ -5,14 +5,17 @@
       {{ directionMessage }}
     </a>
     <n-input-group v-if="!pullUrl && current === 3">
-      <n-input v-model:value="title" placeholder="input PR title"></n-input>
+      <n-input
+        v-model:value="title"
+        :placeholder="t('push.steps.pr.placeholder')"
+      ></n-input>
       <n-popconfirm
         :positive-text="t('common.confirm')"
         :negative-text="t('common.cancel')"
         @positive-click="createPull"
       >
         <template #trigger>
-          <n-button type="info"> create </n-button>
+          <n-button type="info"> {{ t('push.steps.pr.create') }} </n-button>
         </template>
         {{ directionMessage }}
       </n-popconfirm>
@@ -105,8 +108,8 @@ async function createPull() {
 const pullUrl = ref(null as string | null)
 
 const pullStatus = computed(() => {
-  if (!pullUrl.value) return '合并请求尚未创建'
-  return '等待管理员审批'
+  if (!pullUrl.value) return t('push.steps.pr.notCreated')
+  return t('push.steps.pr.reviewing')
 })
 
 defineExpose({

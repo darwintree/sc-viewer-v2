@@ -61,13 +61,13 @@ const renderIcon = (icon: Component) => {
 
 const completeOptions = [
   {
-    label: '推送',
+    label: t('translate.tab.push'),
     key: 'push',
     // disabled: true, // keep disabled as the functions are still in dev
     icon: renderIcon(LogoGithub),
   },
   {
-    label: '下载',
+    label: t('translate.tab.download'),
     key: 'download',
     icon: renderIcon(Download),
   },

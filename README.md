@@ -62,6 +62,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
   - [ ] Use N-Step for pushing to Github
     - [ ] UI when user is not logged in
     - [x] explanation
+    - [ ] explanation text under commit message and pr title
   - [ ] ~~fix no github push panel problem~~
 - [ ] machine translate
 - [x] render translation to review
