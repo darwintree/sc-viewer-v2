@@ -61,6 +61,7 @@ const messages = {
         login: 'Login',
         logout: 'Logout',
         scope: 'Read and write permission of personal repos required',
+        refresh: 'Refresh Status',
       },
       steps: {
         branch: {
@@ -208,6 +209,7 @@ const messages = {
         login: '登录',
         logout: '登出',
         scope: '需要获取私人仓库的读写权限',
+        refresh: '更新登录状态',
       },
       steps: {
         branch: {
