@@ -343,14 +343,14 @@ function toTop() {
           {{ t('translate.switch.reloadTooltip') }}
         </n-tooltip>
       </n-space>
-      <!-- <n-space align="center">
+      <n-space align="center">
         <n-button
           tertiary
           type="info"
           class="mode-switch"
           @click="
             // eslint-disable-next-line prettier/prettier
-            fileInput!.click()
+            fileInput!.click();
             showSwitchModal = false
           "
         >
@@ -362,7 +362,7 @@ function toTop() {
         <span>
           {{ t('translate.switch.explanation.file') }}
         </span>
-      </n-space> -->
+      </n-space>
       <n-space align="center">
         <n-button
           tertiary

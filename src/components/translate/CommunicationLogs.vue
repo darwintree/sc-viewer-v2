@@ -286,6 +286,8 @@ export default defineComponent({
     loadDataFromCsvText(text: string) {
       try {
         this.data = [] // force remove rendered elements to disable reuse
+        this.isPreviewing = false
+        this.hasPreviewed = false
         const { data, translator, jsonUrl } = extractInfoFromCsvText(text)
         this.jsonUrl = jsonUrl
         this.updateRelatedChapterStatus()
