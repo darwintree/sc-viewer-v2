@@ -5,15 +5,19 @@ import { Octokit } from 'https://cdn.skypack.dev/octokit'
 
 const clientId =
   process.env.NODE_ENV === 'development'
-    ? '160aaa1e1eaa7deebce9'
-    : 'd3fe73d4d944c0972530'
+    ? import.meta.env.VITE_DEV_CLIENT_ID
+    : import.meta.env.VITE_CLIENT_ID
 
+// this is a pure frontend application
+// so it's ok to expose client secret
 const clientSecret =
   process.env.NODE_ENV === 'development'
-    ? '0a25442a292cad8db226fe4e363d3f858bb6cc90'
-    : 'caff67d9071f6ef6db79ecdc1cab9b3a964489d7'
+    ? import.meta.env.VITE_DEV_CLIENT_SECRET
+    : import.meta.env.VITE_CLIENT_SECRET
 
-const defaultGithubProxy = 'https://strawberrytree.top'
+const GITHUB_PROXY = import.meta.env.VITE_GITHUB_PROXY // used to fetch access token
+const GITHUB_API_PROXY = import.meta.env.VITE_GITHUB_API_PROXY
+// const defaultGithubProxy = 'https://strawberrytree.top'
 const useGithubProxy = true
 const cancelLoginUrl = `https://github.com/settings/connections/applications/${clientId}`
 const rootRepoName =
@@ -41,7 +45,7 @@ class OctokitWrapper {
     avatarUrl: string
   } | null = null
 
-  constructor(accessToken: string, baseUrl = `${defaultGithubProxy}/api`) {
+  constructor(accessToken: string, baseUrl = GITHUB_API_PROXY) {
     const octokit = new Octokit({
       auth: accessToken,
       baseUrl,
@@ -286,16 +290,7 @@ function proxiedGithubUrl(githubUrl: string, letPass = false) {
     return githubUrl
   }
   if (githubUrl.startsWith('https://github.com')) {
-    return githubUrl.replace(
-      'https://github.com',
-      `${defaultGithubProxy}/github`
-    )
-  }
-  if (githubUrl.startsWith('https://api.github.com')) {
-    return githubUrl.replace(
-      'https://api.github.com',
-      `${defaultGithubProxy}/api`
-    )
+    return githubUrl.replace('https://github.com', GITHUB_PROXY)
   }
   if (!letPass) throw new Error(`Not a github url: ${githubUrl}`)
   return githubUrl
@@ -325,7 +320,6 @@ export {
   generateState,
   generateAuthRequest,
   fetchAccessToken,
-  proxiedGithubUrl,
   rootRepoName,
   rootOwner,
   rootBranch,
