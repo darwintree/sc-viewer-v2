@@ -3,6 +3,7 @@
 <script setup lang="ts">
 import Communication from './CommunicationLogs.vue'
 import PushPanel from './push/PushPanel.vue'
+import PushHeader from './push/PushHeader.vue'
 import {
   NInput,
   NInputGroup,
@@ -399,7 +400,10 @@ function toTop() {
     closable
     :auto-focus="false"
   >
-    <n-drawer-content title="Push to Github" :native-scrollbar="false">
+    <n-drawer-content :native-scrollbar="false">
+      <template #header>
+        <push-header></push-header>
+      </template>
       <PushPanel></PushPanel>
     </n-drawer-content>
   </n-drawer>

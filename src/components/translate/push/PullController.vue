@@ -105,7 +105,7 @@ async function createPull() {
 const pullUrl = ref(null as string | null)
 
 const pullStatus = computed(() => {
-  if (!pullUrl.value) return '输入标题，创建合并请求'
+  if (!pullUrl.value) return '合并请求尚未创建'
   return '等待管理员审批'
 })
 

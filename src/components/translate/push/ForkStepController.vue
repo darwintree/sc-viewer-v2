@@ -3,7 +3,7 @@
     progressInfo.text
   }}</n-tag>
   <div v-if="initialized">
-    <div v-if="!forkStatus">
+    <div v-if="!!store.octokitWrapper?.userMeta && !forkStatus">
       <n-button @click="createFork">创建初始分支</n-button>
     </div>
     <n-input-group v-if="!!forkStatus">
@@ -120,6 +120,7 @@ const progressInfo = computed(
   (): { text: string; type: 'warning' | 'error' | 'info' | 'success' } => {
     if (!initialized.value || isLoading.value)
       return { text: '加载中，请稍后', type: 'warning' }
+    if (!store.octokitWrapper) return { text: '请登录', type: 'error' }
     if (!forkStatus.value) return { text: '请创建初始分支', type: 'error' }
     if (!currentBranch.value) return { text: '请选择分支', type: 'info' }
     if (!branchComparison.value)
@@ -133,6 +134,7 @@ const progressInfo = computed(
 
 watch(username, async (newVal) => {
   if (newVal) await updateForkStatus()
+  else forkStatus.value = null
 })
 
 watch(forkStatus, async (newVal) => {

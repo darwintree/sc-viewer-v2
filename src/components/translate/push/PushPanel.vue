@@ -2,30 +2,7 @@
 
 <template>
   <n-space vertical class="user-container">
-    <div v-if="!store.octokitWrapper?.userMeta">
-      <!-- TODO：提醒需要管理员权限 -->
-      <button class="btn btn-primary" @click="navToAuth">
-        Login via Github
-      </button>
-    </div>
-    <div
-      v-if="!store.isLoading && store.octokitWrapper?.userMeta"
-      class="full-width"
-    >
-      <div class="user-info-line">
-        <div class="user-info">
-          <img
-            v-if="store.octokitWrapper?.userMeta.avatarUrl"
-            class="avatar"
-            :src="store.octokitWrapper?.userMeta.avatarUrl"
-            alt="User avatar"
-          />
-          <span class="username">{{
-            store.octokitWrapper?.userMeta.username
-          }}</span>
-        </div>
-        <button class="btn btn-secondary" @click="logOut">Logout</button>
-      </div>
+    <div v-if="!store.isLoading" class="full-width">
       <n-collapse>
         <n-collapse-item title="不熟悉 git 工作流？">
           <p>
@@ -55,36 +32,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { generateState, generateAuthRequest } from '../../../helper/auth'
-import { store, tryLogin, logOut } from '../../../store'
+import { store } from '../../../store'
 import { NCollapse, NCollapseItem, NSpace } from 'naive-ui'
 import PushSteps from './PushSteps.vue'
-
-// const current = ref(1)
-// const currentStatus = ref('Finish')
-// const current
-
-async function handleVisibilityChangeAfterAuth() {
-  if (document.hidden) return
-  if (!localStorage.getItem('accessToken')) return
-  await tryLogin()
-  document.removeEventListener(
-    'visibilitychange',
-    handleVisibilityChangeAfterAuth
-  )
-}
-
-function navToAuth() {
-  const state = generateState()
-  localStorage.setItem('state', state.toString())
-  // console.log(state)
-  window.open(generateAuthRequest(state))
-  document.addEventListener(
-    'visibilitychange',
-    handleVisibilityChangeAfterAuth,
-    false
-  )
-}
 </script>
 
 <style scoped>
