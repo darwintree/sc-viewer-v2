@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       devOptions: {
-        // enabled: true
+        enabled: true,
       },
       manifest: {
         name: 'SC-VIEWER',
@@ -21,6 +21,43 @@ export default defineConfig({
             src: '/icon/プロデューサー.webp',
             sizes: '180x180',
             type: 'image/webp',
+          },
+        ],
+      },
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => {
+              if (
+                url.hostname === 'event.strawberrytree.top' ||
+                url.hostname === 'viewer.strawberrytree.top'
+              ) {
+                return true
+              }
+              return false
+            },
+            handler: 'NetworkFirst',
+          },
+          {
+            urlPattern: ({ url }) => {
+              if (
+                url.pathname.startsWith('/convert/cache') ||
+                url.pathname.startsWith('/raw')
+              ) {
+                return true
+              }
+              return false
+            },
+            handler: 'StaleWhileRevalidate',
+          },
+          {
+            urlPattern: ({ url }) => {
+              if (url.pathname.startsWith('/api')) {
+                return true
+              }
+              return false
+            },
+            handler: 'NetworkOnly',
           },
         ],
       },
