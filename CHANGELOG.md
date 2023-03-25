@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/3/25
+
+* feat: push panel
+
 ## 2023/3/23
 
 * fix: unexpected date format in list
