@@ -60,6 +60,8 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
   - [x] use dropdown component for download csv
     - [x] download or push to github
   - [ ] Use N-Step for pushing to Github
+    - [ ] UI when user is not logged in
+    - [x] explanation
   - [ ] ~~fix no github push panel problem~~
 - [ ] machine translate
 - [x] render translation to review

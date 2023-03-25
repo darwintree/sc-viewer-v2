@@ -4,7 +4,7 @@
   }}</n-tag>
   <div v-if="initialized">
     <div v-if="!forkStatus">
-      <n-button @click="createFork">create fork</n-button>
+      <n-button @click="createFork">创建初始分支</n-button>
     </div>
     <n-input-group v-if="!!forkStatus">
       <n-select
@@ -120,8 +120,7 @@ const progressInfo = computed(
   (): { text: string; type: 'warning' | 'error' | 'info' | 'success' } => {
     if (!initialized.value || isLoading.value)
       return { text: '加载中，请稍后', type: 'warning' }
-    if (!forkStatus.value)
-      return { text: '未找到仓库，请创建主仓库副本', type: 'error' }
+    if (!forkStatus.value) return { text: '请创建初始分支', type: 'error' }
     if (!currentBranch.value) return { text: '请选择分支', type: 'info' }
     if (!branchComparison.value)
       return {

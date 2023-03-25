@@ -1,6 +1,6 @@
 <template>
   <n-space vertical>
-    <NTag v-if="current === 3">{{ pullStatus }}</NTag>
+    <NTag>{{ pullStatus }}</NTag>
     <a v-if="pullUrl" :href="pullUrl" target="_blank">
       {{ directionMessage }}
     </a>
@@ -75,7 +75,7 @@ async function updatePullUrl(newBranch: null | string) {
       `${username.value}:${newBranch}`
     )
     if (!data || data.length == 0) {
-      console.log(data)
+      // console.log(data)
       pullUrl.value = null
       return
     }
