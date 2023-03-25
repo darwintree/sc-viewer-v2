@@ -268,15 +268,6 @@ class OctokitWrapper {
 
 const endpoints = {
   accessToken: () => 'https://github.com/login/oauth/access_token',
-  user: () => 'https://api.github.com/user',
-  fork: (owner: string, repo: string) =>
-    `https://api.github.com/repos/${owner}/${repo}/forks`,
-  content: (owner: string, repo: string, path: string) =>
-    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-  compare: (owner: string, repo: string, base: string, head: string) =>
-    `https://api.github.com/repos/${owner}/${repo}/compare/${base}...${head}`,
-  repo: (owner: string, repo: string) =>
-    `https://api.github.com/repos/${owner}/${repo}`,
 }
 
 function generateState() {
@@ -309,7 +300,7 @@ function proxiedGithubUrl(githubUrl: string, letPass = false) {
 
 async function fetchAccessToken(code: string) {
   const endpointUrl = proxiedGithubUrl(endpoints.accessToken())
-  let response = await axios.post(
+  const response = await axios.post(
     endpointUrl,
     {
       code,
@@ -326,29 +317,11 @@ async function fetchAccessToken(code: string) {
   return response.data.access_token
 }
 
-function githubApiHeaders(accessToken: string) {
-  return {
-    Accept: 'application/vnd.github+json',
-    Authorization: `Bearer ${accessToken}`,
-    'X-GitHub-Api-Version': '2022-11-28',
-  }
-}
-
-async function fetchUserInfo(accessToken: string) {
-  const endpointUrl = proxiedGithubUrl(endpoints.user())
-  const response = await axios.get(endpointUrl, {
-    headers: githubApiHeaders(accessToken),
-  })
-  console.log(response.status)
-  return response.data
-}
-
 export {
   OctokitWrapper,
   generateState,
   generateAuthRequest,
   fetchAccessToken,
-  fetchUserInfo,
   proxiedGithubUrl,
   rootRepoName,
   rootOwner,

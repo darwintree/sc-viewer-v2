@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { fetchUserInfo, proxiedGithubUrl, OctokitWrapper } from './helper/auth'
+import { OctokitWrapper } from './helper/auth'
 import { EventsCollectionMeta } from './helper/meta-interfaces'
 
 enum DataSourceType {
@@ -96,13 +96,6 @@ const store = reactive({
   saves: {} as LocalStorageSaveManager,
   latestUpdate: '',
 
-  // setAvatarUrl(currentAvatarUrl: string | null) {
-  //   if (currentAvatarUrl === null) {
-  //     this.avatarUrl = null
-  //     return
-  //   }
-  //   this.avatarUrl = proxiedGithubUrl(currentAvatarUrl, true)
-  // },
   currentMode: '' as DataSourceType,
 
   // current translation panel info

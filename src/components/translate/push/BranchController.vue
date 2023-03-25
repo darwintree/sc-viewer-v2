@@ -66,11 +66,8 @@ import {
   NTag,
   NSelect,
   NInputGroup,
-  NInputGroupLabel,
   NInput,
   NPopconfirm,
-  NCollapse,
-  NCollapseItem,
 } from 'naive-ui'
 import { Add } from '@vicons/carbon'
 import { useI18n } from 'vue-i18n'
@@ -214,12 +211,6 @@ async function updateBranchComparison(branch: string) {
     alert(e)
     return
   }
-
-  // if (!data) {
-  //   const msg = 'Unexpected error: no comparison info'
-  //   alert(msg)
-  //   throw new Error(msg)
-  // }
 }
 
 async function createFork() {

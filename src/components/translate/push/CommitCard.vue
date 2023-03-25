@@ -96,11 +96,9 @@ import {
   NInputGroup,
   NInput,
   NInputGroupLabel,
-  NTooltip,
   NButton,
   NSteps,
   NStep,
-  NTag,
   NPopconfirm,
 } from 'naive-ui'
 import { ref, computed, WritableComputedRef } from 'vue'
@@ -185,25 +183,6 @@ const isLegalPath = computed(() => {
   return !!pathCharacter.value && !!pathStory.value && !!pathFilename.value
 })
 
-// function checkInput() {
-//   if (!pathCharacter.value) {
-//     alert('idol name in path is not selected!')
-//     throw new Error('idol is not selected')
-//   }
-//   if (!pathStory.value) {
-//     alert('story name in path is empty!')
-//     throw new Error('story is empty')
-//   }
-//   if (!pathFilename.value) {
-//     alert('file name in path is empty!')
-//     throw new Error('filename is empty')
-//   }
-//   if (!message.value) {
-//     alert('commit message is empty!')
-//     throw new Error('commit message is empty')
-//   }
-// }
-
 const suggestedStoryname = computed(() => {
   if (store.eventsCollectionMeta) {
     if (store.eventsCollectionMeta.name.search('】') < 0) {
@@ -280,87 +259,12 @@ async function push() {
   isPushing.value = false
 }
 
-// async function update() {
-//   checkInput()
-//   isPushing.value = true
-//   let result
-//   try {
-//     result = await updateContent(
-//       store.accessToken!,
-//       `data/store/${store.path}`,
-//       message.value,
-//       store.base64content!,
-//       store.owner,
-//       store.repo
-//     )
-//   } catch (e: any) {
-//     window.alert(e.message)
-//     console.error(e)
-//     throw e
-//   }
-//   isPushing.value = false
-//   store.base64content = null
-//   console.log(result)
-//   commitUrl.value = result.commit.html_url
-//   commitDate.value = new Date(result.commit.author.date).toLocaleTimeString()
-//   message.value = ''
-// }
 const emits = defineEmits<{
   (e: 'commit'): void
 }>()
 </script>
 
 <style scoped>
-.user-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.logged-out {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.logged-in {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.user-info-line {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  justify-content: space-between;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-}
-
-.username {
-  margin-left: 10px;
-  font-size: 1.2em;
-}
-
-.avatar {
-  height: 50px;
-  border-radius: 50%;
-}
-
-.actions {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
 .repository-info {
   display: flex;
   flex-direction: column;

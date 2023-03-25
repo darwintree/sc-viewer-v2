@@ -52,42 +52,13 @@
         ></pull-controller>
       </div>
     </n-step>
-    <!-- <n-step title="Something">
-      <div class="n-step-description">
-        <p>Something in the way she moves Attracts me like no other lover</p>
-        <n-button
-          v-if="current === 4"
-          :type="buttonType"
-          size="small"
-          @click="handleButtonClick"
-        >
-          Next
-        </n-button>
-      </div>
-    </n-step> -->
   </n-steps>
-  <!-- <n-radio-group v-model:value="currentStatus" size="medium" name="basic">
-      <n-radio-button value="error"> Error </n-radio-button>
-      <n-radio-button value="process"> Process </n-radio-button>
-      <n-radio-button value="wait"> Wait </n-radio-button>
-      <n-radio-button value="finish"> Finish </n-radio-button>
-    </n-radio-group> -->
-  <!-- </n-space> -->
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  StepsProps,
-  NSteps,
-  NRadioGroup,
-  NRadioButton,
-  NStep,
-  NButton,
-  NSpace,
-  NTag,
-} from 'naive-ui'
+import { StepsProps, NSteps, NStep } from 'naive-ui'
 import BranchController from './BranchController.vue'
 import CommitCard from './CommitCard.vue'
 import { store } from '../../../store'
@@ -96,17 +67,6 @@ import PullController from './PullController.vue'
 const { t } = useI18n()
 const current = ref(1)
 const currentStatus = ref<StepsProps['status']>('process')
-
-const buttonType = computed(() => {
-  switch (currentStatus.value) {
-    case 'error':
-      return 'error'
-    case 'finish':
-      return 'success'
-    default:
-      return 'default'
-  }
-})
 
 const branchController = ref<InstanceType<typeof BranchController>>()
 const pullController = ref<InstanceType<typeof PullController>>()
@@ -123,13 +83,4 @@ const hasWorkingBranch = computed(() => {
 function handleButtonClick() {
   current.value = (current.value % 3) + 1
 }
-
-// defineExpose({
-//   current: currentRef,
-//   currentStatus: currentStatusRef,
-//   handleButtonClick() {
-//     currentRef.value = (currentRef.value % 4) + 1
-//   },
-//   buttonType: buttonTypeRef,
-// })
 </script>
