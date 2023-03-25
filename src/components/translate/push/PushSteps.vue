@@ -11,8 +11,8 @@
   >
     <n-step :title="t('push.steps.chooseBranch')">
       <div class="n-step-description">
-        <fork-step-controller
-          ref="forkStep"
+        <branch-controller
+          ref="branchController"
           :current="current"
           @next="handleButtonClick"
         />
@@ -34,7 +34,7 @@
           :current-branch="currentBranch"
           @commit="
             () => {
-              forkStep?.updateBranchComparison(currentBranch!)
+              branchController?.updateBranchComparison(currentBranch!)
             }
           "
         ></commit-card>
@@ -88,7 +88,7 @@ import {
   NSpace,
   NTag,
 } from 'naive-ui'
-import ForkStepController from './ForkStepController.vue'
+import BranchController from './BranchController.vue'
 import CommitCard from './CommitCard.vue'
 import { store } from '../../../store'
 import PullController from './PullController.vue'
@@ -108,16 +108,16 @@ const buttonType = computed(() => {
   }
 })
 
-const forkStep = ref<InstanceType<typeof ForkStepController>>()
+const branchController = ref<InstanceType<typeof BranchController>>()
 const pullController = ref<InstanceType<typeof PullController>>()
 
 const currentBranch = computed(() => {
-  if (!forkStep?.value?.currentBranch) return null
-  return forkStep.value.currentBranch
+  if (!branchController?.value?.currentBranch) return null
+  return branchController.value.currentBranch
 })
 
 const hasWorkingBranch = computed(() => {
-  return !!forkStep.value?.branchComparison
+  return !!branchController.value?.branchComparison
 })
 
 function handleButtonClick() {
