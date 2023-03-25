@@ -53,6 +53,32 @@ const messages = {
         top: 'TOP',
       },
     },
+    push: {
+      header: {
+        title: 'Push to Github',
+        login: 'Login',
+        logout: 'Logout',
+        scope: 'Read and write permission of personal repos required',
+      },
+      steps: {
+        chooseBranch: 'Choose working branch',
+        upload: 'Upload translation to working branch',
+        prDetected:
+          'Pull request detected, newly uploaded contents will be included in current PR',
+        pr: 'Create pull request',
+      },
+      explanation: {
+        title: 'Not familiar with the git workflow?',
+        p1: 'Collaborating on GitHub is like a group of people working together on a document. To avoid confusion caused by everyone directly modifying the original document, we adopt a step-by-step approach.',
+        p2: 'Create drafts for modifications, and finally present the content of the draft to the original author for review and merging.',
+        step1:
+          "Choose a working branch: Create a new draft (working branch) or select an existing one. This allows you to focus on your task, whether it's adding new content or revising existing content, without affecting the original document and the work of others.",
+        step2:
+          'Upload content to the branch: Save your local work results to your cloud draft.',
+        step3:
+          'Submit a merge request: Request to merge your modifications from the draft (working branch) back into the original document. This process allows the document author to review your changes and ensure the content is correct before merging.',
+      },
+    },
     home: {
       history: {
         title: 'History Saves',
@@ -140,6 +166,30 @@ const messages = {
         complete: '下载/推送',
         switch: '数据源切换',
         top: 'TOP',
+      },
+    },
+    push: {
+      header: {
+        title: '推送到Github',
+        login: '登录',
+        logout: '登出',
+        scope: '需要获取私人仓库的读写权限',
+      },
+      steps: {
+        chooseBranch: '选择工作分支',
+        upload: '将翻译上传至工作分支',
+        prDetected: '已发现合并请求，上传的新内容将自动包含在现有请求中',
+        pr: '创建合并请求',
+      },
+      explanation: {
+        title: '不熟悉 git 工作流？',
+        p1: '使用Github进行协作就像是一群人共同编辑一份文档。为了避免每个人直接在原文档上修改而导致混乱，我们采取了一种分步骤的方法。',
+        p2: '想象一下，有一篇原始文章，我们可以为其创建草稿进行修改，最后将草稿的内容呈现给原文作者审查并合并。',
+        step1:
+          '选择工作分支：创建一个新的草稿（工作分支）或选择一个现有草稿。这样你可以专注于自己的任务，无论是新增内容还是修正现有内容，都不会影响到原始文章和其他人的工作。',
+        step2: '将内容上传到分支：将你的本地工作成果保存到自己的云端草稿中。',
+        step3:
+          '提交合并请求：请求将你的修改从草稿（工作分支）合并回原始文章。这个过程允许文章作者审查你的修改，并在合并前确保内容是正确的。',
       },
     },
     home: {

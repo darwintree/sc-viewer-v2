@@ -1,6 +1,6 @@
 <template>
   <n-space align="center">
-    <span>Push to Github</span>
+    <span> {{ t('push.header.title') }}</span>
     <n-popconfirm
       v-if="!store.octokitWrapper?.userMeta"
       :positive-text="t('common.confirm')"
@@ -10,10 +10,10 @@
       <template #trigger>
         <n-button type="info">
           <template #icon><LogoGithub /></template>
-          Login
+          {{ t('push.header.login') }}
         </n-button>
       </template>
-      需要获取私人仓库的读写权限
+      {{ t('push.header.scope') }}
     </n-popconfirm>
     <n-dropdown v-else :options="options" @select="handleSelect">
       <n-tag class="clickable">
@@ -45,7 +45,7 @@ import { generateState, generateAuthRequest } from '../../../helper/auth'
 const { t } = useI18n()
 const options = [
   {
-    label: '登出',
+    label: t('push.header.logout'),
     key: 'logout',
   },
 ]

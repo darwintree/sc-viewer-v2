@@ -9,7 +9,7 @@
       }
     "
   >
-    <n-step title="选择工作分支">
+    <n-step :title="t('push.steps.chooseBranch')">
       <div class="n-step-description">
         <fork-step-controller
           ref="forkStep"
@@ -18,7 +18,7 @@
         />
       </div>
     </n-step>
-    <n-step :disabled="!hasWorkingBranch" title="将翻译上传至工作分支">
+    <n-step :disabled="!hasWorkingBranch" :title="t('push.steps.upload')">
       <div class="n-step-description">
         <!-- <p>1. dropdown选择branch（如果选择的分支过老/为main分支会警告）</p>
         <p>
@@ -27,7 +27,7 @@
         <p>3. 填commit message（有默认模板），也可以自己填，用tab切换</p>
         <p>4. 给commit链接。并提醒可以先不提PR</p> -->
         <p v-if="current === 2 && pullController?.pullUrl">
-          已发现合并请求，上传的新内容将自动包含在现有请求中
+          {{ t('push.steps.prDetected') }}
         </p>
         <commit-card
           :current="current"
@@ -40,7 +40,7 @@
         ></commit-card>
       </div>
     </n-step>
-    <n-step :disabled="!hasWorkingBranch" title="提交合并请求">
+    <n-step :disabled="!hasWorkingBranch" :title="t('push.steps.pr')">
       <div class="n-step-description">
         <!-- <p>1. 创建PR（有默认模板），也可以自己填，用tab切换</p>
         <p>2. 提醒管理员合并。合并前可以继续推送更改</p>
@@ -77,6 +77,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   StepsProps,
   NSteps,
@@ -92,6 +93,7 @@ import CommitCard from './CommitCard.vue'
 import { store } from '../../../store'
 import PullController from './PullController.vue'
 
+const { t } = useI18n()
 const current = ref(1)
 const currentStatus = ref<StepsProps['status']>('process')
 
