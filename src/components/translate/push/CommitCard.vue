@@ -237,10 +237,12 @@ async function push() {
   if (!store.octokitWrapper || !store.octokitWrapper?.userMeta)
     throw Error('unexpected empty username')
   if (!store.base64content) throw Error('Content is not set')
+  if (!props.currentBranch) throw Error('Branch is not set')
   try {
     result = await store.octokitWrapper.updateContent(
       store.octokitWrapper.userMeta.username,
       rootRepoName,
+      props.currentBranch,
       `data/story/${store.path}`,
       message.value,
       store.base64content

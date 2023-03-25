@@ -184,12 +184,13 @@ class OctokitWrapper {
     })
   }
 
-  async getContent(owner: string, repo: string, path: string) {
+  async getContent(owner: string, repo: string, branch: string, path: string) {
     const { data } = await this.request(
       'GET /repos/{owner}/{repo}/contents/{path}',
       {
         owner,
         repo,
+        branch,
         path,
         headers: this.headers,
       }
@@ -200,13 +201,14 @@ class OctokitWrapper {
   async updateContent(
     owner: string,
     repo: string,
+    branch: string,
     path: string,
     message: string,
     content: string
   ) {
     let sha = null
     try {
-      const previousData = await this.getContent(owner, repo, path)
+      const previousData = await this.getContent(owner, repo, branch, path)
       // @ts-ignore
       sha = previousData.sha
     } catch (e: any) {
@@ -223,6 +225,7 @@ class OctokitWrapper {
       {
         owner,
         repo,
+        branch,
         path,
         sha,
         message,
