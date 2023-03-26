@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Github Viewer Button
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Add a viewer button for SCTranslation Github repo
 // @author       mihu
 // @match        https://github.com/*
@@ -9,6 +9,7 @@
 // @icon         https://static.sc-viewer.top/favicon.ico
 // @grant        none
 // @updateURL    https://static.sc-viewer.top/viewer-button.user.js
+// @supportURL   https://github.com/darwintree/sc-viewer-v2/issues
 // ==/UserScript==
 
 ;(function () {
@@ -96,9 +97,7 @@
       const rawURI = window.location.toString()
       // 跳转到指定网页
       window.open(
-        `https://viewer.strawberrytree.top/translate/#${encodeURIComponent(
-          rawURI
-        )}`
+        `https://sc-viewer.top/translate/#${encodeURIComponent(rawURI)}`
       )
     })
 
