@@ -105,7 +105,11 @@ import { ref, computed, WritableComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { store } from '../../../store'
 import { suggestedCommunicationName } from '../../../helper/meta-interfaces'
-import { idolOptions } from '../../../helper/path'
+import {
+  extractInfoFromUrl,
+  idolOptions,
+  queryTranslatedCsv,
+} from '../../../helper/path'
 
 const { t } = useI18n()
 const isPushing = ref(false)
@@ -219,6 +223,12 @@ const suggestedCharacter = computed(() => {
 })
 
 function useRecommend() {
+  // if there is current translated file, don't change it
+  if (store.jsonUrl && queryTranslatedCsv(store.jsonUrl)) {
+    const { path } = extractInfoFromUrl(store.jsonUrl)
+    store.path = path
+    return
+  }
   if (
     !suggestedCharacter.value ||
     !suggestedFilename.value ||

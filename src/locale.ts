@@ -234,7 +234,7 @@ const messages = {
           inputStoryName: '请输入卡片/活动名',
           useRecommendedPath: '使用推荐路径',
           uploadSubstepTitle: '上传',
-          inputCommitMessage: '本次修改的内容',
+          inputCommitMessage: '概述本次修改的内容',
           publishPrefix: '上传至',
           uploading: '上传中...',
         },
