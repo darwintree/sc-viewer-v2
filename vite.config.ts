@@ -30,7 +30,10 @@ export default defineConfig({
             urlPattern: ({ url }) => {
               if (
                 url.hostname === 'event.strawberrytree.top' ||
-                url.hostname === 'viewer.strawberrytree.top'
+                url.hostname === 'viewer.strawberrytree.top' ||
+                url.hostname === 'sc-viewer.top' ||
+                url.hostname === 'www.sc-viewer.top' ||
+                url.hostname === 'event.sc-viewer.top'
               ) {
                 return true
               }

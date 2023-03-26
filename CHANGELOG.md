@@ -1,8 +1,15 @@
 # Changelog
 
+## 2023/3/26
+
+* chore: domain migration to [sc-viewer.top](https://sc-viewer.top)
+
 ## 2023/3/25
 
 * feat: push panel
+* chore: PWA network options
+* feat: manually login status refresh button
+* perf: loading performance
 
 ## 2023/3/23
 

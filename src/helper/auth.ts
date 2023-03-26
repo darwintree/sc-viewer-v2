@@ -15,8 +15,15 @@ const clientSecret =
     ? import.meta.env.VITE_DEV_CLIENT_SECRET
     : import.meta.env.VITE_CLIENT_SECRET
 
+// corredponding redirect uri of github oauth configuration
+const HOSTNAME =
+  process.env.NODE_ENV === 'development'
+    ? import.meta.env.VITE_DEV_HOSTNAME
+    : import.meta.env.VITE_HOSTNAME
+
 const GITHUB_PROXY = import.meta.env.VITE_GITHUB_PROXY // used to fetch access token
 const GITHUB_API_PROXY = import.meta.env.VITE_GITHUB_API_PROXY
+
 // const defaultGithubProxy = 'https://strawberrytree.top'
 const useGithubProxy = true
 const cancelLoginUrl = `https://github.com/settings/connections/applications/${clientId}`
@@ -282,6 +289,12 @@ function generateState() {
 }
 
 function generateAuthRequest(state: number) {
+  if (location.hostname !== HOSTNAME) {
+    alert(
+      `Login is disabled in ${location.hostname}, please visit https://${HOSTNAME}`
+    )
+    throw new Error(`not supported domain: ${location.hostname}`)
+  }
   return `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo+read:user&state=${state}`
 }
 

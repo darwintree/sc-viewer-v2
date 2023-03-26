@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Github Viewer Button
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Add a viewer button for SCTranslation Github repo
 // @author       mihu
 // @match        https://github.com/*
 // @run-at       document-end
-// @icon         https://viewer.strawberrytree.top/favicon.ico
+// @icon         https://static.sc-viewer.top/favicon.ico
 // @grant        none
-// @updateURL    https://static.strawberrytree.top/viewer-button.user.js
+// @updateURL    https://static.sc-viewer.top/viewer-button.user.js
 // ==/UserScript==
 
 ;(function () {

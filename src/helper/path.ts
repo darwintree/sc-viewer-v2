@@ -72,11 +72,8 @@ function getGithubRawResourcePath(url: string) {
   return url
 }
 
-function getIframeSrc(jsonUrl: string) {
-  if (!jsonUrl) return null
-  const eventType = jsonUrl.split('/')[0]
-  const eventId = jsonUrl.split('/')[1].split('.')[0]
-  return `${EVENT_VIEWER_SITE}/?eventType=${eventType}&eventId=${eventId}`
+function getIframeSrc() {
+  return `${EVENT_VIEWER_SITE}/?iframeMode=1`
 }
 
 // https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/%E4%B8%89%E5%B3%B0%E7%B5%90%E8%8F%AF/%E3%80%90Hakoni%E2%96%A1a%E3%80%91%E4%B8%89%E5%B3%B0%E7%B5%90%E8%8F%AF/%E3%83%9A%E3%83%AB%E3%82%BD%E3%83%8A%E3%81%AA%E3%82%93%E3%81%A6%E7%AC%91%E3%81%A3%E3%81%A1%E3%82%83%E3%81%86.csv

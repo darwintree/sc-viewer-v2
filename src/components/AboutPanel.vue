@@ -6,7 +6,7 @@
       <a href="mailto:daerwendeshu@outlook.com">daerwendeshu@outlook.com</a>
     </div>
     <div>
-      <a href="https://static.strawberrytree.top/viewer-button.user.js"
+      <a href="https://static.sc-viewer.top/viewer-button.user.js"
         >Browser Extension: Add link to github csv pages</a
       >
     </div>

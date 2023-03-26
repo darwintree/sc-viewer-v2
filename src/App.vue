@@ -1,13 +1,17 @@
 // App.vue
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { NSelect, NMessageProvider, NDialogProvider } from 'naive-ui'
+import { NSelect, NMessageProvider, NDialogProvider, NAlert } from 'naive-ui'
 
 const route = useRoute()
 const { locale, availableLocales, t } = useI18n()
+
+const showAlert = computed(() => {
+  return location.hostname === 'viewer.strawberrytree.top'
+})
 
 const options = availableLocales.map((item) => {
   return {
@@ -30,6 +34,10 @@ watch(locale, (newVal) => {
   <div class="main">
     <n-message-provider>
       <n-dialog-provider>
+        <n-alert v-if="showAlert" type="warning">
+          本域名将停止服务，请访问新域名
+          <a href="https://sc-viewer.top">https://sc-viewer.top</a>
+        </n-alert>
         <div class="first-line">
           <nav>
             <router-link

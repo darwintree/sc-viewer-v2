@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { NSkeleton } from 'naive-ui'
+import { getIframeSrc } from '../../helper/path'
 
 onMounted(() => {
   window.onmessage = (event) => {
@@ -44,7 +45,7 @@ function postMessageOnPlayer({
   iframeJson: object
   csvText: string
 }) {
-  iframeSrc.value = `https://event.strawberrytree.top/?iframeMode=1`
+  iframeSrc.value = getIframeSrc()
   if (loaded.value) {
     player?.value?.contentWindow?.postMessage(
       {

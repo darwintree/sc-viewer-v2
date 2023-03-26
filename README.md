@@ -67,6 +67,7 @@ const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 - [ ] machine translate
 - [x] render translation to review
 - [x] `make deploy` command
+- [ ] static resource processing
 
 ### Improvements
 
