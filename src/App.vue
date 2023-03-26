@@ -36,7 +36,9 @@ watch(locale, (newVal) => {
       <n-dialog-provider>
         <n-alert v-if="showAlert" type="warning">
           本域名将停止服务，请访问新域名
-          <a href="https://sc-viewer.top">https://sc-viewer.top</a>
+          <a target="_blank" href="https://sc-viewer.top"
+            >https://sc-viewer.top</a
+          >
         </n-alert>
         <div class="first-line">
           <nav>
