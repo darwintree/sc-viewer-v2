@@ -1,5 +1,10 @@
 # README
 
+<!-- [用户手册](./MAN.md) -->
+
+- [sc-viewer](https://sc-viewer.top): deployed instance
+- [User Script](https://static.sc-viewer.top/viewer-button.user.js): userscript to redirect user from github csv page to [sc-viewer](https://sc-viewer.top) page
+
 ## Quickstart
 
 ### install dependencies
@@ -11,7 +16,7 @@ yarn
 ### build
 
 ``` bash
-yarn build
+make build
 ```
 
 ### development
@@ -22,6 +27,10 @@ yarn dev
 
 The app will run on port `5173`
 
+#### TODOs
+
+Refer to [TODOs](./TODOs.md)
+
 #### development vscode plugins
 
 - volar (refer to official documents for guides)
@@ -31,7 +40,10 @@ The app will run on port `5173`
 
 Configure `.env` for belowing consts
 
+##### resources
+
 ```js
+// src/helper/path.ts
 // assets server: used for voice, raw json(including chapter navigation), index thumb
 const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
 // name service server: used for index, name suggestion
@@ -51,85 +63,32 @@ const useGithubProxy = true
 const EVENT_VIEWER_SITE = import.meta.env.VITE_EVENT_VIEWER_SITE
 ```
 
-## TODOs
+##### authorization
 
-### New Feature
+```ts
+// src/helper/auth.ts
+const clientId =
+  process.env.NODE_ENV === 'development'
+    ? import.meta.env.VITE_DEV_CLIENT_ID
+    : import.meta.env.VITE_CLIENT_ID
 
-- [x] index
-- [ ] Use github interface to push csv directly
-  - [x] use dropdown component for download csv
-    - [x] download or push to github
-  - [ ] Use N-Step for pushing to Github
-    - [ ] UI when user is not logged in
-    - [x] explanation
-    - [ ] explanation text under commit message and pr title
-  - [ ] ~~fix no github push panel problem~~
-- [ ] machine translate
-- [x] render translation to review
-- [x] `make deploy` command
-- [ ] static resource processing
+// this is a pure frontend application
+// so it's ok to expose client secret
+const clientSecret =
+  process.env.NODE_ENV === 'development'
+    ? import.meta.env.VITE_DEV_CLIENT_SECRET
+    : import.meta.env.VITE_CLIENT_SECRET
 
-### Improvements
+// corredponding redirect uri of github oauth configuration
+const HOSTNAME =
+  process.env.NODE_ENV === 'development'
+    ? import.meta.env.VITE_DEV_HOSTNAME
+    : import.meta.env.VITE_HOSTNAME
 
-- [x] update browser extension
-  - [ ] fix browser extension installation
-- [ ] Util bar hiding
-- [ ] recover review-story-in-new-page button user js
-- [ ] modal font
-- [ ] tips
-- [ ] optimize chapter jumping logic
-- [ ] original translation dir
-- [ ] list filter with icon
-- [ ] force branch update
-- [ ] perf: CSV display for complex csv name
-  - [ ] test: direct location redirect
-  - [ ] confirm button redirect (https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/283%E6%B4%BB%E5%8A%A8%E5%89%A7%E6%83%85/%23%EF%BC%92%EF%BC%98%EF%BC%93%E3%82%92%E3%81%B2%E3%82%8D%E3%81%92%E3%82%88%E3%81%86/%E7%AC%AC1%E8%A9%B1-MEETING.csv)
-- [ ] file name edit
-  - [x] file name suggest
-  - [x] file name input
-  - [ ] force select file name when first save / download
+// used to fetch access token
+const GITHUB_PROXY = import.meta.env.VITE_GITHUB_PROXY
+// used to proxy github rest api
+const GITHUB_API_PROXY = import.meta.env.VITE_GITHUB_API_PROXY
+```
 
-### High Priority
-
-- [ ] BUG FIX: reversed translations
-- [ ] ~~unit test~~
-- [ ] **ready for open source**
-  - [x] use .env for some const
-  - [ ] implementation refactoring
-  - [ ] license
-  - [ ] documents
-- [x] fix local_trans bug
-  - change trans and save
-  - go to next chapter and back
-- [x] reset reviewing status when switch to other place
-- [x] PWA support
-  - [ ] **cache and mode**(https://developer.chrome.com/docs/workbox/modules/workbox-build/#which-mode-to-use)
-- [x] badge for switch button
-- [x] raw.githubcontents proxy
-  - [x] font source switch
-
-### Low Priority
-
-- [ ] home page
-  - [x] localstorage
-    - [ ] remove specific item
-    - [x] remove all
-
-- [x] Error process for remote json files
-- [x] Check select label
-- [ ] p's voice (sound effect/tts)
-- [ ] Hide preview until login
-
-### example url inputs
-
-- `http://127.0.0.1:5173/translate#https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/七草にちか/【あっかい】七草にちか/1%20ポップ'n%20pop.csv`
-- https://github.com/ShinyGroup/SCTranslationData/blob/master/data/story/283活动剧情/#２８３をひろげよう/第1話-MEETING.csv
-- `http://127.0.0.1:5173/translate#produce_events/100200506.json`
-
-## test cases
-
-### save
-
-- [ ] load a file
-- [ ] load a history
-- [ ] load a
+Besides, if you are going to deploy on your server, change `VITE_CLIENT_ID, VITE_CLIENT_SECRET, VITE_HOSTNAME` according to [Github OAuth Apps Configuration](https://github.com/settings/developers), the `https://${HOSTNAME}/auth` is `Authorization callback URL` in your OAuth app configruation.

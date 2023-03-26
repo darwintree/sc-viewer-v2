@@ -2,8 +2,9 @@
   <div class="info-container">
     <br />
     <div>
-      Contact:
-      <a href="mailto:daerwendeshu@outlook.com">daerwendeshu@outlook.com</a>
+      <a href="https://github.com/darwintree/sc-viewer-v2/issues"
+        >Bug Report or Support</a
+      >
     </div>
     <div>
       <a href="https://static.sc-viewer.top/viewer-button.user.js"

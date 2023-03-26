@@ -21,7 +21,9 @@ const HOSTNAME =
     ? import.meta.env.VITE_DEV_HOSTNAME
     : import.meta.env.VITE_HOSTNAME
 
-const GITHUB_PROXY = import.meta.env.VITE_GITHUB_PROXY // used to fetch access token
+// used to fetch access token
+const GITHUB_PROXY = import.meta.env.VITE_GITHUB_PROXY
+// used to proxy github rest api
 const GITHUB_API_PROXY = import.meta.env.VITE_GITHUB_API_PROXY
 
 // const defaultGithubProxy = 'https://strawberrytree.top'
