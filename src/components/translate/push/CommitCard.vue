@@ -48,7 +48,7 @@
           </n-input-group>
           <n-button
             type="info"
-            :disabled="!suggestedFilename"
+            :disabled="!hasRecommend"
             :style="{ 'max-width': '200px' }"
             @click="useRecommend"
             >{{ t('push.steps.upload.useRecommendedPath') }}</n-button
@@ -222,10 +222,16 @@ const suggestedCharacter = computed(() => {
   return null
 })
 
+const hasRecommend = computed(() => {
+  return suggestedFilename.value || queryTranslatedCsv(store.jsonUrl)
+})
+
 function useRecommend() {
   // if there is current translated file, don't change it
   if (store.jsonUrl && queryTranslatedCsv(store.jsonUrl)) {
-    const { path } = extractInfoFromUrl(store.jsonUrl)
+    const { path } = extractInfoFromUrl(
+      decodeURIComponent(queryTranslatedCsv(store.jsonUrl)!)
+    )
     store.path = path
     return
   }
