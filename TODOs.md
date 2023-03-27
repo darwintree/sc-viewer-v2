@@ -21,6 +21,7 @@
 - [x] update browser extension
   - [ ] fix browser extension installation
 - [ ] Util bar hiding
+- [ ] use vue-md-loader
 - [x] recover review-story-in-new-page button user js
 - [x] modal font
 - [ ] tips

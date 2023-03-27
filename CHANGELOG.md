@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/3/27
+
+* perf: recommend path for push
+
 ## 2023/3/26
 
 * chore: domain migration to [sc-viewer.top](https://sc-viewer.top)

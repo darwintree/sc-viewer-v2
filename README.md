@@ -1,6 +1,6 @@
 # README
 
-<!-- [用户手册](./MAN.md) -->
+[用户手册](https://docs.sc-viewer.top)
 
 - [sc-viewer](https://sc-viewer.top): deployed instance
 - [User Script](https://static.sc-viewer.top/viewer-button.user.js): userscript to redirect user from github csv page to [sc-viewer](https://sc-viewer.top) page
