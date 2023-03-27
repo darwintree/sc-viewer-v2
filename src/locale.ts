@@ -146,6 +146,12 @@ const messages = {
         },
       },
     },
+    about: {
+      feedback: 'Bug Report / Support',
+      userscript: 'Browser User Script: Add link to github csv pages',
+      thanks: 'Special Thanks',
+      manual: 'User Manual',
+    },
   },
   zh: {
     common: {
@@ -297,6 +303,12 @@ const messages = {
           empty: '-',
         },
       },
+    },
+    about: {
+      feedback: 'BUG 反馈 / 技术支持',
+      userscript: '浏览器用户脚本：在Github CSV 文件页面添加导航',
+      thanks: '特别感谢',
+      manual: '用户手册',
     },
   },
 }

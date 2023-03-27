@@ -3,6 +3,7 @@
 ## 2023/3/27
 
 * perf: recommend path for push
+* doc: user manual
 
 ## 2023/3/26
 

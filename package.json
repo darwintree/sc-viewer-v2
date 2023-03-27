@@ -9,7 +9,7 @@
     "start": "vite",
     "serve:doc": "honkit serve --reload",
     "build:doc": "honkit build",
-    "build": "make prebuild && vue-tsc && vite build",
+    "build": "make prebuild && vue-tsc && vite build && honkit build",
     "preview": "vite preview",
     "lint:js": "eslint src --ext .ts,.vue"
   },
