@@ -16,25 +16,25 @@
 
 网站首页会维护最近游戏更新剧情列表，点击即可进入相应剧情。该列表默认为收起。
 
-![](img/Recent%20Game%20Updates.png)
+![Recent Game Updates](img/Recent%20Game%20Updates.png)
 
 ## 卡片/活动剧情内部导航
 
 翻译页内部可以切换当前剧情相邻章节。
 
-![](img/related%20chapters.png)
+![related chapters](img/related%20chapters.png)
 
 ## 卡片/活动索引
 
 在列表标签页提供了剧情索引，可以筛选出相应剧情并按照实装顺序排列。
 
-![](img/list.png)
+![list](img/list.png)
 
 ## 上传本地文件
 
 翻译标签页中，可以点击“上传文件”来上传从汉化插件获取的空翻译文件（.csv）格式。
 
-![](img/upload.png)
+![upload](img/upload.png)
 
 ## 使用 Github CSV 文件
 
@@ -48,19 +48,18 @@
 
 > 从 Github 复制得到的CSV看起来有乱码，这是正常的，因为URL有特殊的编码规则。
 
-![](img/CSV%20Input.png)
+![CSV Input](img/CSV%20Input.png)
 
 ### 使用用户脚本导航
 
 安装[用户脚本](https://static.sc-viewer.top/viewer-button.user.js)，在访问Github的CSV文件时，界面中会额外添加按钮。点击即可导航至翻译页面。
 
-
 > 需要安装 Tampermonkey/Greasymonkey 等脚本管理扩展。
 
-![](img/userscript%20button%20preview.png)
+![userscript button preview](img/userscript%20button%20preview.png)
 
 ### 切换数据源
 
 默认情况下，加载的源文件为未翻译状态，如果想切换为Github中已翻译的文件，可以在翻译界面中点击工具栏的“切换数据源”进行切换。
 
-![](img/switch%20to%20github.png)
+![switch to github](img/switch%20to%20github.png)
