@@ -3,7 +3,7 @@
 ## 2023/3/27
 
 * perf: recommend path for push
-* doc: user manual
+* doc: user manual and about page
 
 ## 2023/3/26
 

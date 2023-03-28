@@ -1,6 +1,9 @@
 <template>
   <n-space vertical>
     <NTag>{{ pullStatus }}</NTag>
+    <p v-if="current === 3 && !pullUrl">
+      {{ t('push.steps.pr.beforeCreate') }}
+    </p>
     <a v-if="pullUrl" :href="pullUrl" target="_blank">
       {{ directionMessage }}
     </a>

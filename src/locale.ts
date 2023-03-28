@@ -97,7 +97,9 @@ const messages = {
           create: 'Create',
           placeholder: 'Title of PR',
           notCreated: 'PR not created',
-          reviewing: 'Waiting for review',
+          reviewing: 'Please inform the admin to review',
+          beforeCreate:
+            'Create PR after work is done in case PR is merged before all contents are uploaded',
         },
       },
       explanation: {
@@ -250,7 +252,9 @@ const messages = {
           create: '创建合并请求',
           placeholder: '请求的标题',
           notCreated: '合并请求尚未创建',
-          reviewing: '等待管理员检查修改',
+          reviewing: '请通知管理员审查合并请求',
+          beforeCreate:
+            '尽量在工作分支所有更新完成后提交合并请求，避免工作内容被提前合并',
         },
       },
       explanation: {
