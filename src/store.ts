@@ -2,10 +2,11 @@ import { reactive } from 'vue'
 import { OctokitWrapper } from './helper/auth'
 import { EventsCollectionMeta } from './helper/meta-interfaces'
 
-enum DataSourceType {
+enum DataMode {
   Raw = 'raw', // json file from remote
   Server = 'server', // csv file from remote
-  File = 'file', // local file on disk
+  File = 'file', // local csv file on disk
+  Custom = 'custom', // local json file on disk
   History = 'history', // local file in browser
 }
 
@@ -96,7 +97,7 @@ const store = reactive({
   saves: {} as LocalStorageSaveManager,
   latestUpdate: '',
 
-  currentMode: '' as DataSourceType,
+  currentMode: '' as DataMode,
 
   // current translation panel info
   csvFilename: '',
@@ -141,4 +142,4 @@ async function init() {
 syncInit()
 init()
 
-export { store, tryLogin, logOut, DataSourceType }
+export { store, tryLogin, logOut, DataMode }

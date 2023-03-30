@@ -128,7 +128,7 @@ import EventIframe from './EventIframe.vue'
 import TranslatorLine from './TranslatorLine.vue'
 import IndexModal from './modal/IndexModal.vue'
 
-import { store, DataSourceType } from '../../store'
+import { store, DataMode } from '../../store'
 import {
   extractInfoFromUrl,
   nextJsonUrl,
@@ -209,7 +209,7 @@ export default defineComponent({
   },
   watch: {
     translatedCsvUrl(newVal) {
-      if (newVal && store.currentMode === DataSourceType.Raw) {
+      if (newVal && store.currentMode === DataMode.Raw) {
         this.createSuccessMessage(
           this.$t('translate.remoteTranslationDetected')
         )

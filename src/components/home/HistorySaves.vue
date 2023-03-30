@@ -23,7 +23,7 @@ import { h, ref, computed } from 'vue'
 import { NButton, NDataTable, NPopconfirm } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { store, DataSourceType } from '../../store'
+import { store, DataMode } from '../../store'
 
 type SaveBrief = {
   name: string // the file name
@@ -94,7 +94,7 @@ const columns = ref(
         path: '/translate',
         query: {
           forceReload: '1',
-          mode: DataSourceType.History,
+          mode: DataMode.History,
         },
         // do not use encodeURIComponent
         hash: `#${row.id}`,

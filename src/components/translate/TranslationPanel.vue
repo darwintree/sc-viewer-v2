@@ -32,7 +32,7 @@ import { ref, onMounted, nextTick, computed, watch, h } from 'vue'
 import type { Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { DataSourceType, store } from '../../store'
+import { DataMode, store } from '../../store'
 import { initTranslatedStoryIndex } from '../../helper/path'
 import HistoryIcon from '../icon/HistoryIcon.vue'
 import RenameIcon from '../icon/RenameIcon.vue'
@@ -122,7 +122,7 @@ async function loadDataFromLocation() {
   if (!route.hash) return
   const mode = route.query?.mode
   if (mode === 'history') {
-    store.currentMode = DataSourceType.History
+    store.currentMode = DataMode.History
     // why push, use replace is also ok
     router.push({
       path: route.path,
@@ -146,11 +146,11 @@ async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
   csvUrl.value = encodedSrcUrl
   if (csvUrl.value.endsWith('.csv')) {
     // a url ends with .csv is expected to be a github url
-    store.currentMode = DataSourceType.Server
+    store.currentMode = DataMode.Server
     await communication.value?.loadDataFromGithubCsvUrl(encodedSrcUrl)
   } else if (csvUrl.value.endsWith('.json')) {
-    // a url ends with .csv is expected to be a raw json
-    store.currentMode = DataSourceType.Raw
+    // a url ends with .json is expected to be a raw json
+    store.currentMode = DataMode.Raw
     await communication.value?.loadDataFromJsonPathUrl(encodedSrcUrl)
   } else {
     console.log(csvUrl.value)
@@ -178,7 +178,7 @@ function handleFileChange(e: Event) {
     const file = files[0]
     if (communication.value !== null) {
       csvUrl.value = ''
-      store.currentMode = DataSourceType.File
+      store.currentMode = DataMode.File
       router.replace({
         path: route.path,
         query: {

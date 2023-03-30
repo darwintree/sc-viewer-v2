@@ -94,7 +94,7 @@ import {
   DialogOptions,
 } from 'naive-ui'
 import { Edit } from '@vicons/carbon'
-import { store, DataSourceType } from '../../store'
+import { store, DataMode } from '../../store'
 
 // define the props for the component
 export default defineComponent({
@@ -192,7 +192,7 @@ export default defineComponent({
       this.isEditing = false
     },
     changeToHistoryMode() {
-      store.currentMode = DataSourceType.History
+      store.currentMode = DataMode.History
       this.$router.replace({
         path: this.$route.path,
         hash: `#${this.base}.json`, // for file mode
