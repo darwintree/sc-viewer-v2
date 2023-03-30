@@ -49,7 +49,8 @@ import {
 } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { DataMode, DataSource, store } from '../../store'
+import { store } from '../../store'
+import { DataSource } from '../../helper/enum-interfaces'
 import { EventsCollectionMeta, IndexData } from '../../helper/meta-interfaces'
 import {
   getRemoteImgPath,

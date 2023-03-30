@@ -94,7 +94,8 @@ import {
   DialogOptions,
 } from 'naive-ui'
 import { Edit } from '@vicons/carbon'
-import { store, DataMode, DataSource } from '../../store'
+import { store } from '../../store'
+import { DataSource, DataMode } from '../../helper/enum-interfaces'
 
 // define the props for the component
 export default defineComponent({

@@ -23,7 +23,8 @@ import { h, ref, computed } from 'vue'
 import { NButton, NDataTable, NPopconfirm } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { store, DataSource } from '../../store'
+import { store } from '../../store'
+import { DataSource } from '../../helper/enum-interfaces'
 
 type SaveBrief = {
   name: string // the file name

@@ -128,7 +128,8 @@ import EventIframe from './EventIframe.vue'
 import TranslatorLine from './TranslatorLine.vue'
 import IndexModal from './modal/IndexModal.vue'
 
-import { store, DataMode } from '../../store'
+import { store } from '../../store'
+import { DataMode } from '../../helper/enum-interfaces'
 import {
   extractInfoFromUrl,
   nextJsonUrl,
@@ -252,25 +253,6 @@ export default defineComponent({
       store.path = `//${store.csvFilename}`
       this.loadDataFromCsvText(text)
     },
-    // getDataModeFromSourceString(source: string) {
-    //   if (source.startsWith("https://") && source.endsWith(".csv")) {
-    //     return DataMode.File
-    //   }
-    // },
-    // a util function
-    // async extractMetaBasedOnMode(
-    //   source: string | File,
-    // ): Promise<{ data: CsvDataLine[], jsonUrl: string, name: string, path: string, translator: string, mode: DataMode }> {
-
-    //   switch (mode) {
-    //     case DataMode.Raw:
-    //       const { name, text } = await metaInfoFromGithubCsvUrl(source)
-    //       const { data, translator, jsonUrl } = extractInfoFromCsvText(text)
-    //       const { path } = extractInfoFromUrl(source)
-    //       return { data, jsonUrl, name, path, translator }
-    //     case DataMode.
-    //   }
-    // },
     async loadDataFromGithubCsvUrl(url: string) {
       this.isLoading = true
       const { name, text } = await metaInfoFromGithubCsvUrl(url)
