@@ -94,7 +94,7 @@ import {
   DialogOptions,
 } from 'naive-ui'
 import { Edit } from '@vicons/carbon'
-import { store, DataMode } from '../../store'
+import { store, DataMode, DataSource } from '../../store'
 
 // define the props for the component
 export default defineComponent({
@@ -197,7 +197,7 @@ export default defineComponent({
         path: this.$route.path,
         hash: `#${this.base}.json`, // for file mode
         query: {
-          mode: store.currentMode.toString(),
+          source: DataSource.Browser,
         },
       })
     },

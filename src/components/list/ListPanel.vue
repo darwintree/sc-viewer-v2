@@ -49,7 +49,7 @@ import {
 } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { DataMode, store } from '../../store'
+import { DataMode, DataSource, store } from '../../store'
 import { EventsCollectionMeta, IndexData } from '../../helper/meta-interfaces'
 import {
   getRemoteImgPath,
@@ -246,7 +246,7 @@ const createColumns = (): any => {
               path: '/translate',
               query: {
                 forceReload: '1',
-                mode: DataMode.Raw,
+                source: DataSource.Remote,
               },
               // do not use encodeURIComponent
               hash: `#${row.communications[0].jsonPath}`,

@@ -32,7 +32,7 @@ import { ref, onMounted, nextTick, computed, watch, h } from 'vue'
 import type { Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { DataMode, store } from '../../store'
+import { DataMode, DataSource, store } from '../../store'
 import { initTranslatedStoryIndex } from '../../helper/path'
 import HistoryIcon from '../icon/HistoryIcon.vue'
 import RenameIcon from '../icon/RenameIcon.vue'
@@ -120,14 +120,14 @@ watch(routeQuery, async (newQuery) => {
 
 async function loadDataFromLocation() {
   if (!route.hash) return
-  const mode = route.query?.mode
-  if (mode === 'history') {
+  const source = route.query?.source as DataSource
+  if (source === DataSource.Browser) {
     store.currentMode = DataMode.History
     // why push, use replace is also ok
     router.push({
       path: route.path,
       query: {
-        mode: store.currentMode,
+        source: DataSource.Browser,
       },
       hash: route.hash,
     })
@@ -160,7 +160,7 @@ async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
     path: route.path,
     hash: `#${encodedSrcUrl}`,
     query: {
-      mode: store.currentMode.toString(),
+      source: DataSource.Remote,
     },
   })
   nextTick(() =>
@@ -181,9 +181,6 @@ function handleFileChange(e: Event) {
       store.currentMode = DataMode.File
       router.replace({
         path: route.path,
-        query: {
-          mode: store.currentMode,
-        },
         hash: '',
       })
       communication.value?.loadDataFromFile(file)
