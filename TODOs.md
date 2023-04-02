@@ -23,7 +23,7 @@
 - [x] update browser extension
   - [ ] fix browser extension installation
 - [ ] Util bar hiding
-- [ ] use vue-md-loader
+- [ ] use vue-md-loader/ vite-plugin-naive-ui-md
 - [x] recover review-story-in-new-page button user js
 - [x] modal font
 - [ ] tips
