@@ -12,7 +12,6 @@ import {
   NTooltip,
   NModal,
   NSpace,
-  NSpin,
   NBadge,
   useMessage,
   NDropdown,
@@ -23,7 +22,6 @@ import {
   LogoGithub,
   Raw,
   VolumeFileStorage,
-  Renew,
   Repeat,
   UpToTop,
   Download,
@@ -33,7 +31,7 @@ import type { Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { store } from '../../store'
-import { DataSource, DataMode } from '../../helper/enum-interfaces'
+import { DataSource } from '../../helper/enum-interfaces'
 import { initTranslatedStoryIndex } from '../../helper/path'
 import HistoryIcon from '../icon/HistoryIcon.vue'
 import RenameIcon from '../icon/RenameIcon.vue'
@@ -122,41 +120,47 @@ watch(routeQuery, async (newQuery) => {
 async function loadDataFromLocation() {
   if (!route.hash) return
   const source = route.query?.source as DataSource
+  // storage id, should be jsonUrl
+  const id = route.hash.substring(1)
   if (source === DataSource.Browser) {
-    store.currentMode = DataMode.History
+    // store.currentMode = DataMode.History
     // why push, use replace is also ok
-    router.push({
+    router.replace({
       path: route.path,
       query: {
-        source: DataSource.Browser,
+        source,
       },
       hash: route.hash,
     })
-    const id = decodeURIComponent(route.hash.substring(1))
     csvUrl.value = id
-    nextTick(() => communication.value?.loadDataFromLocalStorage(id))
+    nextTick(() => communication.value?.loadDataFromSourceInput(id, source))
   }
   // TODO: specify certain mode
   else {
-    nextTick(() => loadDataFromEncodedUrl(route.hash.substring(1)))
+    nextTick(() => loadDataFromEncodedUrl(id))
   }
 }
 
+// load data from csv (remote) url
 async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
   // csvUrl.value = decodeURIComponent(encodedSrcUrl)
   csvUrl.value = encodedSrcUrl
-  if (csvUrl.value.endsWith('.csv')) {
-    // a url ends with .csv is expected to be a github url
-    store.currentMode = DataMode.Server
-    await communication.value?.loadDataFromGithubCsvUrl(encodedSrcUrl)
-  } else if (csvUrl.value.endsWith('.json')) {
-    // a url ends with .json is expected to be a raw json
-    store.currentMode = DataMode.Raw
-    await communication.value?.loadDataFromJsonPathUrl(encodedSrcUrl)
-  } else {
-    console.log(csvUrl.value)
-    alert('unexpected url: should ends with .csv or .json')
-  }
+  await communication.value?.loadDataFromSourceInput(
+    encodedSrcUrl,
+    DataSource.Remote
+  )
+  // if (csvUrl.value.endsWith('.csv')) {
+  //   // a url ends with .csv is expected to be a github url
+  //   store.currentMode = DataMode.Server
+  //   await communication.value?.loadDataFromGithubCsvUrl(encodedSrcUrl)
+  // } else if (csvUrl.value.endsWith('.json')) {
+  //   // a url ends with .json is expected to be a raw json
+  //   store.currentMode = DataMode.Raw
+  //   await communication.value?.loadDataFromJsonPathUrl(encodedSrcUrl)
+  // } else {
+  //   console.log(csvUrl.value)
+  //   alert('unexpected url: should ends with .csv or .json')
+  // }
   router.replace({
     path: route.path,
     hash: `#${encodedSrcUrl}`,
@@ -179,12 +183,11 @@ function handleFileChange(e: Event) {
     const file = files[0]
     if (communication.value !== null) {
       csvUrl.value = ''
-      store.currentMode = DataMode.File
       router.replace({
         path: route.path,
         hash: '',
       })
-      communication.value?.loadDataFromFile(file)
+      communication.value?.loadDataFromSourceInput(file, null)
     }
   }
 }
@@ -219,6 +222,11 @@ function toTop() {
     top: 0,
     left: 0,
   })
+}
+
+function clickSwitch() {
+  fileInput.value?.click()
+  showSwitchModal.value = false
 }
 
 // function toGithub() {
@@ -342,16 +350,7 @@ function toTop() {
         </n-tooltip>
       </n-space>
       <n-space align="center">
-        <n-button
-          tertiary
-          type="info"
-          class="mode-switch"
-          @click="
-            // eslint-disable-next-line prettier/prettier
-            fileInput!.click();
-            showSwitchModal = false
-          "
-        >
+        <n-button tertiary type="info" class="mode-switch" @click="clickSwitch">
           <template #icon>
             <VolumeFileStorage />
           </template>

@@ -129,25 +129,18 @@ import TranslatorLine from './TranslatorLine.vue'
 import IndexModal from './modal/IndexModal.vue'
 
 import { store } from '../../store'
-import { DataMode } from '../../helper/enum-interfaces'
+import { DataMode, DataSource } from '../../helper/enum-interfaces'
 import {
-  extractInfoFromUrl,
   nextJsonUrl,
   trueEndJsonUrl,
   previousJsonUrl,
   firstJsonUrl,
   queryTranslatedCsv,
   queryRelated,
-  metaInfoFromJsonPathUrl,
-  metaInfoFromGithubCsvUrl,
   jsonTextFromPathUrl,
 } from '../../helper/path'
-import {
-  CsvDataLine,
-  extractInfoFromCsvText,
-  toCsvText,
-  jsonTextToCsvText,
-} from '../../helper/csv'
+import { CsvDataLine, toCsvText } from '../../helper/csv'
+import { processSourceInput } from '../../helper/source'
 
 export default defineComponent({
   // define the "DialogueLine" component as a child component
@@ -246,61 +239,90 @@ export default defineComponent({
     // openEvent() {
     //   window.open(this.iframeSrc!)
     // },
-    loadDataFromLocalStorage(jsonUrl: string) {
-      this.isLoading = true
-      const text = store.saves.saveDict[jsonUrl].csv
-      store.csvFilename = store.saves.saveDict[jsonUrl].name || jsonUrl
-      store.path = `//${store.csvFilename}`
-      this.loadDataFromCsvText(text)
-    },
-    async loadDataFromGithubCsvUrl(url: string) {
-      this.isLoading = true
-      const { name, text } = await metaInfoFromGithubCsvUrl(url)
-      store.csvFilename = name
-      await this.loadDataFromCsvText(text)
+    // loadDataFromLocalStorage(jsonUrl: string) {
+    //   this.isLoading = true
+    //   const text = store.saves.saveDict[jsonUrl].csv
+    //   store.csvFilename = store.saves.saveDict[jsonUrl].name || jsonUrl
+    //   store.path = `//${store.csvFilename}`
+    //   this.loadDataFromCsvText(text)
+    // },
 
-      // TODO
-      const info = extractInfoFromUrl(url)
-      store.path = decodeURIComponent(info.path)
-    },
-    async loadDataFromJsonPathUrl(url: string) {
-      this.isLoading = true
-      const { name, text } = await metaInfoFromJsonPathUrl(url)
-      store.csvFilename = name
-      this.createWarningMessage(this.$t('translate.loadRawWarning'))
-      store.path = `//${url.split('/').reverse()[0].replace('.json', '.csv')}`
-      this.loadDataFromCsvText(text)
-    },
-    async loadDataFromFile(file: File) {
-      this.isLoading = true
-      let text = await file.text()
-      store.csvFilename = file.name
-      if (file.name.endsWith('.json')) {
-        store.csvFilename = file.name.replace('.json', '.csv')
-        text = jsonTextToCsvText(JSON.parse(text), null)
-      }
+    // async loadDataFromGithubCsvUrl(url: string) {
+    //   this.isLoading = true
+    //   const { name, text } = await metaInfoFromGithubCsvUrl(url)
+    //   store.csvFilename = name
+    //   await this.loadDataFromCsvText(text)
 
-      store.path = `//${file.name}`
-      this.loadDataFromCsvText(text)
-    },
-    // todo: make this async
-    loadDataFromCsvText(text: string) {
+    //   // TODO
+    //   const info = extractInfoFromUrl(url)
+    //   store.path = decodeURIComponent(info.path)
+    // },
+    // async loadDataFromJsonPathUrl(url: string) {
+    //   this.isLoading = true
+    //   const { name, text } = await metaInfoFromJsonPathUrl(url)
+    //   store.csvFilename = name
+    //   this.createWarningMessage(this.$t('translate.loadRawWarning'))
+    //   store.path = `//${url.split('/').reverse()[0].replace('.json', '.csv')}`
+    //   this.loadDataFromCsvText(text)
+    // },
+    // async loadDataFromFile(file: File) {
+    //   this.isLoading = true
+    //   let text = await file.text()
+    //   store.csvFilename = file.name
+    //   if (file.name.endsWith('.json')) {
+    //     store.csvFilename = file.name.replace('.json', '.csv')
+    //     text = jsonTextToCsvText(JSON.parse(text), null)
+    //   }
+
+    //   store.path = `//${file.name}`
+    //   this.loadDataFromCsvText(text)
+    // },
+    async loadDataFromSourceInput(
+      sourceInput: File | string,
+      source: DataSource | null
+    ) {
       try {
-        this.data = [] // force remove rendered elements to disable reuse
+        this.data = []
         this.isPreviewing = false
         this.hasPreviewed = false
-        const { data, translator, jsonUrl } = extractInfoFromCsvText(text)
-        this.jsonUrl = jsonUrl
-        this.updateRelatedChapterStatus()
+        this.isLoading = true
+        const { data, jsonUrl, name, path, translator, mode } =
+          await processSourceInput(sourceInput, source)
+        store.jsonUrl = jsonUrl
+        store.csvFilename = name
+        store.path = path
         this.translator = translator
+        store.currentMode = mode
+        if (mode === DataMode.Raw) {
+          this.createWarningMessage(this.$t('translate.loadRawWarning'))
+        }
         nextTick(() => {
           this.data = data
           this.isLoading = false
         })
-      } catch (e) {
+      } catch (e: any) {
+        console.log(e)
         alert(e)
       }
     },
+    // todo: make this async
+    // loadDataFromCsvText(text: string) {
+    //   try {
+    //     this.data = [] // force remove rendered elements to disable reuse
+    //     this.isPreviewing = false
+    //     this.hasPreviewed = false
+    //     const { data, translator, jsonUrl } = extractInfoFromCsvText(text)
+    //     this.jsonUrl = jsonUrl
+    //     this.updateRelatedChapterStatus()
+    //     this.translator = translator
+    //     nextTick(() => {
+    //       this.data = data
+    //       this.isLoading = false
+    //     })
+    //   } catch (e) {
+    //     alert(e)
+    //   }
+    // },
     getCurrentDataString() {
       // generate the updated CSV data by mapping over the "data" array and
       // using the "local_trans" property of each item
