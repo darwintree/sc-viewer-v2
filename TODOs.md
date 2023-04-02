@@ -19,6 +19,7 @@
 ### Improvements
 
 - [ ] Refactor: file loading process
+- [ ] new end line for push process
 - [x] update browser extension
   - [ ] fix browser extension installation
 - [ ] Util bar hiding
