@@ -11,6 +11,7 @@ const About = () => import('./components/AboutPanel.vue')
 const AuthCallback = () => import('./components/AuthCallback.vue')
 const HomePage = () => import('./components/home/HomePage.vue')
 const ListPanel = () => import('./components/list/ListPanel.vue')
+const CustomPanel = () => import('./components/CustomPanel.vue')
 
 // create a new router instance
 const router = createRouter({
@@ -40,6 +41,10 @@ const router = createRouter({
     {
       path: '/list',
       component: ListPanel,
+    },
+    {
+      path: '/custom',
+      component: CustomPanel,
     },
   ],
 })

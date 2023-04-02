@@ -43,7 +43,7 @@ function postMessageOnPlayer({
   csvText,
 }: {
   iframeJson: object
-  csvText: string
+  csvText: string | undefined
 }) {
   iframeSrc.value = getIframeSrc()
   if (loaded.value) {
