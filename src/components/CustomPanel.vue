@@ -20,13 +20,13 @@
         </n-p>
       </n-upload-dragger>
     </n-upload>
-    <n-tag v-if="currentFile">{{ currentFile.name }}</n-tag>
-    <n-button v-if="currentFile" @click="postJson">post</n-button>
-    <EventIframe v-if="currentFile" ref="customIframe"></EventIframe>
+    <n-tag v-if="filename">{{ filename }}</n-tag>
+    <n-button v-if="iframeJsonText" @click="postJson">post</n-button>
+    <EventIframe v-if="showIframe" ref="customIframe"></EventIframe>
   </n-space>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { nextTick, ref, onMounted } from 'vue'
 import {
   NSpace,
   NUpload,
@@ -40,20 +40,37 @@ import {
 import EventIframe from './translate/EventIframe.vue'
 import { Json } from '@vicons/carbon'
 
-const currentFile = ref(null as null | File)
+// const currentFile = ref(null as null | File)
 const customIframe = ref<InstanceType<typeof EventIframe> | null>(null)
+const showIframe = ref(false)
+const filename = ref<null | string>(null)
+const iframeJsonText = ref<null | string>(null)
 
-function onFileChange(options: any) {
+onMounted(async () => {
+  const res = await fetch('/json/template.json')
+  filename.value = 'template.json'
+  iframeJsonText.value = await res.text()
+  nextTick(postJson)
+  // console.log(await res.text())
+})
+
+async function onFileChange(options: any) {
   console.log(options)
-  currentFile.value = options.file.file as File
-  console.log(currentFile.value)
+  filename.value = options.file.file.name
+  iframeJsonText.value = await options.file.file.text()
 }
 
-async function postJson() {
-  if (!currentFile.value) throw new Error('current file is not init')
-  customIframe.value?.postMessageOnPlayer({
-    iframeJson: JSON.parse(await currentFile.value.text()),
-    csvText: undefined,
+function postJson() {
+  showIframe.value = false
+  nextTick(async () => {
+    showIframe.value = true
+    nextTick(() => {
+      if (!iframeJsonText.value) throw new Error('current file is not init')
+      customIframe.value?.postMessageOnPlayer({
+        iframeJson: JSON.parse(iframeJsonText.value),
+        csvText: undefined,
+      })
+    })
   })
 }
 </script>
