@@ -1,6 +1,6 @@
 <template>
   <n-space vertical>
-    <n-upload
+    <!-- <n-upload
       :directory-dnd="false"
       :default-upload="false"
       :show-file-list="false"
@@ -21,12 +21,13 @@
       </n-upload-dragger>
     </n-upload>
     <n-tag v-if="filename">{{ filename }}</n-tag>
-    <n-button v-if="iframeJsonText" @click="postJson">post</n-button>
+    <n-button v-if="iframeJsonText" @click="postJson">post</n-button> -->
     <EventIframe v-if="showIframe" ref="customIframe"></EventIframe>
   </n-space>
 </template>
 <script setup lang="ts">
 import { nextTick, ref, onMounted } from 'vue'
+import { parse } from 'comment-json'
 import {
   NSpace,
   NUpload,
@@ -39,17 +40,21 @@ import {
 } from 'naive-ui'
 import EventIframe from './translate/EventIframe.vue'
 import { Json } from '@vicons/carbon'
+import { getCustomJsonPath } from '../helper/path'
 
 // const currentFile = ref(null as null | File)
 const customIframe = ref<InstanceType<typeof EventIframe> | null>(null)
 const showIframe = ref(false)
 const filename = ref<null | string>(null)
 const iframeJsonText = ref<null | string>(null)
+const csvText = ref('')
 
 onMounted(async () => {
-  const res = await fetch('/json/template.json')
-  filename.value = 'template.json'
+  const res = await fetch(getCustomJsonPath('/custom/story.json'))
+  filename.value = 'story.json'
   iframeJsonText.value = await res.text()
+  const csvRes = await fetch(getCustomJsonPath('/custom/story.csv'))
+  csvText.value = await csvRes.text()
   nextTick(postJson)
   // console.log(await res.text())
 })
@@ -67,8 +72,8 @@ function postJson() {
     nextTick(() => {
       if (!iframeJsonText.value) throw new Error('current file is not init')
       customIframe.value?.postMessageOnPlayer({
-        iframeJson: JSON.parse(iframeJsonText.value),
-        csvText: undefined,
+        iframeJson: parse(iframeJsonText.value, undefined, true) as object,
+        csvText: csvText.value,
       })
     })
   })

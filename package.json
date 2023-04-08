@@ -16,6 +16,7 @@
   "dependencies": {
     "@octokit/types": "^9.0.0",
     "axios": "^1.2.1",
+    "comment-json": "^4.2.3",
     "file-saver": "^2.0.5",
     "markdown-it": "^13.0.1",
     "naive-ui": "^2.34.2",
