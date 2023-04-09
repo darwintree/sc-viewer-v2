@@ -293,6 +293,7 @@ export default defineComponent({
         store.path = path
         this.translator = translator
         store.currentMode = mode
+        this.updateRelatedChapterStatus()
         if (mode === DataMode.Raw) {
           this.createWarningMessage(this.$t('translate.loadRawWarning'))
         }
