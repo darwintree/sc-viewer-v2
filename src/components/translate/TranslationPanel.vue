@@ -46,6 +46,9 @@ const showSwitchModal = ref(false)
 const isRotating = ref(false)
 const message = useMessage()
 
+const REMOTE = DataSource.Remote
+const BROWSER = DataSource.Browser
+
 const routeQuery = computed(() => {
   return route.query
 })
@@ -198,12 +201,12 @@ function confirm() {
   loadDataFromEncodedUrl(csvUrl.value)
 }
 
-async function to(mode: string, id: string) {
+async function to(source: DataSource, id: string) {
   showSwitchModal.value = false
   router.push({
     path: route.path,
     query: {
-      mode,
+      source,
       forceReload: '1',
     },
     hash: `#${id}`,
@@ -303,7 +306,7 @@ function clickSwitch() {
           tertiary
           type="info"
           class="mode-switch"
-          @click="to(`raw`, communication?.jsonUrl!)"
+          @click="to(REMOTE, communication?.jsonUrl!)"
         >
           <template #icon>
             <Raw />
@@ -320,7 +323,7 @@ function clickSwitch() {
           type="info"
           :disabled="!translatedCsvUrl"
           class="mode-switch"
-          @click="to(`server`, translatedCsvUrl!)"
+          @click="to(REMOTE, translatedCsvUrl!)"
         >
           <template #icon>
             <LogoGithub />
@@ -366,7 +369,7 @@ function clickSwitch() {
           type="info"
           :disabled="!store.saves.getItem(communication?.jsonUrl!)"
           class="mode-switch"
-          @click="to(`history`, communication?.jsonUrl!)"
+          @click="to(BROWSER, communication?.jsonUrl!)"
         >
           <template #icon>
             <HistoryIcon></HistoryIcon>
