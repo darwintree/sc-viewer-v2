@@ -3,6 +3,7 @@
 ## 2023/4/24
 
 * feat: history save will be loaded with priority for chapter switching
+* perf: improves loading performance
 
 ## 2023/4/22
 
