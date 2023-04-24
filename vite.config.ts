@@ -45,7 +45,8 @@ export default defineConfig({
             urlPattern: ({ url }) => {
               if (
                 url.pathname.startsWith('/convert/cache') ||
-                url.pathname.startsWith('/raw')
+                url.pathname.startsWith('/raw') ||
+                url.hostname === 'cdn.skypack.dev'
               ) {
                 return true
               }
