@@ -122,26 +122,40 @@ watch(routeQuery, async (newQuery) => {
 
 async function loadDataFromLocation() {
   if (!route.hash) return
-  const source = route.query?.source as DataSource
+  const source = route.query?.source as DataSource | undefined
   // storage id, should be jsonUrl
   const id = route.hash.substring(1)
   if (source === DataSource.Browser) {
     // store.currentMode = DataMode.History
     // why push, use replace is also ok
-    router.replace({
-      path: route.path,
-      query: {
-        source,
-      },
-      hash: route.hash,
-    })
-    csvUrl.value = id
-    nextTick(() => communication.value?.loadDataFromSourceInput(id, source))
+    nextTick(() => loadDataFromLocalStorage(id))
   }
   // TODO: specify certain mode
-  else {
+  else if (source === DataSource.Remote) {
     nextTick(() => loadDataFromEncodedUrl(id))
+  } else if (source === undefined) {
+    // if source is not specified, load from storage with priority
+    if (store.saves.saveDict[id]) {
+      message.info(t('translate.loadHistoryInfo'))
+      nextTick(() => loadDataFromLocalStorage(id))
+    } else {
+      nextTick(() => loadDataFromEncodedUrl(id))
+    }
+  } else {
+    console.error(`unexpected source: ${source}`)
   }
+}
+
+async function loadDataFromLocalStorage(id: string) {
+  router.replace({
+    path: route.path,
+    query: {
+      source: DataSource.Browser,
+    },
+    hash: route.hash,
+  })
+  csvUrl.value = id
+  await communication.value?.loadDataFromSourceInput(id, DataSource.Browser)
 }
 
 // load data from csv (remote) url
@@ -152,18 +166,6 @@ async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
     encodedSrcUrl,
     DataSource.Remote
   )
-  // if (csvUrl.value.endsWith('.csv')) {
-  //   // a url ends with .csv is expected to be a github url
-  //   store.currentMode = DataMode.Server
-  //   await communication.value?.loadDataFromGithubCsvUrl(encodedSrcUrl)
-  // } else if (csvUrl.value.endsWith('.json')) {
-  //   // a url ends with .json is expected to be a raw json
-  //   store.currentMode = DataMode.Raw
-  //   await communication.value?.loadDataFromJsonPathUrl(encodedSrcUrl)
-  // } else {
-  //   console.log(csvUrl.value)
-  //   alert('unexpected url: should ends with .csv or .json')
-  // }
   router.replace({
     path: route.path,
     hash: `#${encodedSrcUrl}`,
@@ -201,7 +203,7 @@ function confirm() {
   loadDataFromEncodedUrl(csvUrl.value)
 }
 
-async function to(source: DataSource, id: string) {
+async function to(source: DataSource | undefined, id: string) {
   showSwitchModal.value = false
   router.push({
     path: route.path,
@@ -411,7 +413,11 @@ function clickSwitch() {
   <Communication
     ref="communication"
     :csv-url="csvUrl"
-    @load-data="loadDataFromEncodedUrl"
+    @load-data="
+      (jsonUrl) => {
+        to(undefined, jsonUrl)
+      }
+    "
   />
   <div v-if="!!communication?.data.length" class="toolbar">
     <!-- <n-button-group> -->

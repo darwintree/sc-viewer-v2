@@ -24,6 +24,7 @@ const messages = {
         "Press Enter↩ to input '\\n' and press Shift⇧ + Enter↩ to save",
       saveSuccess: 'Saved',
       loadRawWarning: 'A raw json file is loaded',
+      loadHistoryInfo: 'A history save is loaded',
       remoteTranslationDetected:
         'Remote translation is deteted. Click the toolbar【Switch】button switch',
       overwriteWarning: 'Overwrite Warning',
@@ -180,6 +181,7 @@ const messages = {
         "按下 Enter↩ 输入 '\\n'，\n按下 Shift⇧ + Enter↩ 保存",
       saveSuccess: '已保存',
       loadRawWarning: '当前加载源为原始 JSON 文件',
+      loadHistoryInfo: '已自动加载历史修改',
       remoteTranslationDetected:
         '检测到已翻译文件。点击工具栏【数据源切换】按钮切换',
       overwriteWarning: '历史修改将被覆盖',

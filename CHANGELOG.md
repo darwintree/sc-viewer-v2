@@ -1,5 +1,13 @@
 # Changelog
 
+## 2023/4/24
+
+* feat: history save will be loaded with priority for chapter switching
+
+## 2023/4/22
+
+* fix: switch modal jump destination parameter is not set correcty
+
 ## 2023/3/27
 
 * perf: recommend path for push

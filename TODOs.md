@@ -15,10 +15,14 @@
 - [x] render translation to review
 - [x] `make deploy` command
 - [ ] static resource processing
+- [ ] Remind user for untranslated sentences
+- [x] load setting: if specified a json path, priority to load localstorage history
+  - [x] remind user if to history mode
 
 ### Improvements
 
-- [ ] Refactor: file loading process
+- [ ] Edit: insert "\n" to cursor
+- [x] Refactor: file loading process
 - [ ] new end line for push process
 - [x] update browser extension
   - [ ] fix browser extension installation
