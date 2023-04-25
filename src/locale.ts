@@ -192,7 +192,7 @@ const messages = {
         explanation: {
           raw: '原始JSON文件',
           history: '浏览器中的历史修改',
-          server: 'ShinyGroup维护的翻译文件',
+          server: 'ShinyGroup 维护的翻译',
           file: '磁盘中的文件',
         },
         reloadTooltip: '重新查询翻译文件是否存在',
@@ -207,7 +207,7 @@ const messages = {
       tab: {
         rename: 'CSV 更名',
         complete: '下载/推送',
-        switch: '数据源切换',
+        switch: '数据源',
         top: 'TOP',
         push: '推送',
         download: '下载',

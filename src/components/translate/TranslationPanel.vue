@@ -302,7 +302,7 @@ function clickSwitch() {
     style="width: 600px; max-width: 100%"
     :title="t(`translate.switch.title`)"
   >
-    <n-space vertical>
+    <n-space vertical class="explanation">
       <n-space align="center">
         <n-button
           tertiary
@@ -531,5 +531,9 @@ function clickSwitch() {
   /* background: linear-gradient(to bottom, rgb(233, 245, 65), 2%, white);; */
   /* background-color: #f5f5f5; */
   padding: 10px;
+}
+
+.explanation {
+  font-size: 0.9em;
 }
 </style>

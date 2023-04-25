@@ -47,6 +47,20 @@ function changeChapter(key: string, item: MenuOption) {
   emit('close')
   emit('change-chapter', key)
 }
+
+const title = computed(() => {
+  const raw = store.eventsCollectionMeta?.name
+  if (!raw) return ''
+  const quoteIndex = raw.search('】')
+  let innerHTML = raw
+  if (quoteIndex >= 0) {
+    innerHTML =
+      innerHTML.slice(0, quoteIndex + 1) +
+      '\n' +
+      innerHTML.slice(quoteIndex + 1)
+  }
+  return innerHTML
+})
 </script>
 <template>
   <n-modal
@@ -56,14 +70,23 @@ function changeChapter(key: string, item: MenuOption) {
     :title="t('translate.rename.title')"
   >
     <template #header>
-      <n-space align="center">
+      <n-space align="center" :wrap="false">
         <n-image
           height="75"
           :src="getRemoteImgPath(store.eventsCollectionMeta?.thumb!)"
         />
-        {{ store.eventsCollectionMeta?.name }}
+        <span>{{ title }}</span>
       </n-space>
     </template>
     <n-menu :options="menuOptions" @update-value="changeChapter"></n-menu>
   </n-modal>
 </template>
+<style scoped>
+span {
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
