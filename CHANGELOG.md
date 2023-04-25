@@ -3,6 +3,7 @@
 ## 2023/4/25
 
 * feat: support luka
+* feat: "\n" inserted in translation cursor rather than append to tail
 
 ## 2023/4/24
 

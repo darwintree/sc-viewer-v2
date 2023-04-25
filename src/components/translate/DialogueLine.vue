@@ -44,7 +44,6 @@
         <div
           v-else
           class="edit-container"
-          @keydown.enter.exact="addLineBreak"
           @keydown.shift.enter="trySaveEdit"
           @keydown.esc="cancelEdit"
         >
@@ -82,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import Avatar from './DialogueAvatar.vue' // import the "Avatar" component
 import AudioLabel from './AudioLabel.vue'
 import {
@@ -183,6 +182,9 @@ export default defineComponent({
     trans(newValue) {
       this.local_trans = newValue
     },
+    edit_trans(newVal) {
+      nextTick(() => (this.edit_trans = newVal.replaceAll('\n', '\\n')))
+    },
   },
   mounted() {
     this.local_trans = this.trans
@@ -242,10 +244,6 @@ export default defineComponent({
       this.$nextTick(() => {
         ;(this.$refs.edit as any).focus()
       })
-    },
-    addLineBreak(event: Event) {
-      event.preventDefault()
-      this.edit_trans += '\\n'
     },
   },
 })

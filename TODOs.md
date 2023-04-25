@@ -25,7 +25,7 @@
 
 ### Improvements
 
-- [ ] Edit: insert "\n" to cursor
+- [x] Edit: insert "\n" to cursor
 - [x] Refactor: file loading process
 - [ ] new end line for push process
 - [x] update browser extension
