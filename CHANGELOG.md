@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/4/25
+
+* feat: support luka
+
 ## 2023/4/24
 
 * feat: history save will be loaded with priority for chapter switching

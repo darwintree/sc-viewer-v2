@@ -131,6 +131,7 @@ const idolOptionKeys = [
   '市川雛菜',
   '七草にちか',
   '緋田美琴',
+  '斑鳩ルカ',
 ]
 const idolOptions: {
   value: string

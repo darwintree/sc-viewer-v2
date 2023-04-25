@@ -16,6 +16,10 @@
 - [x] `make deploy` command
 - [ ] static resource processing
 - [ ] Remind user for untranslated sentences
+- [ ] service worker
+  - [ ] share_target
+  - [ ] share
+  - [ ] web push
 - [x] load setting: if specified a json path, priority to load localstorage history
   - [x] remind user if to history mode
 

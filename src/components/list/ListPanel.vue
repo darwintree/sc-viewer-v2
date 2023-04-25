@@ -146,31 +146,31 @@ function initAvailableOptions(
 
 initAvailableOptions(availableProduceFilterOptions.value, {
   from: 1,
-  to: 7,
+  to: 8,
   filterField: FilterField.unitId,
   eventsCategory: EventCategory.produceIdolEvents,
 })
 initAvailableOptions(availableProduceFilterOptions.value, {
   from: 1,
-  to: 25,
+  to: 26,
   filterField: FilterField.characterId,
   eventsCategory: EventCategory.produceIdolEvents,
 })
 initAvailableOptions(availableSupportFilterOptions.value, {
   from: 1,
-  to: 7,
+  to: 8,
   filterField: FilterField.unitId,
   eventsCategory: EventCategory.supportIdolEvents,
 })
 initAvailableOptions(availableSupportFilterOptions.value, {
   from: 1,
-  to: 25,
+  to: 26,
   filterField: FilterField.characterId,
   eventsCategory: EventCategory.supportIdolEvents,
 })
 initAvailableOptions(availableGameEventFilterOptions.value, {
   from: 0,
-  to: 7,
+  to: 8,
   filterField: FilterField.unitId,
   eventsCategory: EventCategory.gameEvents,
 })
