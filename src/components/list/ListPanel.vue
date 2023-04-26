@@ -1,6 +1,15 @@
 <template>
   <div class="filter-group">
     <NInputGroup>
+      <NInputGroupLabel :style="{ width: '25%' }">Common</NInputGroupLabel>
+      <n-select
+        v-model:value="characterFilterOptions"
+        multiple
+        :options="availableCharacterFilterOptions"
+        clearable
+      />
+    </NInputGroup>
+    <NInputGroup>
       <NInputGroupLabel :style="{ width: '25%' }">Produce</NInputGroupLabel>
       <n-select
         v-model:value="produceFilterOptions"
@@ -65,6 +74,7 @@ enum EventCategory {
   supportIdolEvents = 'supportIdolEvents',
   gameEvents = 'gameEvents',
   specialEvents = 'specialEvents',
+  characterEvents = 'characterEvents',
 }
 
 enum FilterField {
@@ -101,6 +111,8 @@ type FilterSelectOption = {
 }
 
 const rawIndexData = ref({} as IndexData)
+const characterFilterOptions = ref([] as any)
+const availableCharacterFilterOptions = ref([] as any)
 const produceFilterOptions = ref([] as any)
 const availableProduceFilterOptions = ref([] as any)
 const supportFilterOptions = ref([] as any)
@@ -144,6 +156,18 @@ function initAvailableOptions(
   }
 }
 
+initAvailableOptions(availableCharacterFilterOptions.value, {
+  from: 1,
+  to: 26,
+  filterField: FilterField.characterId,
+  eventsCategory: EventCategory.characterEvents,
+})
+// initAvailableOptions(availableCharacterFilterOptions.value, {
+//   from: 1,
+//   to: 8,
+//   filterField: FilterField.unitId,
+//   eventsCategory: EventCategory.characterEvents,
+// })
 initAvailableOptions(availableProduceFilterOptions.value, {
   from: 1,
   to: 8,
@@ -177,6 +201,7 @@ initAvailableOptions(availableGameEventFilterOptions.value, {
 
 const filterOptions = computed(() => {
   return [].concat(
+    characterFilterOptions.value,
     produceFilterOptions.value,
     supportFilterOptions.value,
     gameEventFilterOptions.value

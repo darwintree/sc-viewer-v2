@@ -1,5 +1,11 @@
 # Changelog
 
+## 2023/4/26
+
+* feat: character common index support
+  * index modal
+  * list
+
 ## 2023/4/25
 
 * feat: support luka
