@@ -51,6 +51,7 @@ function getCustomJsonPath(relPath: string) {
 }
 
 function getRemoteImgPath(relPath: string) {
+  if (relPath.startsWith('images/ui/producer_desk')) return relPath
   return `${ASSETS_SERVER}/${relPath}`
 }
 
