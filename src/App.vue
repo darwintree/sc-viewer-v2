@@ -4,7 +4,12 @@
 import { onMounted, watch, computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { NSelect, NMessageProvider, NDialogProvider, NAlert } from 'naive-ui'
+import {
+  NSelect,
+  NNotificationProvider,
+  NDialogProvider,
+  NAlert,
+} from 'naive-ui'
 
 const route = useRoute()
 const { locale, availableLocales, t } = useI18n()
@@ -32,7 +37,7 @@ watch(locale, (newVal) => {
 </script>
 <template>
   <div class="main">
-    <n-message-provider>
+    <n-notification-provider placement="top">
       <n-dialog-provider>
         <n-alert v-if="showAlert" type="warning">
           本域名将停止服务，请访问新域名
@@ -77,7 +82,7 @@ watch(locale, (newVal) => {
           </keep-alive>
         </router-view>
       </n-dialog-provider>
-    </n-message-provider>
+    </n-notification-provider>
   </div>
 </template>
 <style scoped>

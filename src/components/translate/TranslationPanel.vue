@@ -13,7 +13,7 @@ import {
   NModal,
   NSpace,
   NBadge,
-  useMessage,
+  useNotification,
   NDropdown,
   NDrawer,
   NDrawerContent,
@@ -44,7 +44,7 @@ const route = useRoute()
 const router = useRouter()
 const showSwitchModal = ref(false)
 const isRotating = ref(false)
-const message = useMessage()
+const notification = useNotification()
 
 const REMOTE = DataSource.Remote
 const BROWSER = DataSource.Browser
@@ -136,7 +136,10 @@ async function loadDataFromLocation() {
   } else if (source === undefined) {
     // if source is not specified, load from storage with priority
     if (store.saves.saveDict[id]) {
-      message.info(t('translate.loadHistoryInfo'))
+      notification.info({
+        content: t('translate.loadHistoryInfo'),
+        duration: 1000,
+      })
       nextTick(() => loadDataFromLocalStorage(id))
     } else {
       nextTick(() => loadDataFromEncodedUrl(id))
@@ -218,7 +221,10 @@ async function to(source: DataSource | undefined, id: string) {
 async function tryReloadStoryIndex() {
   isRotating.value = true
   await initTranslatedStoryIndex()
-  message.success(t('translate.switch.reloadFinished'))
+  notification.success({
+    content: t('translate.switch.reloadFinished'),
+    duration: 1000,
+  })
   isRotating.value = false
 }
 

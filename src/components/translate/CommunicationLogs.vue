@@ -118,8 +118,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from 'vue'
-import { NButton, NSpin, NButtonGroup, NIcon, useMessage } from 'naive-ui'
+import { defineComponent, nextTick, h } from 'vue'
+import { NButton, NSpin, NButtonGroup, NIcon, useNotification } from 'naive-ui'
 import { Document } from '@vicons/carbon'
 
 import DialogueLine from './DialogueLine.vue' // import the "DialogueLine" component
@@ -157,13 +157,10 @@ export default defineComponent({
     IndexModal,
   },
   setup() {
-    const message = useMessage()
+    const notification = useNotification()
     return {
-      createSuccessMessage(content: string) {
-        message.success(content)
-      },
-      createWarningMessage(content: string) {
-        message.warning(content)
+      getNotification() {
+        return notification
       },
     }
   },
@@ -205,9 +202,10 @@ export default defineComponent({
   watch: {
     translatedCsvUrl(newVal) {
       if (newVal && store.currentMode === DataMode.Raw) {
-        this.createSuccessMessage(
-          this.$t('translate.remoteTranslationDetected')
-        )
+        this.getNotification().success({
+          content: this.$t('translate.remoteTranslationDetected'),
+          duration: 5000,
+        })
       }
     },
     data() {
@@ -296,7 +294,10 @@ export default defineComponent({
         store.currentMode = mode
         this.updateRelatedChapterStatus()
         if (mode === DataMode.Raw) {
-          this.createWarningMessage(this.$t('translate.loadRawWarning'))
+          this.getNotification().warning({
+            content: this.$t('translate.loadRawWarning'),
+            duration: 2000,
+          })
         }
         nextTick(() => {
           this.data = data
@@ -380,7 +381,10 @@ export default defineComponent({
         timeLabel: new Date().toLocaleString(),
         name: store.csvFilename,
       })
-      this.createSuccessMessage(this.$t('translate.saveSuccess'))
+      this.getNotification().success({
+        content: this.$t('translate.saveSuccess'),
+        duration: 1000,
+      })
     },
     async updateRelatedChapterStatus() {
       store.eventsCollectionMeta = searchIndexData(
