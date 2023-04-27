@@ -1,7 +1,12 @@
 import axios from 'axios'
 import { units, characters } from '../assets/album-index.json'
 import { reactive } from 'vue'
-import { EventsCollectionMeta, CommunicationDataMeta } from './meta-interfaces'
+import {
+  EventsCollectionMeta,
+  CommunicationDataMeta,
+  IndexData,
+} from './meta-interfaces'
+import { EventCategory } from './enum-interfaces'
 import dataToCSV from './convert'
 
 // assets server: used for voice, raw json(including chapter navigation), index thumb
@@ -168,7 +173,20 @@ async function hasContentForJsonUrl(jsonUrl: string | null) {
 }
 
 // example input: produce_events/100200506.json
-async function nextJsonUrl(jsonUrl: string) {
+async function nextJsonUrl(
+  jsonUrl: string,
+  eventsCollection: EventsCollectionMeta | null
+) {
+  if (eventsCollection) {
+    const currentIndex = eventsCollection.communications.findIndex(
+      (communication) => communication.jsonPath === jsonUrl
+    )
+    if (currentIndex < 0) throw new Error('unexpected result')
+    if (currentIndex === eventsCollection.communications.length - 1) {
+      return null
+    }
+    return eventsCollection.communications[currentIndex + 1].jsonPath
+  }
   const rtn = changedJsonUrlByNumber(jsonUrl, 1)
   if (await hasContentForJsonUrl(rtn)) {
     return rtn
@@ -205,6 +223,42 @@ function queryTranslatedCsv(jsonUrl: string): string | null {
   return `${TRANSLATION_DIR}/${tmp}`
 }
 
+// don't need to be reactive
+// const rawIndexData: IndexData = reactive({})
+let cachedIndexData: null | IndexData = null
+
+async function getIndexData(): Promise<IndexData> {
+  if (cachedIndexData) return cachedIndexData
+  const res = await fetch(NAME_SERVICE_SERVER)
+  if (!res.ok) {
+    throw new Error('res not ok')
+  }
+  const text = await res.text()
+  cachedIndexData = JSON.parse(text) as IndexData
+  return cachedIndexData
+}
+
+function searchIndexData(
+  jsonUrl: string,
+  indexData: IndexData
+): null | EventsCollectionMeta {
+  for (const eventCategory of Object.keys(indexData)) {
+    for (const eventsCollectionMeta of indexData[eventCategory]) {
+      for (const communication of eventsCollectionMeta.communications) {
+        if (
+          communication.jsonPath == jsonUrl
+          // .split('/')
+          // .reverse()[0]
+          // .replace('.json', '') === communicationId
+        ) {
+          return eventsCollectionMeta
+        }
+      }
+    }
+  }
+  return null
+}
+
 async function queryCollectionMetaInfo(jsonUrl: string) {
   if (!NAME_SERVICE_SERVER) return null
   const prefix = jsonUrl.substring(0, jsonUrl.length - 7)
@@ -217,7 +271,20 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
   }
 }
 
-async function previousJsonUrl(jsonUrl: string) {
+async function previousJsonUrl(
+  jsonUrl: string,
+  eventsCollection: EventsCollectionMeta | null
+) {
+  if (eventsCollection) {
+    const currentIndex = eventsCollection.communications.findIndex(
+      (communication) => communication.jsonPath === jsonUrl
+    )
+    if (currentIndex < 0) throw new Error('unexpected result')
+    if (currentIndex === 0) {
+      return null
+    }
+    return eventsCollection.communications[currentIndex - 1].jsonPath
+  }
   // performance optimization: block furthur request
   if (jsonUrl.endsWith('01.json')) return null
   const rtn = changedJsonUrlByNumber(jsonUrl, -1)
@@ -346,4 +413,6 @@ export {
   metaInfoFromGithubCsvUrl,
   jsonTextFromPathUrl,
   getCustomJsonPath,
+  getIndexData,
+  searchIndexData,
 }

@@ -14,4 +14,12 @@ enum DataMode {
   History = 'history', // local csv file in browser (no local json file)
 }
 
-export { DataMode, DataSource }
+enum EventCategory {
+  produceIdolEvents = 'produceIdolEvents',
+  supportIdolEvents = 'supportIdolEvents',
+  gameEvents = 'gameEvents',
+  specialEvents = 'specialEvents',
+  characterEvents = 'characterEvents',
+}
+
+export { DataMode, DataSource, EventCategory }

@@ -136,8 +136,9 @@ import {
   previousJsonUrl,
   firstJsonUrl,
   queryTranslatedCsv,
-  queryRelated,
   jsonTextFromPathUrl,
+  searchIndexData,
+  getIndexData,
 } from '../../helper/path'
 import { CsvDataLine, toCsvText } from '../../helper/csv'
 import { processSourceInput } from '../../helper/source'
@@ -382,12 +383,24 @@ export default defineComponent({
       this.createSuccessMessage(this.$t('translate.saveSuccess'))
     },
     async updateRelatedChapterStatus() {
-      store.eventsCollectionMeta = await queryRelated(this.jsonUrl)
+      store.eventsCollectionMeta = searchIndexData(
+        this.jsonUrl,
+        await getIndexData()
+      )
+      // store.eventsCollectionMeta = await queryRelated(this.jsonUrl)
       // TODO: use eventsCollectionMeta for chapter navigation
-      this.nextJsonUrl = await nextJsonUrl(this.jsonUrl)
-      this.previousJsonUrl = await previousJsonUrl(this.jsonUrl)
-      this.trueEndJsonUrl = await trueEndJsonUrl(this.jsonUrl)
-      this.firstJsonUrl = await firstJsonUrl(this.jsonUrl)
+      this.nextJsonUrl = await nextJsonUrl(
+        this.jsonUrl,
+        store.eventsCollectionMeta
+      )
+      this.previousJsonUrl = await previousJsonUrl(
+        this.jsonUrl,
+        store.eventsCollectionMeta
+      )
+      if (store.eventsCollectionMeta == null) {
+        this.trueEndJsonUrl = await trueEndJsonUrl(this.jsonUrl)
+        this.firstJsonUrl = await firstJsonUrl(this.jsonUrl)
+      }
     },
   },
 })

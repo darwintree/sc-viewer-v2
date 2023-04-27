@@ -59,23 +59,15 @@ import {
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { store } from '../../store'
-import { DataSource } from '../../helper/enum-interfaces'
+import { DataSource, EventCategory } from '../../helper/enum-interfaces'
 import { EventsCollectionMeta, IndexData } from '../../helper/meta-interfaces'
 import {
   getRemoteImgPath,
   unitList,
   characters,
-  NAME_SERVICE_SERVER,
   queryTranslatedCsv,
+  getIndexData,
 } from '../../helper/path'
-
-enum EventCategory {
-  produceIdolEvents = 'produceIdolEvents',
-  supportIdolEvents = 'supportIdolEvents',
-  gameEvents = 'gameEvents',
-  specialEvents = 'specialEvents',
-  characterEvents = 'characterEvents',
-}
 
 enum FilterField {
   unitId = 'unitId',
@@ -209,12 +201,7 @@ const filterOptions = computed(() => {
 })
 
 onMounted(async () => {
-  const res = await fetch(NAME_SERVICE_SERVER)
-  if (!res.ok) {
-    return
-  }
-  const text = await res.text()
-  rawIndexData.value = JSON.parse(text)
+  rawIndexData.value = await getIndexData()
 })
 
 const filteredData = computed(() => {
