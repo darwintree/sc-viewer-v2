@@ -37,7 +37,7 @@ watch(locale, (newVal) => {
 </script>
 <template>
   <div class="main">
-    <n-notification-provider placement="top">
+    <n-notification-provider placement="top" :max="2">
       <n-dialog-provider>
         <n-alert v-if="showAlert" type="warning">
           本域名将停止服务，请访问新域名

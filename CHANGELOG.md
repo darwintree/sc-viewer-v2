@@ -1,5 +1,14 @@
 # Changelog
 
+## 2023/4/28
+
+* feat: directly change to translation notification
+
+## 2023/4/27
+
+* fix: wrong index modal
+* perf: previous and next chapter display
+
 ## 2023/4/26
 
 * feat: character common index support

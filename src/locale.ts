@@ -25,8 +25,8 @@ const messages = {
       saveSuccess: 'Saved',
       loadRawWarning: 'A raw json file is loaded',
       loadHistoryInfo: 'A history save is loaded',
-      remoteTranslationDetected:
-        'Remote translation is deteted. Click the toolbar【Switch】button switch',
+      remoteTranslationDetectedTitle: 'Translation Detected',
+      remoteTranslationDetectedMeta: 'Click to switch',
       overwriteWarning: 'Overwrite Warning',
       overwriteDetails:
         'A history save of current file is detected. This action will OVERWRITE the existed histroy save',
@@ -182,8 +182,8 @@ const messages = {
       saveSuccess: '已保存',
       loadRawWarning: '当前加载源为原始 JSON 文件',
       loadHistoryInfo: '已自动加载历史修改',
-      remoteTranslationDetected:
-        '检测到已翻译文件。点击工具栏【数据源切换】按钮切换',
+      remoteTranslationDetectedTitle: '发现翻译文件',
+      remoteTranslationDetectedMeta: '点击此处切换',
       overwriteWarning: '历史修改将被覆盖',
       overwriteDetails:
         '检测到浏览器中当前文件的历史修改，本操作会覆盖历史修改，导致历史修改丢失',

@@ -203,8 +203,31 @@ export default defineComponent({
     translatedCsvUrl(newVal) {
       if (newVal && store.currentMode === DataMode.Raw) {
         this.getNotification().success({
-          content: this.$t('translate.remoteTranslationDetected'),
-          duration: 5000,
+          title: this.$t('translate.remoteTranslationDetectedTitle'),
+          meta: () =>
+            h(
+              'a',
+              {
+                onClick: () => {
+                  this.$router.push({
+                    path: '/translate',
+                    query: {
+                      forceReload: '1',
+                      source: DataSource.Remote,
+                    },
+                    hash: `#${newVal}`,
+                  })
+                },
+                style: {
+                  cursor: 'pointer',
+                },
+              },
+              {
+                default: () =>
+                  this.$t('translate.remoteTranslationDetectedMeta'),
+              }
+            ),
+          duration: 4000,
         })
       }
     },
