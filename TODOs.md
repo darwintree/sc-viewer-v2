@@ -50,6 +50,7 @@
 ### High Priority
 
 - [x] BUG FIX: reversed translations
+- [ ] BUG FIX: birthday index
 - [ ] ~~unit test~~
 - [x] **ready for open source**
   - [x] use .env for some const

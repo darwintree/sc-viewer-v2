@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        // enabled: true,
+        enabled: true,
       },
       manifest: {
         name: 'SC-VIEWER',
@@ -23,6 +23,15 @@ export default defineConfig({
             type: 'image/webp',
           },
         ],
+        // share_target: {
+        //   action: '/shared',
+        //   method: 'GET',
+        //   params: {
+        //     title: 'title',
+        //     text: 'text',
+        //     url: 'url',
+        //   },
+        // },
       },
       workbox: {
         runtimeCaching: [
