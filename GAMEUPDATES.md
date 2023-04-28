@@ -1,8 +1,15 @@
 # Updates
 
+## 2023/4/28
+
+* [illumina-event](/translate#game_event_communications/400106001.json)
+* [hiori-p-ssr](/translate#produce_events/200201701.json)
+* [kaho-s-ssr](/translate#produce_events/300901701.json)
+* [meguru-s-ssr](/translate#produce_events/300301901.json)
+
 ## 2023/4/1
 
-* [noctchill-event](/translate#produce_events/game_event_communications/400105901.json)
+* [noctchill-event](/translate#game_event_communications/400105901.json)
 * [luka-wing-start](/translate#produce_events/102600002.json)
 * [luka-wing](/translate#produce_events/102600101.json)
 * [luka-morning](/translate#produce_communications/102600100011.json)
