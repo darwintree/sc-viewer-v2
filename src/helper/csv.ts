@@ -18,7 +18,7 @@ function extractInfoFromCsvText(text: string): CsvTextInfo {
   const data: CsvDataLine[] = Papa.parse(text, {
     header: true, // use the first row as the header
   }).data as CsvDataLine[]
-  let jsonUrl = ''
+  let jsonUrl = null
   let translator = ''
   data.forEach((element: CsvDataLine) => {
     if (element.id === 'info') {
@@ -28,8 +28,8 @@ function extractInfoFromCsvText(text: string): CsvTextInfo {
       translator = element.name
     }
   })
-  if (!jsonUrl) {
-    throw new Error('Wrong CSV format')
+  if (jsonUrl === null) {
+    throw new Error('wrong CSV format: no json url')
   }
   return {
     data: data.filter((item: CsvDataLine) => item.text) as CsvDataLine[],
