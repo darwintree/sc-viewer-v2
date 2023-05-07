@@ -47,6 +47,19 @@ const messages = {
         originName: 'Origin Name',
         originNameNotFound: 'Origin name not found',
       },
+      preTranslate: {
+        options: 'Pre-Translate Options',
+        useGithubToken: 'Use Github Token',
+        useAPIKey: 'OpenAI API Key',
+        githubWarning:
+          'Available for ShinyGroup members with daily request limits',
+        keyWarning:
+          'NOTE: Your API Key will be transferred via proxy server. The backend service will not save your API key. Use this service only if you trust',
+        generalTooltip: 'NOTE: Existed translations will be overwritten',
+        translate: 'Translate',
+        processing: 'Waiting for pre-translate',
+        finished: 'Pre-translate finished！',
+      },
       tab: {
         rename: 'Rename',
         complete: 'Complete',
@@ -54,6 +67,7 @@ const messages = {
         top: 'TOP',
         push: 'Push',
         download: 'Download',
+        preTranslate: 'preTranslate',
       },
     },
     push: {
@@ -204,6 +218,18 @@ const messages = {
         originName: '使用文件原名',
         originNameNotFound: '未找到文件原名',
       },
+      preTranslate: {
+        options: '预翻译选项',
+        useGithubToken: '使用Github凭证',
+        useAPIKey: 'OpenAI API Key',
+        githubWarning: '您需要为 ShinyGroup 的成员。每日有限额',
+        keyWarning:
+          '注意： 您的API Key将会经由代理服务器传输。后端服务不会保存您的API Key。如果您不信任本服务，请勿使用此功能',
+        generalTooltip: '注意：已翻译内容会被强制覆盖',
+        translate: '翻译',
+        processing: '预翻译中，请耐心等待',
+        finished: '预翻译已完成！',
+      },
       tab: {
         rename: 'CSV 更名',
         complete: '下载/推送',
@@ -211,6 +237,7 @@ const messages = {
         top: 'TOP',
         push: '推送',
         download: '下载',
+        preTranslate: '预翻译',
       },
     },
     push: {

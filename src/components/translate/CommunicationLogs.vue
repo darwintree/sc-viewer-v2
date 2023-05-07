@@ -370,6 +370,25 @@ export default defineComponent({
         jsonUrl: this.jsonUrl,
       })
     },
+    getCurrentData(offset: number, limit: number): CsvDataLine[] {
+      return this.data.filter((item, index) => {
+        return index >= offset && index < offset + limit
+      })
+    },
+    setCurrentTrans(trans: string[], offset: number, limit: number) {
+      if (trans.length !== limit) {
+        console.warn(trans)
+        this.getNotification().warning({
+          title: this.$t('translate.tab.preTranslate'),
+          meta: `unexpected trans length: expected ${limit}, recieved ${trans.length}`,
+          duration: 3000,
+        })
+      }
+      const lines = this.$refs.lines as InstanceType<typeof DialogueLine>[]
+      for (let index = 0; index < Math.min(limit, trans.length); index++) {
+        lines[index + offset].local_trans = trans[index]
+      }
+    },
     downloadData() {
       const csv = this.getCurrentDataString()
 

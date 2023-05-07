@@ -1,6 +1,6 @@
 <template>
   <n-space align="center">
-    <span> {{ t('push.header.title') }}</span>
+    <span> {{ props.title }}</span>
     <n-popconfirm
       v-if="!store.octokitWrapper?.userMeta"
       :positive-text="t('common.confirm')"
@@ -67,6 +67,10 @@ const options = [
     key: 'logout',
   },
 ]
+
+const props = defineProps<{
+  title: string
+}>()
 
 async function handleVisibilityChangeAfterAuth() {
   if (document.hidden) return

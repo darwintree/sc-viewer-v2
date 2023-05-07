@@ -33,11 +33,14 @@ import { useI18n } from 'vue-i18n'
 import { store } from '../../store'
 import { DataSource } from '../../helper/enum-interfaces'
 import { initTranslatedStoryIndex } from '../../helper/path'
+import { translateDataLines } from '../../helper/translate'
 import HistoryIcon from '../icon/HistoryIcon.vue'
 import RenameIcon from '../icon/RenameIcon.vue'
+import OpenAIIcon from '../icon/OpenAIIcon.vue'
 import LoadingSpin from '../icon/LoadingSpin.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
 import CsvFilenameSetter from './modal/CsvFilenameSetter.vue'
+import AutoTranslateModal from './modal/AutoTranslateModal.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -240,6 +243,55 @@ function clickSwitch() {
   showSwitchModal.value = false
 }
 
+const showAutoTranslateModel = ref(false)
+
+async function translateCommunication(token: string) {
+  if (!token) {
+    alert('no access token')
+    return
+  }
+  if (!communication.value) {
+    throw new Error('no data detected')
+  }
+  const total = communication.value.data.length
+  // const offset = 15
+  const offset = 25
+  let index = 0
+  const iter = Math.ceil(total / offset)
+  let counter = 0
+  try {
+    while (index < total) {
+      notification.info({
+        title: t('translate.tab.preTranslate'),
+        meta: `${t('translate.preTranslate.processing')}:  ${counter}/${iter}`,
+        duration: 30000,
+      })
+      const data = communication.value.getCurrentData(index, offset)
+      const translatedStrings = await translateDataLines(data, { token })
+      communication.value?.setCurrentTrans(
+        translatedStrings,
+        index,
+        index + offset < total ? offset : total - index
+      )
+      index += offset
+      counter += 1
+    }
+  } catch (e: any) {
+    if (e.response) {
+      alert(e.response.data)
+    } else {
+      alert(e)
+    }
+    console.error(e)
+    return
+  }
+  notification.success({
+    title: t('translate.tab.preTranslate'),
+    meta: t('translate.preTranslate.finished'),
+    duration: 2000,
+  })
+}
+
 // function toGithub() {
 //   if (csvUrl.value) {
 //     window.open(csvUrl.value)
@@ -390,6 +442,10 @@ function clickSwitch() {
       </n-space>
     </n-space>
   </n-modal>
+  <AutoTranslateModal
+    v-model:show-modal="showAutoTranslateModel"
+    :do-translate="translateCommunication"
+  ></AutoTranslateModal>
   <CsvFilenameSetter
     :show-modal="showCsvFilenameSetter"
     :extra-info="csvFilenameSetterExtraInfo"
@@ -410,7 +466,7 @@ function clickSwitch() {
   >
     <n-drawer-content :native-scrollbar="false">
       <template #header>
-        <push-header></push-header>
+        <push-header :title="t('push.header.title')"></push-header>
       </template>
       <PushPanel></PushPanel>
     </n-drawer-content>
@@ -428,6 +484,13 @@ function clickSwitch() {
   <div v-if="!!communication?.data.length" class="toolbar">
     <!-- <n-button-group> -->
     <n-space>
+      <!-- <n-button @click="showAutoTranslateModel = true">openai</n-button> -->
+      <div class="clickable" @click="showAutoTranslateModel = true">
+        <n-icon size="18"> <OpenAIIcon /> </n-icon><br />
+        <n-button text type="default" :focusable="false">
+          {{ t('translate.tab.preTranslate') }}</n-button
+        >
+      </div>
       <div class="clickable" @click="showCsvFilenameSetter = true">
         <n-icon size="18"> <RenameIcon /> </n-icon><br />
         <n-button text type="default" :focusable="false">

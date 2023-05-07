@@ -1,8 +1,12 @@
 # Changelog
 
+## 2023/5/7
+
+* feat: pre-translate using gpt-3.5
+
 ## 2023/4/28
 
-* feat: directly change to translation notification
+* feat: translation switch link in notification
 
 ## 2023/4/27
 
