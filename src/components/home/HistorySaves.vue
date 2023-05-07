@@ -56,6 +56,7 @@ const createColumns = ({
     {
       title: t('home.history.table.name'),
       key: 'name',
+      ellipsis: true,
       render(row: SaveBrief) {
         return h(
           NButton,
@@ -80,6 +81,7 @@ const createColumns = ({
       key: 'timeLabel',
       defaultSortOrder: 'descend',
       sorter: 'default',
+      minWidth: '180px',
     },
   ]
   if (store.isMobile) {
