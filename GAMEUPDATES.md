@@ -1,5 +1,12 @@
 # Updates
 
+## 2023/5/11
+
+* [摩美々-P](/translate#json/produce_events/200501601.json)
+* [咲耶-P](/translate#json/produce_events/200601401.json)
+* [智代子-P](/translate#json/produce_events/201001501.json)
+* [にちか-S](/translate#json/produce_events/302401001.json)
+
 ## 2023/4/28
 
 * [illumina-event](/translate#game_event_communications/400106001.json)
