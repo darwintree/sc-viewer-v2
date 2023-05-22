@@ -55,7 +55,8 @@ export default defineConfig({
               if (
                 url.pathname.startsWith('/convert/cache') ||
                 url.pathname.startsWith('/raw') ||
-                url.hostname === 'cdn.skypack.dev'
+                url.hostname === 'cdn.skypack.dev' ||
+                url.hostname === 'esm.sh'
               ) {
                 return true
               }

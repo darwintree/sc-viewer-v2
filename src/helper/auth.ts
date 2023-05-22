@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { RequestInterface } from '@octokit/types'
 // @ts-ignore
-import { Octokit } from 'https://cdn.skypack.dev/octokit'
+import { Octokit } from 'https://esm.sh/v122/@octokit/core@4.2.1'
 
 const clientId =
   process.env.NODE_ENV === 'development'
