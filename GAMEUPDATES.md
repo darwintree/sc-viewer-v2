@@ -1,5 +1,12 @@
 # Updates
 
+## 2023/5/22
+
+* [咲耶-STEP](/translate#json/produce_events/100600501.json)
+* [愛依-P](/translate#json/produce_events/201901301.json)
+* [樹里-S](/translate#json/produce_events/301101501.json)
+* [千雪-S](/translate#json/produce_events/301601701.json)
+
 ## 2023/5/11
 
 * [摩美々-P](/translate#json/produce_events/200501601.json)
