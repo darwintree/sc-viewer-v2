@@ -1,5 +1,11 @@
 # Updates
 
+## 2023/6/9
+
+* [夏葉-P](/translate#json/produce_events/201301501.json)
+* [あさひ-S](/translate#json/produce_events/301701301.json)
+* [ルカ-S](/translate#json/produce_events/302600401.json)
+
 ## 2023/5/31
 
 * [event-061](/translate#json/game_event_communications/400106101.json)
