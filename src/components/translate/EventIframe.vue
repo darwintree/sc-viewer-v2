@@ -48,7 +48,12 @@ function postMessageOnPlayer({
 }) {
   iframeSrc.value = getIframeSrc()
   if (loaded.value) {
-    inject()
+    inject({
+      beforeSend: (event) => {
+        event.url = event.url.replace('/translate', '/preview')
+        return event
+      },
+    })
     player?.value?.contentWindow?.postMessage(
       {
         iframeJson,

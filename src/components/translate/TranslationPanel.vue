@@ -87,7 +87,12 @@ const showPushDrawer = ref(false)
 function handleCompleteSelect(key: string) {
   if (key === 'download') {
     communication?.value?.downloadData()
-    inject()
+    inject({
+      beforeSend: (event) => {
+        event.url = event.url.replace('/translate', '/download')
+        return event
+      },
+    })
   }
   if (key === 'push') {
     if (!communication.value) {
@@ -96,7 +101,12 @@ function handleCompleteSelect(key: string) {
     }
     communication.value.updateBase64Content()
     showPushDrawer.value = true
-    inject()
+    inject({
+      beforeSend: (event) => {
+        event.url = event.url.replace('/translate', '/push')
+        return event
+      },
+    })
   }
 }
 

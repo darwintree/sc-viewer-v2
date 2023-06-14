@@ -258,7 +258,12 @@ const createColumns = (): any => {
         }
         if (row.communications.length > 0) {
           onClick = () => {
-            inject()
+            inject({
+              beforeSend: (event) => {
+                event.url = event.url.replace('/list', '/navigate')
+                return event
+              },
+            })
             router.push({
               path: '/translate',
               query: {

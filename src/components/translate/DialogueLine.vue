@@ -238,7 +238,12 @@ export default defineComponent({
       this.isEditing = false
       this.local_trans = this.edit_trans
       this.$emit('save')
-      inject()
+      inject({
+        beforeSend: (event) => {
+          event.url = event.url.replace('/translate', '/save')
+          return event
+        },
+      })
     },
     toggleEdit() {
       this.isEditing = true
