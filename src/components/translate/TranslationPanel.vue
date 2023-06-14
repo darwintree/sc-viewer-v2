@@ -41,6 +41,9 @@ import LoadingSpin from '../icon/LoadingSpin.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
 import CsvFilenameSetter from './modal/CsvFilenameSetter.vue'
 import AutoTranslateModal from './modal/AutoTranslateModal.vue'
+import { inject } from '@vercel/analytics'
+
+inject()
 
 const { t } = useI18n()
 const route = useRoute()
@@ -84,6 +87,7 @@ const showPushDrawer = ref(false)
 function handleCompleteSelect(key: string) {
   if (key === 'download') {
     communication?.value?.downloadData()
+    inject()
   }
   if (key === 'push') {
     if (!communication.value) {
@@ -92,6 +96,7 @@ function handleCompleteSelect(key: string) {
     }
     communication.value.updateBase64Content()
     showPushDrawer.value = true
+    inject()
   }
 }
 

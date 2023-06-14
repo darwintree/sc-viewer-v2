@@ -95,6 +95,7 @@ import {
 import { Edit } from '@vicons/carbon'
 import { store } from '../../store'
 import { DataSource, DataMode } from '../../helper/enum-interfaces'
+import { inject } from '@vercel/analytics'
 
 // define the props for the component
 export default defineComponent({
@@ -237,6 +238,7 @@ export default defineComponent({
       this.isEditing = false
       this.local_trans = this.edit_trans
       this.$emit('save')
+      inject()
     },
     toggleEdit() {
       this.isEditing = true

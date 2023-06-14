@@ -14,6 +14,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { NSkeleton } from 'naive-ui'
 import { getIframeSrc } from '../../helper/path'
+import { inject } from '@vercel/analytics'
 
 onMounted(() => {
   window.onmessage = (event) => {
@@ -47,6 +48,7 @@ function postMessageOnPlayer({
 }) {
   iframeSrc.value = getIframeSrc()
   if (loaded.value) {
+    inject()
     player?.value?.contentWindow?.postMessage(
       {
         iframeJson,

@@ -68,6 +68,9 @@ import {
   queryTranslatedCsv,
   getIndexData,
 } from '../../helper/path'
+import { inject } from '@vercel/analytics'
+
+inject()
 
 enum FilterField {
   unitId = 'unitId',
@@ -255,6 +258,7 @@ const createColumns = (): any => {
         }
         if (row.communications.length > 0) {
           onClick = () => {
+            inject()
             router.push({
               path: '/translate',
               query: {

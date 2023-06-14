@@ -33,6 +33,9 @@
 </template>
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { inject } from '@vercel/analytics'
+
+inject()
 
 const { t } = useI18n()
 </script>

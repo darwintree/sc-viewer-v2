@@ -43,6 +43,9 @@ import { useI18n } from 'vue-i18n'
 import { NCollapse, NCollapseItem, NTag, NModal } from 'naive-ui'
 import { store } from '../../store'
 import HistorySaves from './HistorySaves.vue'
+import { inject } from '@vercel/analytics'
+
+inject()
 
 const changelogHtml = ref('')
 const changelogBrief = ref('')

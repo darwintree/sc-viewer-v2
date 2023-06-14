@@ -25,6 +25,7 @@
 
 ### Improvements
 
+- [ ] Refactor: Use pages folder
 - [x] Edit: insert "\n" to cursor
 - [x] Refactor: file loading process
 - [ ] new end line for push process
@@ -70,6 +71,7 @@
 ### Low Priority
 
 - [ ] home page
+
   - [x] localstorage
     - [ ] remove specific item
     - [x] remove all
