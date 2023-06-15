@@ -3,15 +3,15 @@
 ### New Feature
 
 - [x] index
-- [ ] Use github interface to push csv directly
+- [x] Use github interface to push csv directly
   - [x] use dropdown component for download csv
     - [x] download or push to github
   - [x] Use N-Step for pushing to Github
     - [x] UI when user is not logged in
     - [x] explanation
-    - [ ] explanation text under commit message and pr title
+    - [x] explanation text under commit message and pr title
   - [ ] ~~fix no github push panel problem~~
-- [ ] machine translate
+- [x] machine translate
 - [x] render translation to review
 - [x] `make deploy` command
 - [ ] static resource processing

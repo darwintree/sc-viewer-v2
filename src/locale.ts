@@ -104,6 +104,8 @@ const messages = {
           inputCommitMessage: 'Describe what is changed',
           publishPrefix: 'Upload to',
           uploading: 'Uploading...',
+          useTemplate: 'Template',
+          templatePrefix: 'Add/Modify/Errata:',
         },
         pr: {
           title: 'Create pull request',
@@ -111,6 +113,7 @@ const messages = {
             'Pull request detected, newly uploaded contents will be included in current PR',
           create: 'Create',
           placeholder: 'Title of PR',
+          detailPlaceholder: 'Detail of PR (can leave empty)',
           notCreated: 'PR not created',
           reviewing: 'Please inform the admin to review',
           beforeCreate:
@@ -271,19 +274,22 @@ const messages = {
           inputStoryName: '请输入卡片/活动名',
           useRecommendedPath: '使用推荐路径',
           uploadSubstepTitle: '上传',
-          inputCommitMessage: '概述本次修改的内容',
+          inputCommitMessage: '概述本次修改的内容，推荐基于模板修改',
           publishPrefix: '上传至',
           uploading: '上传中...',
+          useTemplate: '使用模板',
+          templatePrefix: '新增/修改/勘误：',
         },
         pr: {
           title: '创建合并请求',
           detected: '已发现合并请求，上传的新内容将自动包含在现有请求中',
           create: '创建合并请求',
-          placeholder: '请求的标题',
+          placeholder: '请求的标题，推荐基于模板修改',
+          detailPlaceholder: '请求的详细说明，可为空',
           notCreated: '合并请求尚未创建',
           reviewing: '请通知管理员审查合并请求',
           beforeCreate:
-            '尽量在工作分支所有更新完成后提交合并请求，避免工作内容被提前合并',
+            '建议：尽量在工作分支所有更新完成后提交合并请求，避免工作内容被提前合并',
         },
       },
       explanation: {

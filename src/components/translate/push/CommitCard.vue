@@ -67,7 +67,9 @@
           :placeholder="t('push.steps.upload.inputCommitMessage')"
           :disabled="isPushing || !store.base64content"
         />
-
+        <n-button secondary type="default" @click="useCommitTemplate">
+          {{ t('push.steps.upload.useTemplate') }}</n-button
+        >
         <n-popconfirm
           :positive-text="t('common.confirm')"
           :negative-text="t('common.cancel')"
@@ -221,6 +223,10 @@ const suggestedCharacter = computed(() => {
   }
   return null
 })
+
+function useCommitTemplate() {
+  message.value = `${t('push.steps.upload.templatePrefix')}${store.path}`
+}
 
 const hasRecommend = computed(() => {
   return suggestedFilename.value || queryTranslatedCsv(store.jsonUrl)

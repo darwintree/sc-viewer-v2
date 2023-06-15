@@ -7,22 +7,42 @@
     <a v-if="pullUrl" :href="pullUrl" target="_blank">
       {{ directionMessage }}
     </a>
-    <n-input-group v-if="!pullUrl && current === 3">
+    <div v-if="!pullUrl && current === 3" vertical>
+      <n-input-group>
+        <n-input
+          v-model:value="title"
+          :placeholder="t('push.steps.pr.placeholder')"
+        ></n-input>
+        <n-button tertiary @click="showDetail = !showDetail">
+          <template #icon>
+            <n-icon>
+              <ExpandCategories />
+            </n-icon>
+          </template>
+        </n-button>
+      </n-input-group>
       <n-input
-        v-model:value="title"
-        :placeholder="t('push.steps.pr.placeholder')"
-      ></n-input>
-      <n-popconfirm
-        :positive-text="t('common.confirm')"
-        :negative-text="t('common.cancel')"
-        @positive-click="createPull"
-      >
-        <template #trigger>
-          <n-button type="info"> {{ t('push.steps.pr.create') }} </n-button>
-        </template>
-        {{ directionMessage }}
-      </n-popconfirm>
-    </n-input-group>
+        v-if="showDetail"
+        v-model:value="detail"
+        type="textarea"
+        :placeholder="t('push.steps.pr.detailPlaceholder')"
+      />
+      <n-input-group>
+        <n-button secondary @click="usePullTitleTemplate">
+          {{ t('push.steps.upload.useTemplate') }}
+        </n-button>
+        <n-popconfirm
+          :positive-text="t('common.confirm')"
+          :negative-text="t('common.cancel')"
+          @positive-click="createPull"
+        >
+          <template #trigger>
+            <n-button type="info"> {{ t('push.steps.pr.create') }} </n-button>
+          </template>
+          {{ directionMessage }}
+        </n-popconfirm>
+      </n-input-group>
+    </div>
   </n-space>
 </template>
 <script setup lang="ts">
@@ -31,14 +51,18 @@ import { useI18n } from 'vue-i18n'
 import {
   NTag,
   NButton,
+  NIcon,
   NInput,
   NInputGroup,
   NSpace,
   NPopconfirm,
 } from 'naive-ui'
+import { ExpandCategories } from '@vicons/carbon'
 import { store } from '../../../store'
 import { rootOwner, rootRepoName, rootBranch } from '../../../helper/auth'
 
+const showDetail = ref(false)
+const detail = ref('')
 const { t } = useI18n()
 const props = defineProps<{
   current: number
@@ -91,6 +115,18 @@ async function updatePullUrl(newBranch: null | string) {
   }
 }
 
+function removeLastSlash(path: string) {
+  const splits = path.split('/')
+  splits.splice(splits.length - 1, 1)
+  return splits.join('/')
+}
+
+function usePullTitleTemplate() {
+  title.value = `${t('push.steps.upload.templatePrefix')}${removeLastSlash(
+    store.path
+  )}`
+}
+
 async function createPull() {
   try {
     if (!store.octokitWrapper) throw Error('octokitWrapper not created')
@@ -98,7 +134,7 @@ async function createPull() {
       rootOwner,
       rootRepoName,
       title.value,
-      '',
+      detail.value,
       `${store.octokitWrapper?.userMeta?.username}:${currentBranch.value}`,
       `${rootBranch}`
     )
@@ -119,3 +155,9 @@ defineExpose({
   pullUrl,
 })
 </script>
+<style scoped>
+p {
+  font-size: x-small;
+  color: grey;
+}
+</style>
