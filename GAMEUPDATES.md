@@ -1,5 +1,12 @@
 # Updates
 
+## 2023/6/20
+
+* [樹里-STEP](/translate#json/produce_events/101100501.json)
+* [甜花-P](/translate#json/produce_events/201501701.json)
+* [樹里-S](/translate#json/produce_events/301101601.json)
+* [透-S](/translate#json/produce_events/302001201.json)
+
 ## 2023/6/9
 
 * [夏葉-P](/translate#json/produce_events/201301501.json)
