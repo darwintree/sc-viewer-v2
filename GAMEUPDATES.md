@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/6/30
+
+* [event-062](/translate#json/game_event_communications/400106201.json)
+* [美琴-P](/translate#json/produce_events/202500901.json)
+* [智代子-S](/translate#json/produce_events/301001601.json)
+* [円香-S](/translate#json/produce_events/302101301.json)
+* [雛菜-S](/translate#json/produce_events/302300901.json)
+* [event-042](/translate#json/special_communications/490104201.json)
+
 ## 2023/6/20
 
 * [樹里-STEP](/translate#json/produce_events/101100501.json)
