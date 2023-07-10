@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/07/10
+
+* [event-063](/translate#json/game_event_communications/400106301.json)
+* [ルビー-WING](/translate#json/produce_events/180100101.json)
+* [果穂-P](/translate#json/produce_events/200901601.json)
+* [ルビー-P](/translate#json/produce_events/280100401.json)
+* [恋鐘-S](/translate#json/produce_events/300401801.json)
+* [MEMちょ-S](/translate#json/produce_events/380300401.json)
+
 ## 2023/6/30
 
 * [event-062](/translate#json/game_event_communications/400106201.json)
