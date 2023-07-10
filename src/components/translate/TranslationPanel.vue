@@ -43,7 +43,7 @@ import CsvFilenameSetter from './modal/CsvFilenameSetter.vue'
 import AutoTranslateModal from './modal/AutoTranslateModal.vue'
 import { inject } from '@vercel/analytics'
 
-inject()
+// inject()
 
 const { t } = useI18n()
 const route = useRoute()
