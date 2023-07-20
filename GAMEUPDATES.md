@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/07/20
+
+* [かな-WING](/translate#json/produce_events/180200101.json)
+* [めぐる-P](/translate#json/produce_events/200301701.json)
+* [かな-P](/translate#json/produce_events/280200401.json)
+* [凛世-S](/translate#json/produce_events/301201601.json)
+* [小糸-S](/translate#json/produce_events/302201101.json)
+
 ## 2023/07/10
 
 * [event-063](/translate#json/game_event_communications/400106301.json)
