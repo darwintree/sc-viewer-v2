@@ -1,6 +1,6 @@
 <template>
   <n-space vertical>
-    <!-- <n-upload
+    <n-upload
       :directory-dnd="false"
       :default-upload="false"
       :show-file-list="false"
@@ -13,15 +13,15 @@
           </n-icon>
         </div>
         <n-text style="font-size: 16px">
-          点击或者拖动文件到该区域来上传
+          点击或者拖动演出脚本文件到该区域来加载
         </n-text>
-        <n-p depth="3" style="margin: 8px 0 0 0">
+        <!-- <n-p depth="3" style="margin: 8px 0 0 0">
           请不要上传敏感数据，比如你的银行卡号和密码，信用卡号有效期和安全码
-        </n-p>
+        </n-p> -->
       </n-upload-dragger>
     </n-upload>
-    <n-tag v-if="filename">{{ filename }}</n-tag>
-    <n-button v-if="iframeJsonText" @click="postJson">post</n-button> -->
+    <n-tag v-if="filename">当前加载： {{ filename }}</n-tag>
+    <n-button v-if="iframeJsonText" @click="postJson">更新演出</n-button>
     <EventIframe v-if="showIframe" ref="customIframe"></EventIframe>
   </n-space>
 </template>
@@ -50,12 +50,12 @@ const iframeJsonText = ref<null | string>(null)
 const csvText = ref('')
 
 onMounted(async () => {
-  const res = await fetch(getCustomJsonPath('/custom/story.json'))
-  filename.value = 'story.json'
-  iframeJsonText.value = await res.text()
-  const csvRes = await fetch(getCustomJsonPath('/custom/story.csv'))
-  csvText.value = await csvRes.text()
-  nextTick(postJson)
+  // const res = await fetch(getCustomJsonPath('/custom/story.json'))
+  // filename.value = 'story.json'
+  // iframeJsonText.value = await res.text()
+  // const csvRes = await fetch(getCustomJsonPath('/custom/story.csv'))
+  // csvText.value = await csvRes.text()
+  // nextTick(postJson)
   // console.log(await res.text())
 })
 
