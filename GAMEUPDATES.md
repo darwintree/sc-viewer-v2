@@ -1,5 +1,11 @@
 # Updates
 
+## 2023/07/31
+
+* [円香-P](/translate#json/produce_events/202101201.json)
+* [冬優子-S](/translate#json/produce_events/301801401.json)
+* [雛菜-S](/translate#json/produce_events/302301001.json)
+
 ## 2023/07/20
 
 * [かな-WING](/translate#json/produce_events/180200101.json)
