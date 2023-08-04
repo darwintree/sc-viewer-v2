@@ -38,6 +38,8 @@ jobs:
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
+        branch: asset-update-branch
+        create_branch: true
         commit_message: ${{ steps.msg.outputs.msg }}
 
     - name: Create viewer PR
@@ -49,6 +51,6 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             title: 'New game assets detected',
-            head: 'GAMEUPDATES',
+            head: 'asset-update-branch',
             base: 'main',
           })
