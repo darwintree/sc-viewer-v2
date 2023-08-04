@@ -1,0 +1,54 @@
+name: Update GAMEUPDATES
+
+on:
+  push:
+    branches:
+      - GAMEUPDATES
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Get the date message
+      id: msg
+      run: echo "::set-output name=msg::$(date +'%Y-%m-%d') game updates"
+      shell: bash
+
+    - name: Checkout main branch
+      uses: actions/checkout@v3
+      with:
+        ref: main
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+    
+    - name: Update GAMEDATES
+      run: |
+        wget https://raw.githubusercontent.com/darwintree/sc-viewer-v2/GAMEUPDATES/GAMEUPDATES.md -O GAMEUPDATES.md
+
+    - name: Commit changes
+      id: auto-commit-action
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: ${{ steps.msg.outputs.msg }}
+
+    - name: Create viewer PR
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: 'New game assets detected',
+            head: 'GAMEUPDATES',
+            base: 'main',
+          })
