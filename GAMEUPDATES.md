@@ -1,5 +1,16 @@
 # Updates
 
+## 2023/08/09
+
+* [にちか-LP](/translate#json/produce_events/102400401.json)
+* [美琴-LP](/translate#json/produce_events/102500401.json)
+* [咲耶-P](/translate#json/produce_events/200601501.json)
+* [果穂-P](/translate#json/produce_events/200901701.json)
+* [にちか-P](/translate#json/produce_events/202401001.json)
+* [果穂-S](/translate#json/produce_events/300901801.json)
+* [美琴-S](/translate#json/produce_events/302501101.json)
+* [夏葉-birthday](/translate#json/special_communications/4902005013.json)
+
 ## 2023/07/31
 
 * [円香-P](/translate#json/produce_events/202101201.json)
