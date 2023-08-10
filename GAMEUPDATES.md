@@ -1,9 +1,5 @@
 # Updates
 
-## 2023/08/10
-
-
-
 ## 2023/08/09
 
 * [にちか-LP](/translate#json/produce_events/102400401.json)
