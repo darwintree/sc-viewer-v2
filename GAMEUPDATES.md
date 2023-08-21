@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/08/21
+
+* [event-064](/translate#json/game_event_communications/400106401.json)
+* [千雪-P](/translate#json/produce_events/201601601.json)
+* [結華-S](/translate#json/produce_events/300701601.json)
+* [ルカ-S](/translate#json/produce_events/302600501.json)
+
+
 ## 2023/08/09
 
 * [にちか-LP](/translate#json/produce_events/102400401.json)
