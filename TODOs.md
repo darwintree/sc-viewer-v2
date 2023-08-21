@@ -80,6 +80,7 @@
 - [x] Check select label
 - [ ] p's voice (sound effect/tts)
 - [ ] Hide preview until login
+- [ ] i18n for voice searching
 
 ### example url inputs
 

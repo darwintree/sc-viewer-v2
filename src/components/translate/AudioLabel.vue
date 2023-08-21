@@ -4,7 +4,7 @@
     class="audio-button"
     :title="audioTitle"
     @click="playAudio"
-    >{{ audioIcon }}</label
+    >{{ extraText }} {{ audioIcon }}</label
   >
 </template>
 <script lang="ts">
@@ -22,6 +22,11 @@ export default defineComponent({
     base: {
       type: String,
       required: true,
+    },
+    extraText: {
+      type: String,
+      required: false,
+      default: '',
     },
     // the label text to display next to the audio button
   },

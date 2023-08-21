@@ -11,6 +11,7 @@ const messages = {
       Translate: 'Translate',
       About: 'About',
       List: 'List',
+      Search: 'Search',
     },
     control: {
       first: 'First',
@@ -185,6 +186,7 @@ const messages = {
       Translate: '翻译',
       About: '关于',
       List: '列表',
+      Search: '语音检索',
     },
     control: {
       first: '回到最初',

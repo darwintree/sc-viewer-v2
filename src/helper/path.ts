@@ -13,6 +13,7 @@ import dataToCSV from './convert'
 const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
 // name service server: used for index, name suggestion
 const NAME_SERVICE_SERVER = import.meta.env.VITE_NAME_SERVICE_SERVER
+const VOICE_SERVICE_SERVER = import.meta.env.VITE_VOICE_SERVICE_SERVER
 
 // transaction index: used to query if translation exists
 const TRANSLATION_INDEX_URL = import.meta.env.VITE_TRANSLATION_INDEX_URL
@@ -42,6 +43,10 @@ function getAvatarPath(name: string) {
 
 function getAudioPath(id: string, base: string) {
   return `${ASSETS_SERVER}/sounds/voice/events/${base}/${id}.m4a`
+}
+
+function getAudioPathFromVoiceId(_id: string) {
+  return `${ASSETS_SERVER}/sounds/voice/events/${_id}.m4a`
 }
 
 // relPath includes .json postfix
@@ -271,6 +276,35 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
   }
 }
 
+async function queryVoices(
+  speakers: string[],
+  pattern: string,
+  page = 1,
+  pageSize = 20
+) {
+  try {
+    const res = await axios.get(VOICE_SERVICE_SERVER, {
+      params: {
+        speakers,
+        pattern,
+        page,
+        pageSize,
+      },
+    })
+    return res.data as {
+      count: number
+      results: {
+        speaker: string
+        text: string
+        _id: string
+      }[]
+    }
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+}
+
 async function previousJsonUrl(
   jsonUrl: string,
   eventsCollection: EventsCollectionMeta | null
@@ -395,6 +429,7 @@ export {
   NAME_SERVICE_SERVER,
   getAvatarPath,
   getAudioPath,
+  getAudioPathFromVoiceId,
   getQueryVariable,
   getRemoteImgPath,
   getIframeSrc,
@@ -415,4 +450,5 @@ export {
   getCustomJsonPath,
   getIndexData,
   searchIndexData,
+  queryVoices,
 }

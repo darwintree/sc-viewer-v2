@@ -12,6 +12,8 @@ const AuthCallback = () => import('./components/AuthCallback.vue')
 const HomePage = () => import('./components/home/HomePage.vue')
 const ListPanel = () => import('./components/list/ListPanel.vue')
 const CustomPanel = () => import('./components/CustomPanel.vue')
+const VoiceSearchPanel = () =>
+  import('./components/search/VoiceSearchPanel.vue')
 
 // create a new router instance
 const router = createRouter({
@@ -45,6 +47,10 @@ const router = createRouter({
     {
       path: '/custom',
       component: CustomPanel,
+    },
+    {
+      path: '/search',
+      component: VoiceSearchPanel,
     },
   ],
 })

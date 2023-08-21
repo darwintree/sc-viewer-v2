@@ -71,6 +71,11 @@ watch(locale, (newVal) => {
               :to="{ path: '/list', query: route.query, hash: route.hash }"
               >{{ t('tab.List') }}</router-link
             >
+            |
+            <router-link
+              :to="{ path: '/search', query: route.query, hash: route.hash }"
+              >{{ t('tab.Search') }}</router-link
+            >
           </nav>
           <div class="locale-changer">
             <n-select v-model:value="locale" :options="options" size="small" />
