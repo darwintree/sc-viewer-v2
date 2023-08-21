@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/08/22
+
+* feat: support voice search
+
 ## 2023/5/7
 
 * feat: pre-translate using gpt-3.5
