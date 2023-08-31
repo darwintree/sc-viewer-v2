@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/08/31
+
+* [event-065](/translate#json/game_event_communications/400106501.json)
+* [樹里-P](/translate#json/produce_events/201101701.json)
+* [甜花-S](/translate#json/produce_events/301501701.json)
+* [透-S](/translate#json/produce_events/302001301.json)
+* [美琴-birthday](/translate#json/special_communications/4902005025.json)
+
+
 ## 2023/08/21
 
 * [event-064](/translate#json/game_event_communications/400106401.json)
