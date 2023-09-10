@@ -8,6 +8,8 @@ import {
   NRadioGroup,
   NRadio,
   NPopconfirm,
+  NSwitch,
+  NInputNumber,
 } from 'naive-ui'
 import PushHeader from '../push/PushHeader.vue'
 import { store } from '../../../store'
@@ -21,7 +23,11 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   showModal: boolean
-  doTranslate: (token: string) => Promise<void>
+  doTranslate: (
+    token: string,
+    batchSize: number,
+    withTag: boolean
+  ) => Promise<void>
 }>()
 
 const show = computed({
@@ -33,8 +39,11 @@ const show = computed({
   },
 })
 
+const batchSize = ref(25)
+
 const authType = ref('github')
 const manualOpenAiKey = ref(localStorage.getItem('openai_key') || '')
+const usePretranslationTag = ref(true)
 
 watch(manualOpenAiKey, (newVal) => {
   localStorage.setItem('openai_key', newVal)
@@ -60,7 +69,11 @@ async function beginTranslate() {
     return
   }
   show.value = false
-  await props.doTranslate(token.value)
+  await props.doTranslate(
+    token.value,
+    batchSize.value,
+    usePretranslationTag.value
+  )
 }
 </script>
 <template>
@@ -102,6 +115,14 @@ async function beginTranslate() {
           </span>
         </n-space>
       </n-radio-group>
+      <n-space
+        ><span>{{ t('translate.preTranslate.appendTag') }}</span
+        ><n-switch v-model:value="usePretranslationTag"
+      /></n-space>
+      <n-space align="center">
+        <span>Batch Size</span>
+        <n-input-number v-model:value="batchSize" :min="20" :max="40" />
+      </n-space>
       <n-space justify="end">
         <n-popconfirm
           :positive-text="t('common.confirm')"

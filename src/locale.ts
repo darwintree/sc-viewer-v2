@@ -60,6 +60,7 @@ const messages = {
         translate: 'Translate',
         processing: 'Waiting for pre-translate',
         finished: 'Pre-translate finished！',
+        appendTag: 'Append Pre-translation tag',
       },
       tab: {
         rename: 'Rename',
@@ -234,6 +235,7 @@ const messages = {
         translate: '翻译',
         processing: '预翻译中，请耐心等待',
         finished: '预翻译已完成！',
+        appendTag: '附加预翻译标签',
       },
       tab: {
         rename: 'CSV 更名',

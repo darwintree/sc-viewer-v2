@@ -3,6 +3,7 @@
 ## 2023/09/11
 
 * perf: improves pretranslation speed and accuracy
+* feat: support tag and batch size specification
 
 ## 2023/08/22
 

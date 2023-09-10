@@ -47,9 +47,9 @@
   - [x] file name suggest
   - [x] file name input
   - [ ] force select file name when first save / download
-- [ ] pretranslation
-  - [ ] pretranslation tag off
-  - [ ] batch size control
+- [x] pretranslation
+  - [x] pretranslation tag off
+  - [x] batch size control
 
 ### High Priority
 
