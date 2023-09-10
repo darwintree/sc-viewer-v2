@@ -407,6 +407,13 @@ async function translateCommunication(
   })
 }
 
+const currentDialogueCount = computed(() => {
+  if (communication.value) {
+    return communication.value.data.length
+  }
+  return 0
+})
+
 // function toGithub() {
 //   if (csvUrl.value) {
 //     window.open(csvUrl.value)
@@ -560,6 +567,7 @@ async function translateCommunication(
   <AutoTranslateModal
     v-model:show-modal="showAutoTranslateModel"
     :do-translate="translateCommunication"
+    :current-dialogue-count="currentDialogueCount"
   ></AutoTranslateModal>
   <CsvFilenameSetter
     :show-modal="showCsvFilenameSetter"

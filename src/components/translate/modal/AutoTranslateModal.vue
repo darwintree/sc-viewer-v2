@@ -28,6 +28,7 @@ const props = defineProps<{
     batchSize: number,
     withTag: boolean
   ) => Promise<void>
+  currentDialogueCount: number
 }>()
 
 const show = computed({
@@ -47,6 +48,20 @@ const usePretranslationTag = ref(true)
 
 watch(manualOpenAiKey, (newVal) => {
   localStorage.setItem('openai_key', newVal)
+})
+
+const currentDialogueCount = computed(() => {
+  return props.currentDialogueCount
+})
+
+// 101 -> 26
+// 100 -> 25
+watch(currentDialogueCount, (newVal) => {
+  const recommendedBatchSize = 4
+  batchSize.value = Math.max(
+    Math.min(Math.ceil(newVal / recommendedBatchSize), 40),
+    25
+  )
 })
 
 const token = computed(() => {
@@ -123,6 +138,13 @@ async function beginTranslate() {
         <span>Batch Size</span>
         <n-input-number v-model:value="batchSize" :min="20" :max="40" />
       </n-space>
+      <span class="explanation">
+        {{ currentDialogueCount }} lines divided into
+        {{ Math.ceil(currentDialogueCount / batchSize) }} batches ({{
+          batchSize
+        }}
+        lines per batch)</span
+      >
       <n-space justify="end">
         <n-popconfirm
           :positive-text="t('common.confirm')"
