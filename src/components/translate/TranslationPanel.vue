@@ -260,7 +260,61 @@ function clickSwitch() {
 
 const showAutoTranslateModel = ref(false)
 
-async function translateCommunication(token: string) {
+// async function translateCommunication(token: string) {
+//   if (!token) {
+//     alert('no access token')
+//     return
+//   }
+//   if (!communication.value) {
+//     throw new Error('no data detected')
+//   }
+//   const total = communication.value.data.length
+//   // const offset = 15
+//   const offset = 25
+//   let index = 0
+//   const iter = Math.ceil(total / offset)
+//   let counter = 0
+//   try {
+//     while (index < total) {
+//       notification.info({
+//         title: t('translate.tab.preTranslate'),
+//         meta: `${t('translate.preTranslate.processing')}:  ${counter}/${iter}`,
+//         duration: 30000,
+//       })
+//       const data = communication.value.getCurrentData(index, offset)
+//       const translatedStrings = await translateDataLines(data, {
+//         token,
+//         withTag: true,
+//       })
+//       communication.value?.setCurrentTrans(
+//         translatedStrings,
+//         index,
+//         index + offset < total ? offset : total - index
+//       )
+//       index += offset
+//       counter += 1
+//     }
+//   } catch (e: any) {
+//     if (e.response) {
+//       alert(e.response.data)
+//     } else {
+//       alert(e)
+//     }
+//     console.error(e)
+//     return
+//   }
+//   notification.success({
+//     title: t('translate.tab.preTranslate'),
+//     meta: t('translate.preTranslate.finished'),
+//     duration: 2000,
+//   })
+// }
+
+async function translateCommunication(
+  token: string,
+  offset = 25,
+  withTag = true
+) {
   if (!token) {
     alert('no access token')
     return
@@ -269,37 +323,83 @@ async function translateCommunication(token: string) {
     throw new Error('no data detected')
   }
   const total = communication.value.data.length
-  // const offset = 15
-  const offset = 25
   let index = 0
   const iter = Math.ceil(total / offset)
-  let counter = 0
-  try {
-    while (index < total) {
-      notification.info({
-        title: t('translate.tab.preTranslate'),
-        meta: `${t('translate.preTranslate.processing')}:  ${counter}/${iter}`,
-        duration: 30000,
+  // let counter = 0
+
+  // 创建一个信号量来控制并发数
+  const semaphore = {
+    count: 0,
+    maxCount: 4,
+    acquire() {
+      return new Promise<void>((resolve) => {
+        const interval = setInterval(() => {
+          if (this.count < this.maxCount) {
+            this.count++
+            clearInterval(interval)
+            resolve()
+          }
+        }, 50)
       })
-      const data = communication.value.getCurrentData(index, offset)
-      const translatedStrings = await translateDataLines(data, { token })
-      communication.value?.setCurrentTrans(
-        translatedStrings,
-        index,
-        index + offset < total ? offset : total - index
+    },
+    release() {
+      this.count--
+    },
+  }
+
+  const tasks: Promise<void>[] = []
+
+  try {
+    notification.info({
+      title: t('translate.tab.preTranslate'),
+      meta: `${t('translate.preTranslate.processing')}: ${iter} batch(es)`,
+      duration: 30000,
+    })
+    while (index < total) {
+      await semaphore.acquire()
+
+      tasks.push(
+        (async () => {
+          try {
+            const currentIndex = index
+            if (!communication.value)
+              throw new Error('unexpected empty communication')
+            const data = communication.value.getCurrentData(
+              currentIndex,
+              offset
+            )
+            const translatedStrings = await translateDataLines(data, {
+              token,
+              withTag,
+            })
+            communication.value?.setCurrentTrans(
+              translatedStrings,
+              currentIndex,
+              currentIndex + offset < total ? offset : total - currentIndex
+            )
+            // counter += 1
+          } catch (e: any) {
+            if (e.response) {
+              alert(e.response.data)
+            } else {
+              alert(e)
+            }
+            console.error(e)
+          } finally {
+            semaphore.release()
+          }
+        })()
       )
+
       index += offset
-      counter += 1
     }
+
+    await Promise.all(tasks)
   } catch (e: any) {
-    if (e.response) {
-      alert(e.response.data)
-    } else {
-      alert(e)
-    }
     console.error(e)
     return
   }
+
   notification.success({
     title: t('translate.tab.preTranslate'),
     meta: t('translate.preTranslate.finished'),

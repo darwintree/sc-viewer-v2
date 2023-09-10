@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/09/11
+
+* perf: improves pretranslation speed and accuracy
+
 ## 2023/08/22
 
 * feat: support voice search
