@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/09/11
+
+* [透-STEP](/translate#json/produce_events/102000501.json)
+* [円香-STEP](/translate#json/produce_events/102100501.json)
+* [霧子-P](/translate#json/produce_events/200801601.json)
+* [真乃-S](/translate#json/produce_events/300102001.json)
+* [愛依-S](/translate#json/produce_events/301901401.json)
+
+
 ## 2023/08/31
 
 * [event-065](/translate#json/game_event_communications/400106501.json)
