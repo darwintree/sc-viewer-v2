@@ -1,5 +1,15 @@
 # Updates
 
+## 2023/09/21
+
+* [結華-P](/translate#json/produce_events/200701501.json)
+* [甘奈-P](/translate#json/produce_events/201401701.json)
+* [小糸-P](/translate#json/produce_events/202201001.json)
+* [ルカ-P](/translate#json/produce_events/202600501.json)
+* [咲耶-S](/translate#json/produce_events/300601701.json)
+* [霧子-birthday](/translate#json/special_communications/4902005008.json)
+
+
 ## 2023/09/11
 
 * [透-STEP](/translate#json/produce_events/102000501.json)
