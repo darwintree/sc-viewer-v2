@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/09/29
+
+* [event-066](/translate#json/game_event_communications/400106601.json)
+* [にちか-P](/translate#json/produce_events/202401101.json)
+* [智代子-S](/translate#json/produce_events/301001701.json)
+* [美琴-S](/translate#json/produce_events/302501201.json)
+
+
 ## 2023/09/21
 
 * [結華-P](/translate#json/produce_events/200701501.json)
