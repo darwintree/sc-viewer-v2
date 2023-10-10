@@ -1,5 +1,15 @@
 # Updates
 
+## 2023/10/10
+
+* [摩美々-P](/translate#json/produce_events/200501701.json)
+* [夏葉-P](/translate#json/produce_events/201301601.json)
+* [愛依-P](/translate#json/produce_events/201901401.json)
+* [霧子-S](/translate#json/produce_events/300801701.json)
+* [凛世-S](/translate#json/produce_events/301201701.json)
+* [凛世-birthday](/translate#json/special_communications/4902005012.json)
+
+
 ## 2023/09/29
 
 * [event-066](/translate#json/game_event_communications/400106601.json)
