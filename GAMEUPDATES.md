@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/10/19
+
+* [冬優子-STEP](/translate#json/produce_events/101800501.json)
+* [雛菜-P](/translate#json/produce_events/202301101.json)
+* [灯織-S](/translate#json/produce_events/300201901.json)
+* [円香-birthday](/translate#json/special_communications/4902005021.json)
+
+
 ## 2023/10/10
 
 * [摩美々-P](/translate#json/produce_events/200501701.json)
