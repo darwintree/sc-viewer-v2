@@ -1,5 +1,17 @@
 # Updates
 
+## 2023/10/30
+
+* [event-067](/translate#json/game_event_communications/400106701.json)
+* [event-043](/translate#json/mypage_communications/490104301.json)
+* [めぐる-P](/translate#json/produce_events/200301801.json)
+* [霧子-S](/translate#json/produce_events/300801801.json)
+* [夏葉-S](/translate#json/produce_events/301301901.json)
+* [甘奈-S](/translate#json/produce_events/301401801.json)
+* [あさひ-S](/translate#json/produce_events/301701401.json)
+* [小糸-birthday](/translate#json/special_communications/4902005022.json)
+
+
 ## 2023/10/19
 
 * [冬優子-STEP](/translate#json/produce_events/101800501.json)
