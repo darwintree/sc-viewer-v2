@@ -313,7 +313,8 @@ const showAutoTranslateModel = ref(false)
 async function translateCommunication(
   token: string,
   offset = 25,
-  withTag = true
+  withTag = true,
+  saveOnCompletion = true
 ) {
   if (!token) {
     alert('no access token')
@@ -395,6 +396,9 @@ async function translateCommunication(
     }
 
     await Promise.all(tasks)
+    if (saveOnCompletion) {
+      communication.value.saveCsvToLocalstorage()
+    }
   } catch (e: any) {
     console.error(e)
     return

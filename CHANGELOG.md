@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/11/07
+
+* perf: pretranslation ui changes for new gpt-4-1106-preview backend
+
 ## 2023/09/11
 
 * perf: improves pretranslation speed and accuracy

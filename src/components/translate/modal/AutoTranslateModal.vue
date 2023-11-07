@@ -26,7 +26,8 @@ const props = defineProps<{
   doTranslate: (
     token: string,
     batchSize: number,
-    withTag: boolean
+    withTag: boolean,
+    saveOnCompletion: boolean
   ) => Promise<void>
   currentDialogueCount: number
 }>()
@@ -45,6 +46,7 @@ const batchSize = ref(25)
 const authType = ref('github')
 const manualOpenAiKey = ref(localStorage.getItem('openai_key') || '')
 const usePretranslationTag = ref(true)
+const saveOnCompletion = ref(true)
 
 watch(manualOpenAiKey, (newVal) => {
   localStorage.setItem('openai_key', newVal)
@@ -57,9 +59,9 @@ const currentDialogueCount = computed(() => {
 // 101 -> 26
 // 100 -> 25
 watch(currentDialogueCount, (newVal) => {
-  const recommendedBatchSize = 4
+  const recommendedBatchSize = 1
   batchSize.value = Math.max(
-    Math.min(Math.ceil(newVal / recommendedBatchSize), 40),
+    Math.min(Math.ceil(newVal / recommendedBatchSize), 200),
     25
   )
 })
@@ -87,7 +89,8 @@ async function beginTranslate() {
   await props.doTranslate(
     token.value,
     batchSize.value,
-    usePretranslationTag.value
+    usePretranslationTag.value,
+    saveOnCompletion.value
   )
 }
 </script>
@@ -132,19 +135,31 @@ async function beginTranslate() {
       </n-radio-group>
       <n-space
         ><span>{{ t('translate.preTranslate.appendTag') }}</span
-        ><n-switch v-model:value="usePretranslationTag"
-      /></n-space>
+        ><n-switch v-model:value="usePretranslationTag" />
+        <span>翻译后保存</span><n-switch v-model:value="saveOnCompletion" />
+      </n-space>
       <n-space align="center">
         <span>Batch Size</span>
-        <n-input-number v-model:value="batchSize" :min="20" :max="40" />
+        <n-input-number v-model:value="batchSize" :min="30" :max="200" />
       </n-space>
-      <span class="explanation">
-        {{ currentDialogueCount }} lines divided into
-        {{ Math.ceil(currentDialogueCount / batchSize) }} batches ({{
-          batchSize
-        }}
-        lines per batch)</span
-      >
+      <n-space>
+        <span class="explanation">
+          {{ currentDialogueCount }} lines divided into
+          {{ Math.ceil(currentDialogueCount / batchSize) }} batches ({{
+            batchSize
+          }}
+          lines per batch)</span
+        >
+        <span class="explanation">
+          Batch size 数越大，翻译质量越高，但也会越慢，越容易丢失响应。
+          建议在良好网络情况下进行单个Batch的翻译。不稳定网络情况下使用小 Batch
+          size进行翻译。
+        </span>
+        <span class="explanation">
+          建议在良好网络情况下进行单个Batch的翻译。不稳定网络情况下使用小 Batch
+          size进行翻译。
+        </span>
+      </n-space>
       <n-space justify="end">
         <n-popconfirm
           :positive-text="t('common.confirm')"
