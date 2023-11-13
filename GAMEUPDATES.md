@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/11/13
+
+* [真乃-STEP](/translate#json/produce_events/100100501.json)
+* [冬優子-P](/translate#json/produce_events/201801401.json)
+* [咲耶-S](/translate#json/produce_events/300601801.json)
+* [結華-S](/translate#json/produce_events/300701701.json)
+
+
 ## 2023/10/30
 
 * [event-067](/translate#json/game_event_communications/400106701.json)
