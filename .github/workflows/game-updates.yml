@@ -53,5 +53,6 @@ jobs:
             repo: context.repo.repo,
             title: 'New game assets detected',
             head: 'asset-update-branch',
+            body: 'Visit https://preview.sc-viewer.top for preview'
             base: 'main',
           })
