@@ -1,5 +1,13 @@
 # Updates
 
+## 2023/11/21
+
+* [智代子-P](/translate#json/produce_events/201001601.json)
+* [甜花-S](/translate#json/produce_events/301501801.json)
+* [千雪-S](/translate#json/produce_events/301601801.json)
+* [樹里-birthday](/translate#json/special_communications/4902005011.json)
+
+
 ## 2023/11/13
 
 * [真乃-STEP](/translate#json/produce_events/100100501.json)
