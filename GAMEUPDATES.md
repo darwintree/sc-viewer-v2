@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/11/29
+
+* [凛世-P](/translate#json/produce_events/201201801.json)
+* [千雪-P](/translate#json/produce_events/201601701.json)
+* [透-P](/translate#json/produce_events/202001101.json)
+* [円香-S](/translate#json/produce_events/302101401.json)
+* [冬優子-birthday](/translate#json/special_communications/4902005018.json)
+
+
 ## 2023/11/21
 
 * [智代子-P](/translate#json/produce_events/201001601.json)
