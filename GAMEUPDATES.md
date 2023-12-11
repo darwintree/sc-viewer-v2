@@ -1,5 +1,17 @@
 # Updates
 
+## 2023/12/11
+
+* [event-068](/translate#json/game_event_communications/400106801.json)
+* [プロデューサー-WING](/translate#json/produce_events/102700101.json)
+* [はづき-WING](/translate#json/produce_events/102800101.json)
+* [恋鐘-P](/translate#json/produce_events/200401601.json)
+* [夏葉-S](/translate#json/produce_events/301302001.json)
+* [あさひ-S](/translate#json/produce_events/301701501.json)
+* [event-100](/translate#json/special_communications/490110001.json)
+* [event-101](/translate#json/special_communications/490110101.json)
+
+
 ## 2023/11/29
 
 * [凛世-P](/translate#json/produce_events/201201801.json)
