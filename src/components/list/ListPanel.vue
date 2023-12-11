@@ -153,7 +153,7 @@ function initAvailableOptions(
 
 initAvailableOptions(availableCharacterFilterOptions.value, {
   from: 1,
-  to: 26,
+  to: 28,
   filterField: FilterField.characterId,
   eventsCategory: EventCategory.characterEvents,
 })
@@ -171,7 +171,7 @@ initAvailableOptions(availableProduceFilterOptions.value, {
 })
 initAvailableOptions(availableProduceFilterOptions.value, {
   from: 1,
-  to: 26,
+  to: 28,
   filterField: FilterField.characterId,
   eventsCategory: EventCategory.produceIdolEvents,
 })
@@ -183,7 +183,7 @@ initAvailableOptions(availableSupportFilterOptions.value, {
 })
 initAvailableOptions(availableSupportFilterOptions.value, {
   from: 1,
-  to: 26,
+  to: 28,
   filterField: FilterField.characterId,
   eventsCategory: EventCategory.supportIdolEvents,
 })
