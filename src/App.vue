@@ -15,7 +15,8 @@ const route = useRoute()
 const { locale, availableLocales, t } = useI18n()
 
 const showAlert = computed(() => {
-  return location.hostname === 'viewer.strawberrytree.top'
+  // return location.hostname === 'viewer.strawberrytree.top'
+  return true
 })
 
 const options = availableLocales.map((item) => {
@@ -39,11 +40,8 @@ watch(locale, (newVal) => {
   <div class="main">
     <n-notification-provider placement="top" :max="2">
       <n-dialog-provider>
-        <n-alert v-if="showAlert" type="warning">
-          本域名将停止服务，请访问新域名
-          <a target="_blank" href="https://sc-viewer.top"
-            >https://sc-viewer.top</a
-          >
+        <n-alert v-if="showAlert" type="warning" closable>
+          网站后端近日迁移中，可能存在不稳定
         </n-alert>
         <div class="first-line">
           <nav>
