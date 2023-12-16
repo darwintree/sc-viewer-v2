@@ -108,7 +108,7 @@ async function fetchData(page: number) {
 }
 
 const availableSpeakerOptions = characters
-  .filter((item) => Number(item.id) <= 26 || item.id === '32')
+  .filter((item) => Number(item.id) <= 28 || item.id === '32')
   .map((item) => {
     return {
       value: item.firstName,

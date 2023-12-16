@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/12/16
+
+* feat: supports haruki & hana voice search
+
 ## 2023/11/07
 
 * perf: pretranslation ui changes for new gpt-4-1106-preview backend
