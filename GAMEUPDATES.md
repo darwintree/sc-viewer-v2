@@ -1,5 +1,14 @@
 # Updates
 
+## 2023/12/20
+
+* [羽那-P](/translate#json/produce_events/202700401.json)
+* [はるき-P](/translate#json/produce_events/202800401.json)
+* [霧子-S](/translate#json/produce_events/300801901.json)
+* [甘奈-birthday](/translate#json/special_communications/4902005014.json)
+* [甜花-birthday](/translate#json/special_communications/4902005015.json)
+
+
 ## 2023/12/11
 
 * [event-068](/translate#json/game_event_communications/400106801.json)
