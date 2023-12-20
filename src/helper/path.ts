@@ -143,6 +143,8 @@ const idolOptionKeys = [
   '七草にちか',
   '緋田美琴',
   '斑鳩ルカ',
+  '郁田はるき',
+  '鈴木羽那',
 ]
 const idolOptions: {
   value: string

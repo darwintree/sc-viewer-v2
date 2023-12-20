@@ -1,5 +1,9 @@
 # Changelog
 
+## 2023/12/21
+
+* fix: missing hardcoded hana & haruki idol option
+
 ## 2023/12/16
 
 * feat: supports haruki & hana voice search
