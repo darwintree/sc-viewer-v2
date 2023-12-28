@@ -1,5 +1,16 @@
 # Updates
 
+## 2023/12/28
+
+* [event-069](/translate#json/game_event_communications/400106901.json)
+* [ルカ-P](/translate#json/produce_events/202600601.json)
+* [めぐる-S](/translate#json/produce_events/300302001.json)
+* [羽那-S](/translate#json/produce_events/302700201.json)
+* [羽那-S](/translate#json/produce_events/302700401.json)
+* [はるき-S](/translate#json/produce_events/302800201.json)
+* [あさひ-birthday](/translate#json/special_communications/4902005017.json)
+
+
 ## 2023/12/20
 
 * [羽那-P](/translate#json/produce_events/202700401.json)
