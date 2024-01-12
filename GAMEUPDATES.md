@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/01/12
+
+* [小糸-P](/translate#json/produce_events/202201101.json)
+* [智代子-S](/translate#json/produce_events/301001801.json)
+* [甘奈-S](/translate#json/produce_events/301401901.json)
+* [結華-birthday](/translate#json/special_communications/4902005007.json)
+
+
 ## 2023/12/28
 
 * [event-069](/translate#json/game_event_communications/400106901.json)
