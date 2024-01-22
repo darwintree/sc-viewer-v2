@@ -1,5 +1,15 @@
 # Updates
 
+## 2024/01/22
+
+* [雛菜-STEP](/translate#json/produce_events/102300501.json)
+* [霧子-P](/translate#json/produce_events/200801701.json)
+* [甜花-P](/translate#json/produce_events/201501801.json)
+* [透-P](/translate#json/produce_events/202001201.json)
+* [摩美々-S](/translate#json/produce_events/300501601.json)
+* [羽那-S](/translate#json/produce_events/302700501.json)
+
+
 ## 2024/01/12
 
 * [小糸-P](/translate#json/produce_events/202201101.json)
