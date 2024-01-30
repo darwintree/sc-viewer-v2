@@ -1,5 +1,17 @@
 # Updates
 
+## 2024/01/30
+
+* [event-070](/translate#json/game_event_communications/400107001.json)
+* [果穂-P](/translate#json/produce_events/200901801.json)
+* [灯織-S](/translate#json/produce_events/300202101.json)
+* [恋鐘-S](/translate#json/produce_events/300401901.json)
+* [甘奈-S](/translate#json/produce_events/301402001.json)
+* [透-S](/translate#json/produce_events/302001401.json)
+* [event-200](/translate#json/special_communications/490120001.json)
+* [ルカ-birthday](/translate#json/special_communications/4902005026.json)
+
+
 ## 2024/01/22
 
 * [雛菜-STEP](/translate#json/produce_events/102300501.json)
