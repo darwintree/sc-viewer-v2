@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/02/08
+
+* [冬優子-P](/translate#json/produce_events/201801501.json)
+* [樹里-S](/translate#json/produce_events/301101701.json)
+* [恋鐘-birthday](/translate#json/special_communications/4902005004.json)
+* [智代子-birthday](/translate#json/special_communications/4902005010.json)
+
+
 ## 2024/01/30
 
 * [event-070](/translate#json/game_event_communications/400107001.json)
