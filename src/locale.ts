@@ -43,7 +43,7 @@ const messages = {
         reloadFinished: 'Requery finished',
       },
       rename: {
-        title: 'Rename CSV File',
+        title: 'Rename',
         defaultName: 'Default Name',
         originName: 'Origin Name',
         originNameNotFound: 'Origin name not found',
@@ -238,7 +238,7 @@ const messages = {
         appendTag: '附加预翻译标签',
       },
       tab: {
-        rename: 'CSV 更名',
+        rename: '更名',
         complete: '下载/推送',
         switch: '数据源',
         top: 'TOP',

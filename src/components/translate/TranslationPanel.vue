@@ -25,6 +25,7 @@ import {
   Repeat,
   UpToTop,
   Download,
+  // Share,
 } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch, h } from 'vue'
 import type { Component } from 'vue'
@@ -418,6 +419,23 @@ const currentDialogueCount = computed(() => {
   return 0
 })
 
+// async function share() {
+//   if (
+//     navigator.canShare({
+//       url: location.href,
+//       text: 'from https://sc-viewer.top',
+//     })
+//   ) {
+//     console.log(location.href)
+//   }
+//   await navigator.share({
+//     url: location.href,
+//     text: 'from https://sc-viewer.top',
+//   })
+// }
+
+// const supportsShare = !!navigator.share
+
 // function toGithub() {
 //   if (csvUrl.value) {
 //     window.open(csvUrl.value)
@@ -647,6 +665,10 @@ const currentDialogueCount = computed(() => {
           t('translate.tab.switch')
         }}</n-button>
       </div>
+      <!-- <div v-if="supportsShare" class="clickable" @click="share">
+        <n-icon size="18"> <Share /> </n-icon><br />
+        <n-button text type="default" :focusable="false"> Share </n-button>
+      </div> -->
       <div class="clickable" @click="toTop">
         <n-icon size="18"> <UpToTop /> </n-icon><br />
         <n-button text type="default" :focusable="false">{{
@@ -702,6 +724,7 @@ const currentDialogueCount = computed(() => {
 
 .clickable {
   cursor: pointer;
+  font-size: 0.8em;
 }
 
 .mode-switch {

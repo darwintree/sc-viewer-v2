@@ -39,6 +39,21 @@
             </n-icon>
           </template>
         </n-button>
+        <n-button
+          v-if="supportsShare"
+          class="edit-toggle"
+          strong
+          primary
+          circle
+          title="share"
+          @click="share"
+        >
+          <template #icon>
+            <n-icon>
+              <Share />
+            </n-icon>
+          </template>
+        </n-button>
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
         <div
@@ -91,8 +106,10 @@ import {
   NInput,
   useDialog,
   DialogOptions,
+  useNotification,
+  NotificationOptions,
 } from 'naive-ui'
-import { Edit } from '@vicons/carbon'
+import { Edit, Share } from '@vicons/carbon'
 import { store } from '../../store'
 import { DataSource, DataMode } from '../../helper/enum-interfaces'
 import { inject } from '@vercel/analytics'
@@ -108,6 +125,7 @@ export default defineComponent({
     Edit,
     NButtonGroup,
     NInput,
+    Share,
   },
   props: {
     index: {
@@ -140,9 +158,13 @@ export default defineComponent({
   },
   setup() {
     const dialog = useDialog()
+    const notification = useNotification()
     return {
       createWarningDialog(options: DialogOptions) {
         dialog.warning(options)
+      },
+      createErrorNotification(options: NotificationOptions) {
+        notification.error(options)
       },
     }
   },
@@ -154,6 +176,7 @@ export default defineComponent({
       // define the edited translation of the message
       local_trans: '',
       edit_trans: '',
+      supportsShare: !!navigator.share,
     }
   },
   computed: {
@@ -252,6 +275,39 @@ export default defineComponent({
         ;(this.$refs.edit as any).focus()
       })
     },
+    async share() {
+      let url = ''
+      if (store.currentMode === 'raw' || store.currentMode === 'server') {
+        url = location.href
+      } else {
+        if (!store.jsonUrl) {
+          this.createErrorNotification({
+            content:
+              'cannot share this page because this is a local page and cannot resolve page source',
+            duration: 3000,
+          })
+        }
+        if (store.jsonUrl) {
+          url = `${location.origin}/translate#${store.jsonUrl}`
+        }
+      }
+      const text = `${this.name}: "${
+        this.local_trans ? this.local_trans : this.text
+      }"`
+      const data = {
+        url,
+        text: text.replace('\\n', '\n'),
+        title: store.csvFilename ? store.csvFilename : undefined,
+      }
+      try {
+        await navigator.share(data)
+      } catch (e: any) {
+        this.createErrorNotification({
+          content: e.message,
+          duration: 3000,
+        })
+      }
+    },
   },
 })
 </script>
@@ -320,7 +376,7 @@ export default defineComponent({
 }
 
 .edit-toggle {
-  margin: 3px 0 0 0;
+  margin: 3px;
 }
 
 /* update the styles for the ".edit-controls" element to display its child elements on the same line */
