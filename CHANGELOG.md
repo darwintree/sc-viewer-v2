@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/02/17
+
+* feat: share
+
 ## 2023/12/21
 
 * fix: missing hardcoded hana & haruki idol option
