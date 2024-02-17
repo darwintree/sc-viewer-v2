@@ -724,7 +724,6 @@ const currentDialogueCount = computed(() => {
 
 .clickable {
   cursor: pointer;
-  font-size: 0.8em;
 }
 
 .mode-switch {

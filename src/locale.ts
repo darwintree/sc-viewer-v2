@@ -239,7 +239,7 @@ const messages = {
       },
       tab: {
         rename: '更名',
-        complete: '下载/推送',
+        complete: '完成',
         switch: '数据源',
         top: 'TOP',
         push: '推送',
