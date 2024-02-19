@@ -40,7 +40,7 @@
           </template>
         </n-button>
         <n-button
-          v-if="supportsShare"
+          v-if="supportsShare && !isEditing"
           class="edit-toggle"
           strong
           primary
@@ -57,7 +57,7 @@
 
         <!-- the "edit-container" element is shown when the component is in edit mode -->
         <div
-          v-else
+          v-if="isEditing"
           class="edit-container"
           @keydown.shift.enter="trySaveEdit"
           @keydown.esc="cancelEdit"
