@@ -10,14 +10,23 @@
       />
     </NInputGroup>
     <NInputGroup>
+      <NInputGroupLabel :style="{ width: '25%' }">Anim</NInputGroupLabel>
+      <n-select
+        v-model:value="animOptions"
+        placeholder="Character Anim for the Voice"
+        multiple
+        :options="availableAnimOptions"
+        clearable
+        filterable
+      />
+    </NInputGroup>
+    <NInputGroup>
       <NInput
         v-model:value="pattern"
         placeholder="Input text pattern to search"
         clearable
       ></NInput>
-      <NButton type="info" :disabled="!pattern" @click="newFetch">
-        search
-      </NButton>
+      <NButton type="info" @click="newFetch"> search </NButton>
     </NInputGroup>
   </div>
   <n-data-table
@@ -49,15 +58,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { store } from '../../store'
 import { DataSource } from '../../helper/enum-interfaces'
-import { EventsCollectionMeta, IndexData } from '../../helper/meta-interfaces'
-import {
-  getRemoteImgPath,
-  unitList,
-  characters,
-  queryTranslatedCsv,
-  getIndexData,
-  queryVoices,
-} from '../../helper/path'
+import { characters, queryVoices } from '../../helper/path'
+import vals from '../../helper/vals'
 import { inject } from '@vercel/analytics'
 
 inject()
@@ -91,6 +93,7 @@ async function fetchData(page: number) {
   try {
     const result = await queryVoices(
       speakerOptions.value,
+      animOptions.value,
       pattern.value,
       page, // use specified page
       paginationReactive.pageSize
@@ -116,7 +119,27 @@ const availableSpeakerOptions = characters
     }
   })
 
+const animList = []
+for (const anim of [
+  ...vals.charAnim1,
+  ...vals.charAnim2,
+  ...vals.charAnim3,
+  ...vals.charAnim4,
+  ...vals.charAnim5,
+  ...vals.charLipAnim,
+]) {
+  if (animList.indexOf(anim) === -1) animList.push(anim)
+}
+
+const availableAnimOptions = animList.map((item) => {
+  return {
+    value: item,
+    label: item,
+  }
+})
+
 const speakerOptions = ref([] as string[])
+const animOptions = ref([] as string[])
 
 function getEventIdFromVoiceId(_id: string) {
   const parts = _id.split('/')

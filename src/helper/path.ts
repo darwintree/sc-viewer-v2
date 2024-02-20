@@ -280,6 +280,7 @@ async function queryCollectionMetaInfo(jsonUrl: string) {
 
 async function queryVoices(
   speakers: string[],
+  anims: string[],
   pattern: string,
   page = 1,
   pageSize = 20
@@ -288,6 +289,7 @@ async function queryVoices(
     const res = await axios.get(VOICE_SERVICE_SERVER, {
       params: {
         speakers,
+        anims,
         pattern,
         page,
         pageSize,

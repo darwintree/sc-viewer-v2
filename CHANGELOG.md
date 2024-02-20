@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/02/21
+
+* feat: support anim filter for voice search
+
 ## 2024/02/17
 
 * feat: share
