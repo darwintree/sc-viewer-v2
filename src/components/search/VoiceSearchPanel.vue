@@ -166,6 +166,8 @@ const createColumns = (): any => {
         return h(AudioLabel, {
           ...extractAudioLabelPropFromVoiceId(row._id),
           extraText: row.speaker,
+          displayDownload: true,
+          audioText: row.text,
         })
       },
       align: 'center',

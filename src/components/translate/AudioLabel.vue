@@ -1,18 +1,28 @@
 <template>
   <label
     v-if="hasAudio"
-    class="audio-button"
+    class="audio-button clickable"
     :title="audioTitle"
     @click="playAudio"
     >{{ extraText }} {{ audioIcon }}</label
   >
+
+  <n-icon v-if="displayDownload" class="clickable" @click="downloadAudio">
+    <Download />
+  </n-icon>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { NIcon } from 'naive-ui'
+import { Download } from '@vicons/carbon'
 import { getAudioPath } from '../../helper/path'
 
 // define the props for the component
 export default defineComponent({
+  components: {
+    NIcon,
+    Download,
+  },
   props: {
     // the audio file URL
     id: {
@@ -23,12 +33,24 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    // the label text to display next to the audio button
     extraText: {
       type: String,
       required: false,
       default: '',
     },
-    // the label text to display next to the audio button
+    // use to change downlownded filename
+    // not in use at present
+    audioText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    displayDownload: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -54,6 +76,9 @@ export default defineComponent({
     },
   },
   methods: {
+    getBaseName(filePath: string) {
+      return filePath.split('/').pop()
+    },
     // define the "playAudio" function to play the audio file
     playAudio() {
       // create a new Audio object with the audio URL
@@ -72,16 +97,36 @@ export default defineComponent({
       // update the audio button title to indicate that the audio is playing
       this.isPlaying = true
     },
+    downloadAudio() {
+      // download the audio file
+      window.open(this.audioUrl, '_blank')
+      // const request = new XMLHttpRequest()
+      // request.open('GET', this.audioUrl, true)
+      // request.responseType = 'blob'
+      // request.onload = (e) => {
+      //   if (request.readyState === 4 && request.status === 200) {
+      //     const blob = new Blob([request.response], { type: 'audio/wav' })
+      //     saveAs(
+      //       blob,
+      //       this.audioText ? this.audioText : this.getBaseName(this.audioUrl)
+      //     )
+      //   }
+      // }
+      // request.send()
+    },
   },
 })
 </script>
 <style scoped>
 /* define the layout and styling for the "AudioLabel" component */
 
+.clickable {
+  cursor: pointer;
+}
+
 .audio-button {
   background: transparent;
   border: none;
-  cursor: pointer;
   font-size: 1em;
 }
 </style>

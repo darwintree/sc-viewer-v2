@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/02/22
+
+* feat: add download button for voice search page
+
 ## 2024/02/21
 
 * feat: support anim filter for voice search
