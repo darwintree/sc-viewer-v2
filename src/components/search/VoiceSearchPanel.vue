@@ -166,7 +166,7 @@ const createColumns = (): any => {
         return h(AudioLabel, {
           ...extractAudioLabelPropFromVoiceId(row._id),
           extraText: row.speaker,
-          displayDownload: true,
+          displayDownload: !store.isMobile, // disable download button on mobile
           audioText: row.text,
         })
       },
