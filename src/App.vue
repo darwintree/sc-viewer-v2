@@ -40,9 +40,9 @@ watch(locale, (newVal) => {
   <div class="main">
     <n-notification-provider placement="top" :max="2">
       <n-dialog-provider>
-        <n-alert v-if="showAlert" type="warning" closable>
+        <!-- <n-alert v-if="showAlert" type="warning" closable>
           网站后端近日迁移中，可能存在不稳定
-        </n-alert>
+        </n-alert> -->
         <div class="first-line">
           <nav>
             <router-link
