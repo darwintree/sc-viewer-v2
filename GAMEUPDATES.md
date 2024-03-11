@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/03/11
+
+* [結華-P](/translate#json/produce_events/200701601.json)
+* [真乃-S](/translate#json/produce_events/300102101.json)
+* [凛世-S](/translate#json/produce_events/301201801.json)
+* [event-300](/translate#json/special_communications/490130001.json)
+* [雛菜-birthday](/translate#json/special_communications/4902005023.json)
+
+
 ## 2024/02/28
 
 * [event-071](/translate#json/game_event_communications/400107101.json)
