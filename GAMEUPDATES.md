@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/03/21
+
+* [恋鐘-P](/translate#json/produce_events/200401701.json)
+* [愛依-P](/translate#json/produce_events/201901501.json)
+* [美琴-P](/translate#json/produce_events/202501001.json)
+* [真乃-S](/translate#json/produce_events/300102201.json)
+* [雛菜-S](/translate#json/produce_events/302301101.json)
+
+
 ## 2024/03/11
 
 * [結華-P](/translate#json/produce_events/200701601.json)
