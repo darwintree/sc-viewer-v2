@@ -36,11 +36,15 @@ async function translateDataLines(
   lines.forEach((item, index) => {
     prompt += `${index}|${item.name}|${item.text}\n`
   })
-  const res = await axios.post(`${TRANSLATE_ENDPOINT}`, prompt, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  const res = await axios.post(
+    `${TRANSLATE_ENDPOINT}`,
+    { prompt },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
   const rtnStr: string = res.data
   return resolveRtnStr(lines.length, rtnStr, withTag)
 }
