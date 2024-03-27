@@ -24,6 +24,21 @@
         <!-- the "trans" element is shown when the component is not in edit mode -->
         <div v-if="!isEditing" class="trans">{{ display_trans }}</div>
         <n-button
+          v-if="!isEditing && isPreTranslation"
+          class="edit-toggle"
+          title="approve"
+          circle
+          secondary
+          type="primary"
+          @click="removePreTranslationTag"
+        >
+          <template #icon>
+            <n-icon>
+              <AiStatusComplete />
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button
           v-if="!isEditing"
           class="edit-toggle"
           strong
@@ -109,7 +124,7 @@ import {
   useNotification,
   NotificationOptions,
 } from 'naive-ui'
-import { Edit, Share } from '@vicons/carbon'
+import { Edit, Share, AiStatusComplete } from '@vicons/carbon'
 import { store } from '../../store'
 import { DataSource, DataMode } from '../../helper/enum-interfaces'
 import { inject } from '@vercel/analytics'
@@ -126,6 +141,7 @@ export default defineComponent({
     NButtonGroup,
     NInput,
     Share,
+    AiStatusComplete,
   },
   props: {
     index: {
@@ -187,6 +203,9 @@ export default defineComponent({
     display_trans() {
       if (this.local_trans) return this.local_trans.replaceAll('\\n', '\n')
       return ''
+    },
+    isPreTranslation() {
+      return this.local_trans.endsWith('\n[pre-translate]')
     },
     isSelect() {
       return this.id === 'select'
@@ -307,6 +326,10 @@ export default defineComponent({
           duration: 3000,
         })
       }
+    },
+    removePreTranslationTag() {
+      this.edit_trans = this.local_trans.replace('\n[pre-translate]', '')
+      this.trySaveEdit()
     },
   },
 })
