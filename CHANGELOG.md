@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/03/27
+
+* feat: allow pretranslation approving
+
 ## 2024/02/22
 
 * feat: add download button for voice search page
