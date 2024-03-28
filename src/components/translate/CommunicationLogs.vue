@@ -195,22 +195,11 @@ export default defineComponent({
         store.jsonUrl = newVal
       },
     },
-    // translatedCsvUrl() {
-    //   return queryTranslatedCsv(this.jsonUrl)
-    // },
     eventsCollectionMeta() {
       return store.eventsCollectionMeta
     },
   },
   watch: {
-    // translatedCsvUrl(newVal) {
-    //   if (newVal && store.currentMode === DataMode.Raw) {
-    //     this.notifyToSwitchToRemote(
-    //       newVal,
-    //       this.$t('translate.remoteTranslationDetectedTitle')
-    //     )
-    //   }
-    // },
     async jsonUrl(newVal) {
       this.translatedCsvUrl = null
       this.pretranslatedCsvUrl = null
