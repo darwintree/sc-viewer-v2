@@ -20,6 +20,8 @@ const TRANSLATION_INDEX_URL = import.meta.env.VITE_TRANSLATION_INDEX_URL
 // translation dir: used to fetch translation from translation query result
 const TRANSLATION_DIR = import.meta.env.VITE_TRANSLATION_DIR
 
+const PRETRANSLATION_DIR = import.meta.env.VITE_PRETRANSLATION_DIR
+
 // github raw proxy: used as raw.githubusercontent.com proxy
 const GITHUB_RAW_PROXY = import.meta.env.VITE_GITHUB_RAW_PROXY
 // whether uses github raw proxy
@@ -228,6 +230,24 @@ function queryTranslatedCsv(jsonUrl: string): string | null {
     .map(encodeURIComponent)
     .join('/')
   return `${TRANSLATION_DIR}/${tmp}`
+}
+
+async function queryPreTranslatedCsv(jsonUrl: string): Promise<string | null> {
+  if (jsonUrl.startsWith('json/')) {
+    jsonUrl = jsonUrl.slice(5)
+  }
+  const preTranslationPath = `${PRETRANSLATION_DIR}/${jsonUrl.replace(
+    '.json',
+    '.csv'
+  )}`
+
+  const res = await fetch(getGithubRawResourcePath(preTranslationPath))
+  console.log(getGithubRawResourcePath(preTranslationPath))
+  if (!res.ok) {
+    console.log('pretranslation not found')
+    return null
+  }
+  return preTranslationPath
 }
 
 // don't need to be reactive
@@ -455,4 +475,5 @@ export {
   getIndexData,
   searchIndexData,
   queryVoices,
+  queryPreTranslatedCsv,
 }

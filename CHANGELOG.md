@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/03/29
+
+* feat: support remote pretranslation detection
+
 ## 2024/03/27
 
 * feat: allow pretranslation approving

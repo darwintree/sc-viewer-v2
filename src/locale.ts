@@ -27,6 +27,7 @@ const messages = {
       loadRawWarning: 'A raw json file is loaded',
       loadHistoryInfo: 'A history save is loaded',
       remoteTranslationDetectedTitle: 'Translation Detected',
+      remotePreTranslationDetectedTitle: 'PreTranslation Detected',
       remoteTranslationDetectedMeta: 'Click to switch',
       overwriteWarning: 'Overwrite Warning',
       overwriteDetails:
@@ -203,6 +204,7 @@ const messages = {
       loadRawWarning: '当前加载源为原始 JSON 文件',
       loadHistoryInfo: '已自动加载历史修改',
       remoteTranslationDetectedTitle: '发现翻译文件',
+      remotePreTranslationDetectedTitle: '发现预翻译文件',
       remoteTranslationDetectedMeta: '点击此处切换',
       overwriteWarning: '历史修改将被覆盖',
       overwriteDetails:

@@ -136,6 +136,7 @@ import {
   previousJsonUrl,
   firstJsonUrl,
   queryTranslatedCsv,
+  queryPreTranslatedCsv,
   jsonTextFromPathUrl,
   searchIndexData,
   getIndexData,
@@ -173,6 +174,8 @@ export default defineComponent({
       nextJsonUrl: null as null | string,
       trueEndJsonUrl: null as null | string,
       firstJsonUrl: null as null | string,
+      translatedCsvUrl: null as null | string,
+      pretranslatedCsvUrl: null as null | string,
       translator: '',
       isLoading: false,
       isPreviewing: false,
@@ -192,43 +195,40 @@ export default defineComponent({
         store.jsonUrl = newVal
       },
     },
-    translatedCsvUrl() {
-      return queryTranslatedCsv(this.jsonUrl)
-    },
+    // translatedCsvUrl() {
+    //   return queryTranslatedCsv(this.jsonUrl)
+    // },
     eventsCollectionMeta() {
       return store.eventsCollectionMeta
     },
   },
   watch: {
-    translatedCsvUrl(newVal) {
-      if (newVal && store.currentMode === DataMode.Raw) {
-        this.getNotification().success({
-          title: this.$t('translate.remoteTranslationDetectedTitle'),
-          meta: () =>
-            h(
-              'a',
-              {
-                onClick: () => {
-                  this.$router.push({
-                    path: '/translate',
-                    query: {
-                      forceReload: '1',
-                      source: DataSource.Remote,
-                    },
-                    hash: `#${newVal}`,
-                  })
-                },
-                style: {
-                  cursor: 'pointer',
-                },
-              },
-              {
-                default: () =>
-                  this.$t('translate.remoteTranslationDetectedMeta'),
-              }
-            ),
-          duration: 4000,
-        })
+    // translatedCsvUrl(newVal) {
+    //   if (newVal && store.currentMode === DataMode.Raw) {
+    //     this.notifyToSwitchToRemote(
+    //       newVal,
+    //       this.$t('translate.remoteTranslationDetectedTitle')
+    //     )
+    //   }
+    // },
+    async jsonUrl(newVal) {
+      this.translatedCsvUrl = null
+      this.pretranslatedCsvUrl = null
+      this.translatedCsvUrl = queryTranslatedCsv(newVal)
+      if (store.currentMode !== DataMode.Raw) return
+      this.pretranslatedCsvUrl = await queryPreTranslatedCsv(newVal)
+      if (this.translatedCsvUrl) {
+        this.notifyToSwitchToRemote(
+          this.translatedCsvUrl,
+          this.$t('translate.remoteTranslationDetectedTitle')
+        )
+        return
+      }
+      if (this.pretranslatedCsvUrl) {
+        this.notifyToSwitchToRemote(
+          this.pretranslatedCsvUrl,
+          this.$t('translate.remotePreTranslationDetectedTitle')
+        )
       }
     },
     data() {
@@ -243,6 +243,34 @@ export default defineComponent({
         top: 0,
         left: 0,
         behavior: 'smooth',
+      })
+    },
+    notifyToSwitchToRemote(url: string, title: string) {
+      this.getNotification().success({
+        title,
+        meta: () =>
+          h(
+            'a',
+            {
+              onClick: () => {
+                this.$router.push({
+                  path: '/translate',
+                  query: {
+                    forceReload: '1',
+                    source: DataSource.Remote,
+                  },
+                  hash: `#${url}`,
+                })
+              },
+              style: {
+                cursor: 'pointer',
+              },
+            },
+            {
+              default: () => this.$t('translate.remoteTranslationDetectedMeta'),
+            }
+          ),
+        duration: 4000,
       })
     },
     async previewStory() {
