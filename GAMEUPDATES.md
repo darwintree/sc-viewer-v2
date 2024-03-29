@@ -1,5 +1,16 @@
 # Updates
 
+## 2024/03/29
+
+* [event-072](/translate#json/game_event_communications/400107201.json)
+* [咲耶-P](/translate#json/produce_events/200601701.json)
+* [あさひ-S](/translate#json/produce_events/301701601.json)
+* [あさひ-S](/translate#json/produce_events/301701701.json)
+* [透-S](/translate#json/produce_events/302001501.json)
+* [千雪-birthday](/translate#json/special_communications/4902005016.json)
+* [はるき-birthday](/translate#json/special_communications/4902005028.json)
+
+
 ## 2024/03/21
 
 * [恋鐘-P](/translate#json/produce_events/200401701.json)
