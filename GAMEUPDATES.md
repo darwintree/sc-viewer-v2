@@ -1,5 +1,15 @@
 # Updates
 
+## 2024/04/10
+
+* [真乃-P](/translate#json/produce_events/200101801.json)
+* [ルカ-P](/translate#json/produce_events/202600701.json)
+* [はるき-P](/translate#json/produce_events/202800601.json)
+* [摩美々-S](/translate#json/produce_events/300501701.json)
+* [円香-S](/translate#json/produce_events/302101501.json)
+* [event-400](/translate#json/special_communications/490140001.json)
+
+
 ## 2024/03/29
 
 * [event-072](/translate#json/game_event_communications/400107201.json)
