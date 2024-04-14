@@ -14,6 +14,7 @@ const ListPanel = () => import('./components/list/ListPanel.vue')
 const CustomPanel = () => import('./components/CustomPanel.vue')
 const VoiceSearchPanel = () =>
   import('./components/search/VoiceSearchPanel.vue')
+const BgmPanel = () => import('./components/BgmPanel.vue')
 
 // create a new router instance
 const router = createRouter({
@@ -31,6 +32,10 @@ const router = createRouter({
     {
       path: '/about',
       component: About,
+    },
+    {
+      path: '/bgm',
+      component: BgmPanel,
     },
     // {
     //   path: '/user',
