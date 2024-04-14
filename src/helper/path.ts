@@ -14,6 +14,7 @@ const ASSETS_SERVER = import.meta.env.VITE_ASSETS_SERVER
 // name service server: used for index, name suggestion
 const NAME_SERVICE_SERVER = import.meta.env.VITE_NAME_SERVICE_SERVER
 const VOICE_SERVICE_SERVER = import.meta.env.VITE_VOICE_SERVICE_SERVER
+const BGM_SERVICE_SERVER = import.meta.env.VITE_BGM_SERVICE_SERVER
 
 // transaction index: used to query if translation exists
 const TRANSLATION_INDEX_URL = import.meta.env.VITE_TRANSLATION_INDEX_URL
@@ -273,7 +274,7 @@ function searchIndexData(
     for (const eventsCollectionMeta of indexData[eventCategory]) {
       for (const communication of eventsCollectionMeta.communications) {
         if (
-          communication.jsonPath == jsonUrl
+          jsonUrl.indexOf(communication.jsonPath) !== -1
           // .split('/')
           // .reverse()[0]
           // .replace('.json', '') === communicationId
@@ -284,6 +285,37 @@ function searchIndexData(
     }
   }
   return null
+}
+
+function getJsonName(
+  jsonUrl: string,
+  indexData: IndexData
+): {
+  eventsCollectionName: string
+  communicationName: string
+} {
+  for (const eventCategory of Object.keys(indexData)) {
+    for (const eventsCollectionMeta of indexData[eventCategory]) {
+      for (const communication of eventsCollectionMeta.communications) {
+        if (jsonUrl.indexOf(communication.jsonPath) !== -1) {
+          if (communication.name) {
+            return {
+              eventsCollectionName: eventsCollectionMeta.name,
+              communicationName: `${communication.name}-${communication.title}`,
+            }
+          }
+          return {
+            eventsCollectionName: eventsCollectionMeta.name,
+            communicationName: `${communication.title}`,
+          }
+        }
+      }
+    }
+  }
+  return {
+    eventsCollectionName: '-',
+    communicationName: jsonUrl,
+  }
 }
 
 async function queryCollectionMetaInfo(jsonUrl: string) {
@@ -321,6 +353,38 @@ async function queryVoices(
         speaker: string
         text: string
         _id: string
+      }[]
+    }
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+}
+
+async function queryBgm(bgm: string, page = 1, pageSize = 20) {
+  try {
+    const res = await axios.get(BGM_SERVICE_SERVER, {
+      params: {
+        bgm,
+        page,
+        pageSize,
+      },
+    })
+    for (const item of res.data.results) {
+      const { eventsCollectionName, communicationName } = getJsonName(
+        item.jsonPath,
+        await getIndexData()
+      )
+      item.eventsCollectionName = eventsCollectionName
+      item.communicationName = communicationName
+    }
+    return res.data as {
+      count: number
+      results: {
+        bgm: string
+        jsonPath: string // starts with "json/"
+        eventsCollectionName: string
+        communicationName: string
       }[]
     }
   } catch (e) {
@@ -475,5 +539,6 @@ export {
   getIndexData,
   searchIndexData,
   queryVoices,
+  queryBgm,
   queryPreTranslatedCsv,
 }

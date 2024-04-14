@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/04/14
+
+* feat: support BGM search and reverse-index
+
 ## 2024/03/29
 
 * feat: support remote pretranslation detection
