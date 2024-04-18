@@ -1,5 +1,17 @@
 # Updates
 
+## 2024/04/18
+
+* [ルカ-fan meeting](/translate#json/produce_events/102600201.json)
+* [羽那-fan meeting](/translate#json/produce_events/102700201.json)
+* [はるき-fan meeting](/translate#json/produce_events/102800201.json)
+* [甘奈-P](/translate#json/produce_events/201401801.json)
+* [雛菜-P](/translate#json/produce_events/202301201.json)
+* [甜花-S](/translate#json/produce_events/301501901.json)
+* [event-500](/translate#json/special_communications/490150001.json)
+* [真乃-birthday](/translate#json/special_communications/4902005001.json)
+
+
 ## 2024/04/10
 
 * [真乃-P](/translate#json/produce_events/200101801.json)
