@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/04/26
+
+* [event-073](/translate#json/game_event_communications/400107301.json)
+* [真乃-P](/translate#json/produce_events/200101901.json)
+* [めぐる-S](/translate#json/produce_events/300302101.json)
+* [結華-S](/translate#json/produce_events/300701801.json)
+* [透-birthday](/translate#json/special_communications/4902005020.json)
+
+
 ## 2024/04/18
 
 * [ルカ-fan meeting](/translate#json/produce_events/102600201.json)
