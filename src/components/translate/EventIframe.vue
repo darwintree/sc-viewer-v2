@@ -69,6 +69,7 @@ function postMessageOnPlayer({
   }
   window.setTimeout(() => {
     postMessageOnPlayer({
+      messageType: 'iframeJson',
       iframeJson,
       csvText,
     })

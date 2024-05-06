@@ -271,6 +271,7 @@ export default defineComponent({
         typeof EventIframe
       >
       eventIframe.postMessageOnPlayer({
+        messageType: 'iframeJson',
         iframeJson: JSON.parse(text),
         csvText: this.getCurrentDataString(),
       })

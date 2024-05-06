@@ -72,6 +72,7 @@ function postJson() {
     nextTick(() => {
       if (!iframeJsonText.value) throw new Error('current file is not init')
       customIframe.value?.postMessageOnPlayer({
+        messageType: 'iframeJson',
         iframeJson: parse(iframeJsonText.value, undefined, true) as object,
         csvText: csvText.value,
       })
