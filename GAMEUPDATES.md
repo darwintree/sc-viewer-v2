@@ -1,5 +1,12 @@
 # Updates
 
+## 2024/05/09
+
+* [凛世-P](/translate#json/produce_events/201201901.json)
+* [咲耶-S](/translate#json/produce_events/300601901.json)
+* [はるき-S](/translate#json/produce_events/302800301.json)
+
+
 ## 2024/04/26
 
 * [event-073](/translate#json/game_event_communications/400107301.json)
