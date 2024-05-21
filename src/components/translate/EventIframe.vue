@@ -1,6 +1,7 @@
 <template>
   <div ref="frame" class="aspect-ratio">
     <iframe
+      id="eventIframe"
       ref="player"
       :hidden="!loaded"
       :src="iframeSrc"
@@ -43,6 +44,7 @@ function postMessageOnPlayer({
   iframeJson,
   csvText,
 }: {
+  messageType: string
   iframeJson: object
   csvText: string | undefined
 }) {
@@ -56,6 +58,7 @@ function postMessageOnPlayer({
     })
     player?.value?.contentWindow?.postMessage(
       {
+        messageType: 'iframeJson',
         iframeJson,
         csvText,
       },
@@ -66,6 +69,7 @@ function postMessageOnPlayer({
   }
   window.setTimeout(() => {
     postMessageOnPlayer({
+      messageType: 'iframeJson',
       iframeJson,
       csvText,
     })
