@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/05/21
+
+* [凛世-STEP](/translate#json/produce_events/101200501.json)
+* [千雪-P](/translate#json/produce_events/201601901.json)
+* [冬優子-P](/translate#json/produce_events/201801601.json)
+* [夏葉-S](/translate#json/produce_events/301302101.json)
+* [摩美々-birthday](/translate#json/special_communications/4902005005.json)
+
+
 ## 2024/05/09
 
 * [凛世-P](/translate#json/produce_events/201201901.json)
