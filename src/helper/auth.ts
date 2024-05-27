@@ -35,7 +35,7 @@ const rootRepoName =
     : 'gakuen-adapted-translation-data'
 const rootOwner =
   process.env.NODE_ENV === 'development' ? 'imas-tools' : 'imas-tools'
-const rootBranch = 'master'
+const rootBranch = 'main'
 
 interface BranchComparison {
   aheadBy: number
