@@ -4,7 +4,7 @@
     <div>
       <a
         target="_blank"
-        href="https://github.com/darwintree/sc-viewer-v2/issues"
+        href="https://github.com/imas-tools/gakumas-viewer/issues"
       >
         {{ t('about.feedback') }}
       </a>
@@ -12,11 +12,11 @@
     <div>
       <a
         target="_blank"
-        href="https://static.sc-viewer.top/viewer-button.user.js"
+        href="https://github.com/imas-tools/gakumas-viewer/raw/gkmas/public/viewer-button.user.js"
         >{{ t('about.userscript') }}</a
       >
     </div>
-    <div>
+    <!-- <div>
       {{ t('about.thanks') }}:
       <a
         target="_blank"
@@ -28,7 +28,7 @@
       <a target="_blank" href="https://docs.sc-viewer.top">{{
         t('about.manual')
       }}</a>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup lang="ts">

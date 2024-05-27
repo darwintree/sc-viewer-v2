@@ -10,11 +10,11 @@ const About = () => import('./components/AboutPanel.vue')
 // const User = () => import('./components/push/UserPanel.vue')
 const AuthCallback = () => import('./components/AuthCallback.vue')
 const HomePage = () => import('./components/home/HomePage.vue')
-const ListPanel = () => import('./components/list/ListPanel.vue')
-const CustomPanel = () => import('./components/CustomPanel.vue')
-const VoiceSearchPanel = () =>
-  import('./components/search/VoiceSearchPanel.vue')
-const BgmPanel = () => import('./components/bgm/BgmPanel.vue')
+// const ListPanel = () => import('./components/list/ListPanel.vue')
+// const CustomPanel = () => import('./components/CustomPanel.vue')
+// const VoiceSearchPanel = () =>
+//   import('./components/search/VoiceSearchPanel.vue')
+// const BgmPanel = () => import('./components/bgm/BgmPanel.vue')
 
 // create a new router instance
 const router = createRouter({
@@ -33,10 +33,10 @@ const router = createRouter({
       path: '/about',
       component: About,
     },
-    {
-      path: '/bgm',
-      component: BgmPanel,
-    },
+    // {
+    //   path: '/bgm',
+    //   component: BgmPanel,
+    // },
     // {
     //   path: '/user',
     //   component: User,
@@ -45,18 +45,18 @@ const router = createRouter({
       path: '/auth',
       component: AuthCallback,
     },
-    {
-      path: '/list',
-      component: ListPanel,
-    },
-    {
-      path: '/custom',
-      component: CustomPanel,
-    },
-    {
-      path: '/search',
-      component: VoiceSearchPanel,
-    },
+    // {
+    //   path: '/list',
+    //   component: ListPanel,
+    // },
+    // {
+    //   path: '/custom',
+    //   component: CustomPanel,
+    // },
+    // {
+    //   path: '/search',
+    //   component: VoiceSearchPanel,
+    // },
   ],
 })
 

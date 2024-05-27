@@ -217,20 +217,29 @@ async function initTranslatedStoryIndex() {
   }
   const text = await res.text()
   const raw = JSON.parse(text)
-  raw.map((element: any) => {
-    translatedStoryIndex[element[0]] = element[1]
+  console.log(raw)
+  Object.keys(raw).forEach((key) => {
+    translatedStoryIndex[key] = raw[key]
   })
+  // raw.map((element: any) => {
+  //   translatedStoryIndex[element[0]] = element[1]
+  // })
 }
 
 function queryTranslatedCsv(jsonUrl: string): string | null {
-  if (!translatedStoryIndex[jsonUrl]) return null
+  if (!translatedStoryIndex[jsonUrl]) {
+    console.log(`translation not found for ${jsonUrl}`)
+    console.log(translatedStoryIndex)
+    return null
+  }
 
   const tmp = translatedStoryIndex[jsonUrl]
     .split('/')
     .filter(Boolean)
     .map(encodeURIComponent)
     .join('/')
-  return `${TRANSLATION_DIR}/${tmp}`
+  // console.log(tmp)
+  return `${TRANSLATION_DIR}/${tmp.replace('./', '')}`
 }
 
 async function queryPreTranslatedCsv(jsonUrl: string): Promise<string | null> {
@@ -238,7 +247,7 @@ async function queryPreTranslatedCsv(jsonUrl: string): Promise<string | null> {
     jsonUrl = jsonUrl.slice(5)
   }
   const preTranslationPath = `${PRETRANSLATION_DIR}/${jsonUrl.replace(
-    '.json',
+    '.txt',
     '.csv'
   )}`
 
