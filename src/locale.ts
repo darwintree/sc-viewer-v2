@@ -37,8 +37,9 @@ const messages = {
         explanation: {
           raw: 'Raw json file',
           history: 'History save from browser',
-          server: 'Translation by ShinyGroup',
+          server: 'Translation from community',
           file: 'File from disk',
+          gpt: 'GPT pretranslation',
         },
         reloadTooltip: 'Requery translated file existence',
         reloadFinished: 'Requery finished',
@@ -214,8 +215,9 @@ const messages = {
         explanation: {
           raw: '原始JSON文件',
           history: '浏览器中的历史修改',
-          server: 'ShinyGroup 维护的翻译',
+          server: '社区维护的翻译',
           file: '磁盘中的文件',
+          gpt: 'GPT 预翻译',
         },
         reloadTooltip: '重新查询翻译文件是否存在',
         reloadFinished: '查询完成',

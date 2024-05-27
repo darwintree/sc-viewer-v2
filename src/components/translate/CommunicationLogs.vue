@@ -52,9 +52,9 @@
           </template>
           {{ $t('control.index') }}
         </n-button>
-        <n-button strong bordered class="preview-button" @click="previewStory"
+        <!-- <n-button strong bordered class="preview-button" @click="previewStory"
           >{{ $t('control.review') }}⤵</n-button
-        >
+        > -->
 
         <n-button
           v-if="nextJsonUrl || !trueEndJsonUrl"
@@ -204,7 +204,7 @@ export default defineComponent({
       this.translatedCsvUrl = null
       this.pretranslatedCsvUrl = null
       this.translatedCsvUrl = queryTranslatedCsv(newVal)
-      if (store.currentMode !== DataMode.Raw) return
+      // if (store.currentMode !== DataMode.Raw) return
       this.pretranslatedCsvUrl = await queryPreTranslatedCsv(newVal)
       if (this.translatedCsvUrl) {
         this.notifyToSwitchToRemote(

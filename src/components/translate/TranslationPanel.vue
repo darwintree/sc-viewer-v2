@@ -124,6 +124,11 @@ const translatedCsvUrl = computed(() => {
   return null
 })
 
+const pretranslatedCsvUrl = computed(() => {
+  if (communication.value) return communication.value.pretranslatedCsvUrl
+  return null
+})
+
 // onMounted and watch controls when to reload data
 // if this page is never loaded, onMounted will activate to load data from location url
 onMounted(() => {
@@ -505,7 +510,7 @@ const currentDialogueCount = computed(() => {
     :title="t(`translate.switch.title`)"
   >
     <n-space vertical class="explanation">
-      <n-space align="center">
+      <!-- <n-space align="center">
         <n-button
           tertiary
           type="info"
@@ -520,6 +525,41 @@ const currentDialogueCount = computed(() => {
         <span>
           {{ t('translate.switch.explanation.raw') }}
         </span>
+      </n-space> -->
+      <n-space align="center">
+        <n-button
+          tertiary
+          type="info"
+          :disabled="!pretranslatedCsvUrl"
+          class="mode-switch"
+          @click="to(REMOTE, pretranslatedCsvUrl!)"
+        >
+          <template #icon>
+            <OpenAIIcon />
+          </template>
+          GPT
+        </n-button>
+        <span>
+          {{ t('translate.switch.explanation.gpt') }}
+        </span>
+        <n-tooltip v-if="!translatedCsvUrl" :show-arrow="false" trigger="hover">
+          <template #trigger>
+            <n-button circle size="tiny" @click="tryReloadStoryIndex">
+              <template #icon>
+                <loading-spin
+                  :is-rotating="isRotating"
+                  :size="12"
+                ></loading-spin>
+                <!-- <n-spin :rotate="isRotating" :size="12">
+                  <template #icon>
+                    <Renew class="mirror" />
+                  </template>
+                </n-spin> -->
+              </template>
+            </n-button>
+          </template>
+          {{ t('translate.switch.reloadTooltip') }}
+        </n-tooltip>
       </n-space>
       <n-space align="center">
         <n-button

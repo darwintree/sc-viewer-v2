@@ -1,15 +1,14 @@
 // ==UserScript==
-// @name         Github Viewer Button
+// @name         Github Gakuen Viewer Button
 // @namespace    http://tampermonkey.net/
-// @version      0.7
-// @description  Add a viewer button for SCTranslation Github repo
+// @version      1.0.0
+// @description  Add a viewer button for gkmas branch SCTranslation Github repo
 // @author       mihu
 // @match        https://github.com/*
 // @run-at       document-end
-// @icon         https://static.sc-viewer.top/favicon.ico
+// @icon         https://gkmas.sc-viewer.top/favicon.ico
 // @grant        none
-// @updateURL    https://static.sc-viewer.top/viewer-button.user.js
-// @supportURL   https://github.com/darwintree/sc-viewer-v2/issues
+// @updateURL    https://github.com/imas-tools/gakumas-viewer/raw/gkmas/public/viewer-button.user.js
 // ==/UserScript==
 
 ;(function () {
@@ -21,7 +20,7 @@
     div.style.position = 'fixed'
     div.style.top = '125px'
     div.style.right = '50px'
-    div.style.width = '200px'
+    div.style.width = '220px'
     div.style.height = '50px'
     div.style.backgroundColor = '#fff'
     div.style.boxShadow = '0px 2px 5px rgba(0, 0, 0, 0.3)'
@@ -52,7 +51,7 @@
     // 创建段落元素
     const p = document.createElement('span')
     p.style.margin = '0'
-    p.innerHTML = 'Go To Viewer'
+    p.innerHTML = 'Gakuen Viewer'
     // p.style.display = 'inline';
     p.style.fontSize = '1.5em'
     p.style.fontWeight = '500'
@@ -97,7 +96,7 @@
       const rawURI = window.location.toString()
       // 跳转到指定网页
       window.open(
-        `https://sc-viewer.top/translate/#${encodeURIComponent(rawURI)}`
+        `https://gkmas.sc-viewer.top/translate/#${encodeURIComponent(rawURI)}`
       )
     })
 

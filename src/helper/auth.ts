@@ -31,10 +31,10 @@ const useGithubProxy = true
 const cancelLoginUrl = `https://github.com/settings/connections/applications/${clientId}`
 const rootRepoName =
   process.env.NODE_ENV === 'development'
-    ? 'SCTranslationDataTest'
-    : 'SCTranslationData'
+    ? 'gakuen-adapted-translation-data'
+    : 'gakuen-adapted-translation-data'
 const rootOwner =
-  process.env.NODE_ENV === 'development' ? 'sc-viewer' : 'ShinyGroup'
+  process.env.NODE_ENV === 'development' ? 'imas-tools' : 'imas-tools'
 const rootBranch = 'master'
 
 interface BranchComparison {
