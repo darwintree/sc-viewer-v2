@@ -45,6 +45,7 @@
           <n-input-group>
             <n-input-group-label>tmp/</n-input-group-label>
             <n-input v-model:value="pathFilename" />
+            <n-input-group-label>.csv</n-input-group-label>
           </n-input-group>
           <!-- <n-button
             type="info"
@@ -183,8 +184,8 @@ const username = computed(() => {
 const pathFilename = ref('')
 
 onMounted(() => {
-  const pathSplits = store.path.split('/')
-  pathFilename.value = pathSplits[2]
+  // const pathSplits = store.path.split('/')
+  pathFilename.value = store.jsonUrl.replace('.txt', '')
 })
 
 const subStepStatus = computed(() => {
@@ -194,7 +195,7 @@ const subStepStatus = computed(() => {
 
 const isLegalPath = computed(() => {
   // return !!pathCharacter.value && !!pathStory.value && !!pathFilename.value
-  return pathFilename.value.endsWith('.csv')
+  return !!pathFilename.value
 })
 
 // const suggestedStoryname = computed(() => {
@@ -263,7 +264,7 @@ function useCommitTemplate() {
 // }
 
 const commitFilePath = computed(() => {
-  return `tmp/${pathFilename.value}`
+  return `tmp/${pathFilename.value}.csv`
 })
 
 async function push() {
