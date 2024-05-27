@@ -109,7 +109,7 @@ const messages = {
           publishPrefix: 'Upload to',
           uploading: 'Uploading...',
           useTemplate: 'Template',
-          templatePrefix: 'Add/Modify/Errata:',
+          templatePrefix: 'Add:',
         },
         pr: {
           title: 'Create pull request',
@@ -286,7 +286,7 @@ const messages = {
           publishPrefix: '上传至',
           uploading: '上传中...',
           useTemplate: '使用模板',
-          templatePrefix: '新增/修改/勘误：',
+          templatePrefix: '新增：',
         },
         pr: {
           title: '创建合并请求',

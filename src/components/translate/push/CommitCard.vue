@@ -21,38 +21,38 @@
       <div class="repository-info">
         <n-input
           v-if="subCurrent !== 1"
-          v-model:value="store.path"
+          v-model:value="commitFilePath"
           type="textarea"
           disabled
         ></n-input>
         <div v-else>
           <!-- <div>Path: {{ store.path }}</div> -->
-          <n-input-group>
+          <!-- <n-input-group>
             <n-input-group-label>data/story/</n-input-group-label>
             <n-select
               v-model:value="pathCharacter"
               :options="idolOptions"
               :style="{ width: '80%', 'min-width': '120px' }"
             />
-          </n-input-group>
-          <n-input-group>
+          </n-input-group> -->
+          <!-- <n-input-group>
             <n-input-group-label>/</n-input-group-label>
             <n-input
               v-model:value="pathStory"
               :placeholder="t('push.steps.upload.inputStoryName')"
             />
-          </n-input-group>
+          </n-input-group> -->
           <n-input-group>
-            <n-input-group-label>/</n-input-group-label>
+            <n-input-group-label>tmp/</n-input-group-label>
             <n-input v-model:value="pathFilename" />
           </n-input-group>
-          <n-button
+          <!-- <n-button
             type="info"
             :disabled="!hasRecommend"
             :style="{ 'max-width': '200px' }"
             @click="useRecommend"
             >{{ t('push.steps.upload.useRecommendedPath') }}</n-button
-          >
+          > -->
         </div>
       </div>
     </n-step>
@@ -103,7 +103,7 @@ import {
   NStep,
   NPopconfirm,
 } from 'naive-ui'
-import { ref, computed, WritableComputedRef } from 'vue'
+import { ref, computed, WritableComputedRef, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { store } from '../../../store'
 import { suggestedCommunicationName } from '../../../helper/meta-interfaces'
@@ -136,48 +136,55 @@ const publishTooltipMessage = computed(() => {
   }`
 })
 
-const pathSplits: WritableComputedRef<string[]> = computed({
-  get() {
-    return store.path.split('/')
-  },
-  set(newValue: string[]) {
-    store.path = newValue.join('/')
-  },
-})
+// const pathSplits: WritableComputedRef<string[]> = computed({
+//   get() {
+//     return store.path.split('/')
+//   },
+//   set(newValue: string[]) {
+//     store.path = newValue.join('/')
+//   },
+// })
 
 const username = computed(() => {
   if (!store.octokitWrapper?.userMeta) return null
   return store.octokitWrapper.userMeta.username
 })
 
-const pathCharacter = computed({
-  get() {
-    return pathSplits.value[0]
-  },
-  set(newValue: string) {
-    pathSplits.value[0] = newValue
-    pathSplits.value = pathSplits.value
-  },
-})
+// const pathCharacter = computed({
+//   get() {
+//     return pathSplits.value[0]
+//   },
+//   set(newValue: string) {
+//     pathSplits.value[0] = newValue
+//     pathSplits.value = pathSplits.value
+//   },
+// })
 
-const pathStory = computed({
-  get() {
-    return pathSplits.value[1]
-  },
-  set(newValue: string) {
-    pathSplits.value[1] = newValue
-    pathSplits.value = pathSplits.value
-  },
-})
+// const pathStory = computed({
+//   get() {
+//     return pathSplits.value[1]
+//   },
+//   set(newValue: string) {
+//     pathSplits.value[1] = newValue
+//     pathSplits.value = pathSplits.value
+//   },
+// })
 
-const pathFilename = computed({
-  get() {
-    return pathSplits.value[2]
-  },
-  set(newValue: string) {
-    pathSplits.value[2] = newValue
-    pathSplits.value = pathSplits.value
-  },
+// const pathFilename = computed({
+//   get() {
+//     return pathSplits.value[2]
+//   },
+//   set(newValue: string) {
+//     pathSplits.value[2] = newValue
+//     pathSplits.value = pathSplits.value
+//   },
+// })
+
+const pathFilename = ref('')
+
+onMounted(() => {
+  const pathSplits = store.path.split('/')
+  pathFilename.value = pathSplits[2]
 })
 
 const subStepStatus = computed(() => {
@@ -186,71 +193,78 @@ const subStepStatus = computed(() => {
 })
 
 const isLegalPath = computed(() => {
-  return !!pathCharacter.value && !!pathStory.value && !!pathFilename.value
+  // return !!pathCharacter.value && !!pathStory.value && !!pathFilename.value
+  return pathFilename.value.endsWith('.csv')
 })
 
-const suggestedStoryname = computed(() => {
-  if (store.eventsCollectionMeta) {
-    if (store.eventsCollectionMeta.name.search('】') < 0) {
-      return store.eventsCollectionMeta.name
-    }
-    const splits = store.eventsCollectionMeta.name.split('】')
-    return splits[0] + '】' + splits[1].replace(' ', '')
-  }
-  return null
-})
+// const suggestedStoryname = computed(() => {
+//   if (store.eventsCollectionMeta) {
+//     if (store.eventsCollectionMeta.name.search('】') < 0) {
+//       return store.eventsCollectionMeta.name
+//     }
+//     const splits = store.eventsCollectionMeta.name.split('】')
+//     return splits[0] + '】' + splits[1].replace(' ', '')
+//   }
+//   return null
+// })
 
-const suggestedFilename = computed(() => {
-  if (store.jsonUrl && store.eventsCollectionMeta) {
-    for (const communication of store.eventsCollectionMeta.communications) {
-      if (communication.jsonPath == store.jsonUrl) {
-        const name = suggestedCommunicationName(communication)
-        return `${name}.csv`
-      }
-    }
-  }
-  return null
-})
+// const suggestedFilename = computed(() => {
+//   if (store.jsonUrl && store.eventsCollectionMeta) {
+//     for (const communication of store.eventsCollectionMeta.communications) {
+//       if (communication.jsonPath == store.jsonUrl) {
+//         const name = suggestedCommunicationName(communication)
+//         return `${name}.csv`
+//       }
+//     }
+//   }
+//   return null
+// })
 
-const suggestedCharacter = computed(() => {
-  if (store.eventsCollectionMeta) {
-    const { characterId } = store.eventsCollectionMeta
-    if (characterId !== undefined) {
-      return idolOptions[Number(characterId)].label
-    }
-    // 283 活动剧情
-    return idolOptions[0].label
-  }
-  return null
-})
+// const suggestedCharacter = computed(() => {
+//   if (store.eventsCollectionMeta) {
+//     const { characterId } = store.eventsCollectionMeta
+//     if (characterId !== undefined) {
+//       return idolOptions[Number(characterId)].label
+//     }
+//     // 283 活动剧情
+//     return idolOptions[0].label
+//   }
+//   return null
+// })
 
 function useCommitTemplate() {
-  message.value = `${t('push.steps.upload.templatePrefix')}${store.path}`
+  message.value = `${t('push.steps.upload.templatePrefix')}${
+    commitFilePath.value
+  }`
 }
 
-const hasRecommend = computed(() => {
-  return suggestedFilename.value || queryTranslatedCsv(store.jsonUrl)
+// const hasRecommend = computed(() => {
+//   return suggestedFilename.value || queryTranslatedCsv(store.jsonUrl)
+// })
+
+// function useRecommend() {
+//   // if there is current translated file, don't change it
+//   if (store.jsonUrl && queryTranslatedCsv(store.jsonUrl)) {
+//     const { path } = extractInfoFromUrl(
+//       decodeURIComponent(queryTranslatedCsv(store.jsonUrl)!)
+//     )
+//     store.path = path
+//     return
+//   }
+//   if (
+//     !suggestedCharacter.value ||
+//     !suggestedFilename.value ||
+//     !suggestedStoryname.value
+//   )
+//     throw Error('unexpected null')
+//   pathCharacter.value = suggestedCharacter.value
+//   pathStory.value = suggestedStoryname.value
+//   pathFilename.value = suggestedFilename.value
+// }
+
+const commitFilePath = computed(() => {
+  return `tmp/${pathFilename.value}`
 })
-
-function useRecommend() {
-  // if there is current translated file, don't change it
-  if (store.jsonUrl && queryTranslatedCsv(store.jsonUrl)) {
-    const { path } = extractInfoFromUrl(
-      decodeURIComponent(queryTranslatedCsv(store.jsonUrl)!)
-    )
-    store.path = path
-    return
-  }
-  if (
-    !suggestedCharacter.value ||
-    !suggestedFilename.value ||
-    !suggestedStoryname.value
-  )
-    throw Error('unexpected null')
-  pathCharacter.value = suggestedCharacter.value
-  pathStory.value = suggestedStoryname.value
-  pathFilename.value = suggestedFilename.value
-}
 
 async function push() {
   // checkInput()
@@ -265,7 +279,7 @@ async function push() {
       store.octokitWrapper.userMeta.username,
       rootRepoName,
       props.currentBranch,
-      `data/story/${store.path}`,
+      commitFilePath.value,
       message.value,
       store.base64content
     )
