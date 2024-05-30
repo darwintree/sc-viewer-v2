@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/05/30
+
+* [event-074](/translate#json/game_event_communications/400107401.json)
+* [羽那-P](/translate#json/produce_events/202700501.json)
+* [円香-S](/translate#json/produce_events/302101601.json)
+* [ルカ-S](/translate#json/produce_events/302600601.json)
+
+
 ## 2024/05/21
 
 * [凛世-STEP](/translate#json/produce_events/101200501.json)
