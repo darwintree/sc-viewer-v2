@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/06/19
+
+* [霧子-STEP](/translate#json/produce_events/100800501.json)
+* [美琴-P](/translate#json/produce_events/202501101.json)
+* [摩美々-S](/translate#json/produce_events/300501801.json)
+* [愛依-S](/translate#json/produce_events/301901501.json)
+* [咲耶-birthday](/translate#json/special_communications/4902005006.json)
+
+
 ## 2024/06/07
 
 * [霧子-P](/translate#json/produce_events/200801801.json)
