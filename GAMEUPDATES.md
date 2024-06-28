@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/06/28
+
+* [event-075](/translate#json/game_event_communications/400107501.json)
+* [ルカ-P](/translate#json/produce_events/202600801.json)
+* [甘奈-S](/translate#json/produce_events/301402101.json)
+* [美琴-S](/translate#json/produce_events/302501301.json)
+
+
 ## 2024/06/19
 
 * [霧子-STEP](/translate#json/produce_events/100800501.json)
