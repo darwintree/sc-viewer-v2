@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/07/09
+
+* [夏葉-STEP](/translate#json/produce_events/101300501.json)
+* [甜花-P](/translate#json/produce_events/201501901.json)
+* [恋鐘-S](/translate#json/produce_events/300402001.json)
+* [結華-S](/translate#json/produce_events/300701901.json)
+
+
 ## 2024/06/28
 
 * [event-075](/translate#json/game_event_communications/400107501.json)
