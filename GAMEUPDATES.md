@@ -1,5 +1,15 @@
 # Updates
 
+## 2024/07/18
+
+* [果穂-P](/translate#json/produce_events/200901901.json)
+* [円香-P](/translate#json/produce_events/202101401.json)
+* [凛世-S](/translate#json/produce_events/301202001.json)
+* [めぐる-birthday](/translate#json/special_communications/4902005003.json)
+* [果穂-birthday](/translate#json/special_communications/4902005009.json)
+* [にちか-birthday](/translate#json/special_communications/4902005024.json)
+
+
 ## 2024/07/09
 
 * [夏葉-STEP](/translate#json/produce_events/101300501.json)
