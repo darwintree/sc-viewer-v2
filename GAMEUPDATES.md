@@ -1,5 +1,12 @@
 # Updates
 
+## 2024/07/30
+
+* [冬優子-P](/translate#json/produce_events/201801701.json)
+* [智代子-S](/translate#json/produce_events/301001901.json)
+* [愛依-birthday](/translate#json/special_communications/4902006019.json)
+
+
 ## 2024/07/18
 
 * [果穂-P](/translate#json/produce_events/200901901.json)
