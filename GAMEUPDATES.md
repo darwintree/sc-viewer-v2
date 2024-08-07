@@ -1,5 +1,19 @@
 # Updates
 
+## 2024/08/07
+
+* [event-076](/translate#json/game_event_communications/400107601.json)
+* [idol-803-WING](/translate#json/produce_events/180300101.json)
+* [にちか-P](/translate#json/produce_events/202401201.json)
+* [idol-801-P](/translate#json/produce_events/280100501.json)
+* [idol-802-P](/translate#json/produce_events/280200501.json)
+* [idol-803-P](/translate#json/produce_events/280300401.json)
+* [円香-S](/translate#json/produce_events/302101701.json)
+* [idol-801-S](/translate#json/produce_events/380100101.json)
+* [idol-804-S](/translate#json/produce_events/380400101.json)
+* [夏葉-birthday](/translate#json/special_communications/4902006013.json)
+
+
 ## 2024/07/30
 
 * [冬優子-P](/translate#json/produce_events/201801701.json)
