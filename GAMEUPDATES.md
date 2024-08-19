@@ -1,5 +1,12 @@
 # Updates
 
+## 2024/08/19
+
+* [智代子-P](/translate#json/produce_events/201001701.json)
+* [夏葉-S](/translate#json/produce_events/301302201.json)
+* [ルカ-S](/translate#json/produce_events/302600701.json)
+
+
 ## 2024/08/07
 
 * [event-076](/translate#json/game_event_communications/400107601.json)
