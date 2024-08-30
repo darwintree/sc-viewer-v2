@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/08/30
+
+* [event-077](/translate#json/game_event_communications/400107701.json)
+* [甘奈-P](/translate#json/produce_events/201401901.json)
+* [果穂-S](/translate#json/produce_events/300902001.json)
+* [千雪-S](/translate#json/produce_events/301601901.json)
+* [美琴-birthday](/translate#json/special_communications/4902006025.json)
+
+
 ## 2024/08/19
 
 * [智代子-P](/translate#json/produce_events/201001701.json)
