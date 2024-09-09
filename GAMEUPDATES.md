@@ -1,5 +1,12 @@
 # Updates
 
+## 2024/09/09
+
+* [灯織-P](/translate#json/produce_events/200201801.json)
+* [小糸-S](/translate#json/produce_events/302201201.json)
+* [にちか-S](/translate#json/produce_events/302401101.json)
+
+
 ## 2024/08/30
 
 * [event-077](/translate#json/game_event_communications/400107701.json)
