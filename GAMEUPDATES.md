@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/09/18
+
+* [あさひ-P](/translate#json/produce_events/201701601.json)
+* [小糸-S](/translate#json/produce_events/302201301.json)
+* [にちか-S](/translate#json/produce_events/302401201.json)
+* [霧子-birthday](/translate#json/special_communications/4902006008.json)
+
+
 ## 2024/09/09
 
 * [灯織-P](/translate#json/produce_events/200201801.json)
