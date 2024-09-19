@@ -139,12 +139,12 @@ function increaseIndex() {
 watch(
   () => route.query,
   (newQuery) => {
-    const { type, index } = newQuery
+    const { type, bgmIndex } = newQuery
     if (type === 'bgm' || type === 'se') {
       audioType.value = type
-      if (index) {
-        audioInput.value = index.toString()
-        audio.value = index.toString()
+      if (bgmIndex) {
+        audioInput.value = bgmIndex.toString()
+        audio.value = bgmIndex.toString()
         fetchData(1)
       }
     }
