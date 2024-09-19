@@ -78,7 +78,7 @@ watch(locale, (newVal) => {
             <router-link
               :to="{ path: '/bgm', query: route.query, hash: route.hash }"
             >
-              BGM
+              Sound
             </router-link>
           </nav>
           <div class="locale-changer">
