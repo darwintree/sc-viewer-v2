@@ -361,6 +361,25 @@ async function queryVoices(
   }
 }
 
+async function querySe(se: string, page = 1, pageSize = 20) {
+  return {
+    count: 0,
+    results: [],
+  }
+  // try {
+  //   const res = await axios.get(BGM_SERVICE_SERVER, {
+  //     params: {
+  //       bgm,
+  //       page,
+  //       pageSize,
+  //     },
+  //   })
+  // } catch (e) {
+  //   console.error(e)
+  //   throw e
+  // }
+}
+
 async function queryBgm(bgm: string, page = 1, pageSize = 20) {
   try {
     const res = await axios.get(BGM_SERVICE_SERVER, {
@@ -540,5 +559,6 @@ export {
   searchIndexData,
   queryVoices,
   queryBgm,
+  querySe,
   queryPreTranslatedCsv,
 }

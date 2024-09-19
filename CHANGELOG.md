@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024/09/19
+
+* feat: support SE display
+
 ## 2024/04/14
 
 * feat: support BGM search and reverse-index

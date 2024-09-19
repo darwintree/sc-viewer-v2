@@ -34,7 +34,7 @@ const router = createRouter({
       component: About,
     },
     {
-      path: '/bgm',
+      path: '/sound',
       component: BgmPanel,
     },
     // {
