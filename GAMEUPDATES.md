@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/09/27
+
+* [event-078](/translate#json/game_event_communications/400107801.json)
+* [恋鐘-P](/translate#json/produce_events/200401801.json)
+* [甜花-P](/translate#json/produce_events/201502001.json)
+* [樹里-S](/translate#json/produce_events/301101901.json)
+* [羽那-birthday](/translate#json/special_communications/4902006027.json)
+
+
 ## 2024/09/18
 
 * [あさひ-P](/translate#json/produce_events/201701601.json)
