@@ -1,5 +1,16 @@
 # Updates
 
+## 2024/10/09
+
+* [智代子-STEP](/translate#json/produce_events/101000501.json)
+* [ルカ-GRAD](/translate#json/produce_events/102600301.json)
+* [羽那-GRAD](/translate#json/produce_events/102700301.json)
+* [はるき-GRAD](/translate#json/produce_events/102800301.json)
+* [透-P](/translate#json/produce_events/202001301.json)
+* [真乃-S](/translate#json/produce_events/300102301.json)
+* [ルカ-S](/translate#json/produce_events/302600801.json)
+
+
 ## 2024/09/27
 
 * [event-078](/translate#json/game_event_communications/400107801.json)
