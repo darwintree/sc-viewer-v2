@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/10/18
+
+* [羽那-P](/translate#json/produce_events/202700601.json)
+* [灯織-S](/translate#json/produce_events/300202201.json)
+* [甘奈-S](/translate#json/produce_events/301402201.json)
+* [凛世-birthday](/translate#json/special_communications/4902006012.json)
+* [円香-birthday](/translate#json/special_communications/4902006021.json)
+
+
 ## 2024/10/09
 
 * [智代子-STEP](/translate#json/produce_events/101000501.json)
