@@ -1,5 +1,11 @@
 # Updates
 
+## 2024/10/24
+
+* [idol-91-S](/translate#json/produce_events/309100201.json)
+* [idol-91-birthday](/translate#json/special_communications/4902001091.json)
+
+
 ## 2024/10/18
 
 * [羽那-P](/translate#json/produce_events/202700601.json)
