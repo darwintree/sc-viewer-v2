@@ -1,5 +1,16 @@
 # Updates
 
+## 2024/10/31
+
+* [event-079](/translate#json/game_event_communications/400107901.json)
+* [event-600](/translate#json/mypage_communications/490160001.json)
+* [結華-P](/translate#json/produce_events/200701701.json)
+* [恋鐘-S](/translate#json/produce_events/300402101.json)
+* [摩美々-S](/translate#json/produce_events/300501901.json)
+* [智代子-S](/translate#json/produce_events/301002001.json)
+* [凛世-S](/translate#json/produce_events/301202101.json)
+
+
 ## 2024/10/24
 
 * [idol-91-S](/translate#json/produce_events/309100201.json)
