@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/11/08
+
+* [めぐる-STEP](/translate#json/produce_events/100300501.json)
+* [小糸-P](/translate#json/produce_events/202201201.json)
+* [はるき-P](/translate#json/produce_events/202800301.json)
+* [智代子-S](/translate#json/produce_events/301002101.json)
+* [小糸-birthday](/translate#json/special_communications/4902006022.json)
+
+
 ## 2024/10/31
 
 * [event-079](/translate#json/game_event_communications/400107901.json)
