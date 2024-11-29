@@ -1,5 +1,13 @@
 # Updates
 
+## 2024/11/29
+
+* [めぐる-P](/translate#json/produce_events/200301901.json)
+* [凛世-P](/translate#json/produce_events/201202001.json)
+* [果穂-S](/translate#json/produce_events/300902101.json)
+* [冬優子-birthday](/translate#json/special_communications/4902006018.json)
+
+
 ## 2024/11/19
 
 * [摩美々-P](/translate#json/produce_events/200501801.json)
