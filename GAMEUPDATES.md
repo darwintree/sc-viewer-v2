@@ -1,5 +1,17 @@
 # Updates
 
+## 2024/12/11
+
+* [event-080](/translate#json/game_event_communications/400108001.json)
+* [にちか-STEP](/translate#json/produce_events/102400501.json)
+* [美琴-P](/translate#json/produce_events/202501201.json)
+* [はるき-P](/translate#json/produce_events/202800801.json)
+* [美琴-S](/translate#json/produce_events/302501401.json)
+* [羽那-S](/translate#json/produce_events/302700601.json)
+* [idol-91-S](/translate#json/produce_events/309100401.json)
+* [event-700](/translate#json/special_communications/490170001.json)
+
+
 ## 2024/11/29
 
 * [めぐる-P](/translate#json/produce_events/200301901.json)
