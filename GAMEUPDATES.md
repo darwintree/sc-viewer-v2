@@ -1,5 +1,14 @@
 # Updates
 
+## 2024/12/27
+
+* [event-081](/translate#json/game_event_communications/400108101.json)
+* [樹里-P](/translate#json/produce_events/201101801.json)
+* [智代子-S](/translate#json/produce_events/301002201.json)
+* [円香-S](/translate#json/produce_events/302102001.json)
+* [あさひ-birthday](/translate#json/special_communications/4902006017.json)
+
+
 ## 2024/12/19
 
 * [idol-99-unknown](/translate#json/produce_events/109900601.json)
