@@ -196,8 +196,9 @@ const createColumns = (): any => {
             query: {
               forceReload: '1',
               source: DataSource.Remote,
+              id: row.jsonPath,
             },
-            hash: `#${row.jsonPath}`,
+            // hash: `#${row.jsonPath}`,
           })
         }
         const style = {

@@ -140,10 +140,10 @@ watch(routeQuery, async (newQuery) => {
 })
 
 async function loadDataFromLocation() {
-  if (!route.hash) return
   const source = route.query?.source as DataSource | undefined
   // storage id, should be jsonUrl
-  const id = route.hash.substring(1)
+  const id = (route.query?.id || route.hash.substring(1)) as string
+  if (!id) return
   if (source === DataSource.Browser) {
     // store.currentMode = DataMode.History
     // why push, use replace is also ok
@@ -173,6 +173,7 @@ async function loadDataFromLocalStorage(id: string) {
     path: route.path,
     query: {
       source: DataSource.Browser,
+      id: route.query.id,
     },
     hash: route.hash,
   })
@@ -190,9 +191,10 @@ async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
   )
   router.replace({
     path: route.path,
-    hash: `#${encodedSrcUrl}`,
+    // hash: `#${encodedSrcUrl}`,
     query: {
       source: DataSource.Remote,
+      id: encodedSrcUrl,
     },
   })
   nextTick(() =>
@@ -232,8 +234,9 @@ async function to(source: DataSource | undefined, id: string) {
     query: {
       source,
       forceReload: '1',
+      id,
     },
-    hash: `#${id}`,
+    // hash: `#${id}`,
   })
 }
 

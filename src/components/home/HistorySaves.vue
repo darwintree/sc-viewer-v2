@@ -98,9 +98,10 @@ const columns = ref(
         query: {
           forceReload: '1',
           source: DataSource.Browser,
+          id: row.id,
         },
         // do not use encodeURIComponent
-        hash: `#${row.id}`,
+        // hash: `#${row.id}`,
       })
     },
   })

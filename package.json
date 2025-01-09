@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "vite",
+    "start": "make prebuild && vite",
     "serve:doc": "honkit serve --reload",
     "build:doc": "honkit build",
     "build": "make prebuild && vue-tsc && vite build && honkit build",
