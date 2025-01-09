@@ -1,5 +1,15 @@
 # Updates
 
+## 2025/01/09
+
+* [美琴-STEP](/translate#json/produce_events/102500501.json)
+* [恋鐘-P](/translate#json/produce_events/200401901.json)
+* [千雪-S](/translate#json/produce_events/301602001.json)
+* [円香-S](/translate#json/produce_events/302101801.json)
+* [羽那-S](/translate#json/produce_events/302700801.json)
+* [結華-birthday](/translate#json/special_communications/4902006007.json)
+
+
 ## 2024/12/27
 
 * [event-081](/translate#json/game_event_communications/400108101.json)
