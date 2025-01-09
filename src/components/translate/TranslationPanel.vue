@@ -1,6 +1,7 @@
 // TranslationPanel.vue
 
 <script setup lang="ts">
+import Giscus from '@giscus/vue'
 import Communication from './CommunicationLogs.vue'
 import PushPanel from './push/PushPanel.vue'
 import PushHeader from './push/PushHeader.vue'
@@ -25,6 +26,7 @@ import {
   Repeat,
   UpToTop,
   Download,
+  AddComment,
   // Share,
 } from '@vicons/carbon'
 import { ref, onMounted, nextTick, computed, watch, h } from 'vue'
@@ -50,6 +52,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const showSwitchModal = ref(false)
+const showDiscussionModal = ref(false)
 const isRotating = ref(false)
 const notification = useNotification()
 
@@ -172,10 +175,11 @@ async function loadDataFromLocalStorage(id: string) {
   router.replace({
     path: route.path,
     query: {
+      ...route.query,
       source: DataSource.Browser,
       id: route.query.id,
     },
-    hash: route.hash,
+    // hash: route.hash,
   })
   csvUrl.value = id
   await communication.value?.loadDataFromSourceInput(id, DataSource.Browser)
@@ -193,6 +197,7 @@ async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
     path: route.path,
     // hash: `#${encodedSrcUrl}`,
     query: {
+      ...route.query,
       source: DataSource.Remote,
       id: encodedSrcUrl,
     },
@@ -589,6 +594,39 @@ const currentDialogueCount = computed(() => {
       </n-space>
     </n-space>
   </n-modal>
+  <n-modal
+    v-model:show="showDiscussionModal"
+    preset="card"
+    style="width: 600px; max-width: 100%"
+    :title="t(`translate.tab.comment`)"
+  >
+    <meta
+      name="giscus:backlink"
+      :content="`https://sc-viewer.top/translate?id=${store.jsonUrl}`"
+    />
+    <Giscus
+      v-if="
+        !!communication?.data.length &&
+        !!store.jsonUrl &&
+        route.path.startsWith('/translate')
+      "
+      id="comments"
+      repo="darwintree/sc-viewer-v2"
+      repo-id="R_kgDOImHNhg"
+      category="Announcements"
+      category-id="DIC_kwDOImHNhs4Cl3J4"
+      mapping="specific"
+      :term="store.jsonUrl"
+      strict="0"
+      reactions-enabled="1"
+      emit-metadata="0"
+      input-position="top"
+      theme="preferred_color_scheme"
+      lang="zh-CN"
+      crossorigin="anonymous"
+      async
+    ></Giscus>
+  </n-modal>
   <AutoTranslateModal
     v-model:show-modal="showAutoTranslateModel"
     :do-translate="translateCommunication"
@@ -666,6 +704,12 @@ const currentDialogueCount = computed(() => {
         <n-icon size="18"> <Repeat /> </n-icon><br />
         <n-button text type="default" :focusable="false">{{
           t('translate.tab.switch')
+        }}</n-button>
+      </div>
+      <div class="clickable" @click="showDiscussionModal = true">
+        <n-icon size="18"> <AddComment /> </n-icon><br />
+        <n-button text type="default" :focusable="false">{{
+          t('translate.tab.comment')
         }}</n-button>
       </div>
       <!-- <div v-if="supportsShare" class="clickable" @click="share">

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025/01/09
+
+* feat: add comment
+
 ## 2024/09/19
 
 * feat: support SE display

@@ -67,6 +67,7 @@ const messages = {
         rename: 'Rename',
         complete: 'Complete',
         switch: 'Switch',
+        comment: 'Comment',
         top: 'TOP',
         push: 'Push',
         download: 'Download',
@@ -247,6 +248,7 @@ const messages = {
         push: '推送',
         download: '下载',
         preTranslate: '预翻译',
+        comment: '评论',
       },
     },
     push: {
