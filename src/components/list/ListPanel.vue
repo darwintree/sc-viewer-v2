@@ -269,9 +269,10 @@ const createColumns = (): any => {
               query: {
                 forceReload: '1',
                 source: DataSource.Remote,
+                id: row.communications[0].jsonPath,
               },
               // do not use encodeURIComponent
-              hash: `#${row.communications[0].jsonPath}`,
+              // hash: `#${row.communications[0].jsonPath}`,
             })
           }
           style = {

@@ -247,8 +247,9 @@ export default defineComponent({
                   query: {
                     forceReload: '1',
                     source: DataSource.Remote,
+                    id: url,
                   },
-                  hash: `#${url}`,
+                  // hash: `#${url}`,
                 })
               },
               style: {

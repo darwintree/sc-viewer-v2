@@ -198,9 +198,10 @@ const createColumns = (): any => {
             query: {
               forceReload: '1',
               source: DataSource.Remote,
+              id: getEventIdFromVoiceId(row._id),
             },
             // do not use encodeURIComponent
-            hash: `#${getEventIdFromVoiceId(row._id)}`,
+            // hash: `#${getEventIdFromVoiceId(row._id)}`,
           })
         }
         const style = {

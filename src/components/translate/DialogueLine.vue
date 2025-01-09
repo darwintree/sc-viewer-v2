@@ -241,9 +241,10 @@ export default defineComponent({
       store.currentMode = DataMode.History
       this.$router.replace({
         path: this.$route.path,
-        hash: `#${this.base}.json`, // for file mode
+        // hash: `#${this.base}.json`, // for file mode
         query: {
           source: DataSource.Browser,
+          id: `${this.base}.json`,
         },
       })
     },
