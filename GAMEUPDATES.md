@@ -1,5 +1,12 @@
 # Updates
 
+## 2025/01/21
+
+* [灯織-P](/translate#json/produce_events/200201901.json)
+* [にちか-P](/translate#json/produce_events/202401301.json)
+* [恋鐘-S](/translate#json/produce_events/300402201.json)
+
+
 ## 2025/01/09
 
 * [美琴-STEP](/translate#json/produce_events/102500501.json)
