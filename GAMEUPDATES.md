@@ -1,5 +1,16 @@
 # Updates
 
+## 2025/02/07
+
+* [ルカ-LP](/translate#json/produce_events/102600401.json)
+* [羽那-LP](/translate#json/produce_events/102700401.json)
+* [はるき-LP](/translate#json/produce_events/102800401.json)
+* [凛世-P](/translate#json/produce_events/201202101.json)
+* [羽那-P](/translate#json/produce_events/202700701.json)
+* [雛菜-S](/translate#json/produce_events/302301201.json)
+* [event-800](/translate#json/special_communications/490180001.json)
+
+
 ## 2025/01/30
 
 * [event-082](/translate#json/game_event_communications/400108201.json)
