@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/02/18
+
+* [愛依-P](/translate#json/produce_events/201901601.json)
+* [ルカ-P](/translate#json/produce_events/202600901.json)
+* [灯織-S](/translate#json/produce_events/300202301.json)
+* [恋鐘-birthday](/translate#json/special_communications/4902006004.json)
+* [智代子-birthday](/translate#json/special_communications/4902006010.json)
+
+
 ## 2025/02/07
 
 * [ルカ-LP](/translate#json/produce_events/102600401.json)
