@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/03/11
+
+* [霧子-P](/translate#json/produce_events/200801901.json)
+* [美琴-P](/translate#json/produce_events/202501301.json)
+* [咲耶-S](/translate#json/produce_events/300602001.json)
+* [event-900](/translate#json/special_communications/490190001.json)
+* [雛菜-birthday](/translate#json/special_communications/4902006023.json)
+
+
 ## 2025/02/28
 
 * [event-083](/translate#json/game_event_communications/400108301.json)
