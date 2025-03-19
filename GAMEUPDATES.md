@@ -1,5 +1,11 @@
 # Updates
 
+## 2025/03/19
+
+* [灯織-P](/translate#json/produce_events/200202001.json)
+* [樹里-S](/translate#json/produce_events/301102001.json)
+
+
 ## 2025/03/11
 
 * [霧子-P](/translate#json/produce_events/200801901.json)
