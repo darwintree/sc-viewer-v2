@@ -1,5 +1,16 @@
 # Updates
 
+## 2025/04/10
+
+* [ルカ-STEP](/translate#json/produce_events/102600501.json)
+* [甘奈-P](/translate#json/produce_events/201402001.json)
+* [ルカ-P](/translate#json/produce_events/202601001.json)
+* [千雪-S](/translate#json/produce_events/301602101.json)
+* [美琴-S](/translate#json/produce_events/302501601.json)
+* [真乃-birthday](/translate#json/special_communications/490200001.json)
+* [千雪-birthday](/translate#json/special_communications/4902006016.json)
+
+
 ## 2025/03/28
 
 * [event-084](/translate#json/game_event_communications/400108401.json)
