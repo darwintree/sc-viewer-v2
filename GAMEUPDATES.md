@@ -1,5 +1,24 @@
 # Updates
 
+## 2025/04/18
+
+* [冬優子-P](/translate#json/produce_events/201801801.json)
+* [真乃-S](/translate#json/produce_events/300102401.json)
+* [結華-S](/translate#json/produce_events/300702001.json)
+* [霧子-S](/translate#json/produce_events/300802201.json)
+* [夏葉-S](/translate#json/produce_events/301302301.json)
+* [idol-91-S](/translate#json/produce_events/309100501.json)
+* [真乃-birthday](/translate#json/special_communications/4902007001.json)
+* [真乃-birthday](/translate#json/special_communications/490210001.json)
+* [灯織-birthday](/translate#json/special_communications/490210002.json)
+* [めぐる-birthday](/translate#json/special_communications/490210003.json)
+* [恋鐘-birthday](/translate#json/special_communications/490210004.json)
+* [摩美々-birthday](/translate#json/special_communications/490210005.json)
+* [咲耶-birthday](/translate#json/special_communications/490210006.json)
+* [結華-birthday](/translate#json/special_communications/490210007.json)
+* [霧子-birthday](/translate#json/special_communications/490210008.json)
+
+
 ## 2025/04/10
 
 * [ルカ-STEP](/translate#json/produce_events/102600501.json)
