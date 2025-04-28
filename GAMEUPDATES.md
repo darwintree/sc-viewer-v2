@@ -1,5 +1,16 @@
 # Updates
 
+## 2025/04/28
+
+* [event-085](/translate#json/game_event_communications/400108501.json)
+* [小糸-P](/translate#json/produce_events/202201301.json)
+* [咲耶-S](/translate#json/produce_events/300602101.json)
+* [透-S](/translate#json/produce_events/302001801.json)
+* [にちか-S](/translate#json/produce_events/302401401.json)
+* [美琴-S](/translate#json/produce_events/302501701.json)
+* [透-birthday](/translate#json/special_communications/4902007020.json)
+
+
 ## 2025/04/18
 
 * [冬優子-P](/translate#json/produce_events/201801801.json)
