@@ -1,5 +1,13 @@
 # Updates
 
+## 2025/05/09
+
+* [羽那-STEP](/translate#json/produce_events/102700501.json)
+* [はるき-STEP](/translate#json/produce_events/102800501.json)
+* [にちか-P](/translate#json/produce_events/202401401.json)
+* [めぐる-S](/translate#json/produce_events/300302301.json)
+
+
 ## 2025/04/28
 
 * [event-085](/translate#json/game_event_communications/400108501.json)
