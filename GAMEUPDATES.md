@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/05/20
+
+* [樹里-P](/translate#json/produce_events/201101901.json)
+* [はるき-P](/translate#json/produce_events/202800901.json)
+* [摩美々-S](/translate#json/produce_events/300502001.json)
+* [樹里-S](/translate#json/produce_events/301102101.json)
+* [摩美々-birthday](/translate#json/special_communications/4902007005.json)
+
+
 ## 2025/05/09
 
 * [羽那-STEP](/translate#json/produce_events/102700501.json)
