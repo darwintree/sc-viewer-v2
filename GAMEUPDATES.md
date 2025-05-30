@@ -1,5 +1,13 @@
 # Updates
 
+## 2025/05/30
+
+* [event-086](/translate#json/game_event_communications/400108601.json)
+* [あさひ-P](/translate#json/produce_events/201701801.json)
+* [真乃-S](/translate#json/produce_events/300102501.json)
+* [甘奈-S](/translate#json/produce_events/301402401.json)
+
+
 ## 2025/05/20
 
 * [樹里-P](/translate#json/produce_events/201101901.json)
