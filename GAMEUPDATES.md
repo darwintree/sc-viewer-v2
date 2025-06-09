@@ -1,5 +1,12 @@
 # Updates
 
+## 2025/06/09
+
+* [果穂-P](/translate#json/produce_events/200902001.json)
+* [ルカ-S](/translate#json/produce_events/302600901.json)
+* [はるき-S](/translate#json/produce_events/302800701.json)
+
+
 ## 2025/05/30
 
 * [event-086](/translate#json/game_event_communications/400108601.json)
