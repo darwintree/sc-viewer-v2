@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/06/27
+
+* [結華-P](/translate#json/produce_events/200701801.json)
+* [羽那-P](/translate#json/produce_events/202700801.json)
+* [智代子-S](/translate#json/produce_events/301002301.json)
+* [あさひ-S](/translate#json/produce_events/301702001.json)
+* [美琴-S](/translate#json/produce_events/302501901.json)
+
+
 ## 2025/06/17
 
 * [摩美々-P](/translate#json/produce_events/200501901.json)
