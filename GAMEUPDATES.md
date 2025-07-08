@@ -1,5 +1,12 @@
 # Updates
 
+## 2025/07/08
+
+* [円香-P](/translate#json/produce_events/202101501.json)
+* [めぐる-S](/translate#json/produce_events/300302401.json)
+* [冬優子-S](/translate#json/produce_events/301801801.json)
+
+
 ## 2025/06/27
 
 * [結華-P](/translate#json/produce_events/200701801.json)
