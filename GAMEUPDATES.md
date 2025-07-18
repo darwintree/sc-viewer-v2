@@ -1,5 +1,18 @@
 # Updates
 
+## 2025/07/18
+
+* [恋鐘-P](/translate#json/produce_events/200402001.json)
+* [めぐる-S](/translate#json/produce_events/300302501.json)
+* [摩美々-S](/translate#json/produce_events/300502101.json)
+* [果穂-S](/translate#json/produce_events/300902201.json)
+* [千雪-S](/translate#json/produce_events/301602301.json)
+* [にちか-S](/translate#json/produce_events/302401501.json)
+* [めぐる-birthday](/translate#json/special_communications/4902007003.json)
+* [果穂-birthday](/translate#json/special_communications/4902007009.json)
+* [にちか-birthday](/translate#json/special_communications/4902007024.json)
+
+
 ## 2025/07/08
 
 * [円香-P](/translate#json/produce_events/202101501.json)
