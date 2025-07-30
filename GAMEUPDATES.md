@@ -1,5 +1,15 @@
 # Updates
 
+## 2025/07/30
+
+* [咲耶-P](/translate#json/produce_events/200601801.json)
+* [智代子-P](/translate#json/produce_events/201001801.json)
+* [あさひ-S](/translate#json/produce_events/301702101.json)
+* [愛依-S](/translate#json/produce_events/301901701.json)
+* [羽那-S](/translate#json/produce_events/302700701.json)
+* [愛依-birthday](/translate#json/special_communications/4902007019.json)
+
+
 ## 2025/07/18
 
 * [恋鐘-P](/translate#json/produce_events/200402001.json)
