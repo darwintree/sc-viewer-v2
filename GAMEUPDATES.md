@@ -1,5 +1,16 @@
 # Updates
 
+## 2025/08/08
+
+* [美琴-P](/translate#json/produce_events/202501401.json)
+* [夏葉-S](/translate#json/produce_events/301302401.json)
+* [甘奈-S](/translate#json/produce_events/301402601.json)
+* [甜花-S](/translate#json/produce_events/301502301.json)
+* [雛菜-S](/translate#json/produce_events/302301401.json)
+* [羽那-S](/translate#json/produce_events/302700901.json)
+* [夏葉-birthday](/translate#json/special_communications/4902007013.json)
+
+
 ## 2025/07/30
 
 * [咲耶-P](/translate#json/produce_events/200601801.json)
