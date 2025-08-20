@@ -1,5 +1,12 @@
 # Updates
 
+## 2025/08/20
+
+* [ルカ-P](/translate#json/produce_events/202601101.json)
+* [恋鐘-S](/translate#json/produce_events/300402301.json)
+* [小糸-S](/translate#json/produce_events/302201401.json)
+
+
 ## 2025/08/08
 
 * [美琴-P](/translate#json/produce_events/202501401.json)
