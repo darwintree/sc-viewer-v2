@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/08/29
+
+* [夏葉-P](/translate#json/produce_events/201301901.json)
+* [冬優子-S](/translate#json/produce_events/301801901.json)
+* [美琴-S](/translate#json/produce_events/302502001.json)
+* [ルカ-S](/translate#json/produce_events/302601001.json)
+* [美琴-birthday](/translate#json/special_communications/4902007025.json)
+
+
 ## 2025/08/20
 
 * [ルカ-P](/translate#json/produce_events/202601101.json)
