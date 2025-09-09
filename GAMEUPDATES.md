@@ -1,5 +1,11 @@
 # Updates
 
+## 2025/09/09
+
+* [愛依-P](/translate#json/produce_events/201901701.json)
+* [結華-S](/translate#json/produce_events/300702101.json)
+
+
 ## 2025/08/29
 
 * [夏葉-P](/translate#json/produce_events/201301901.json)
