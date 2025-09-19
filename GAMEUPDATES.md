@@ -1,5 +1,16 @@
 # Updates
 
+## 2025/09/19
+
+* [雛菜-P](/translate#json/produce_events/202301401.json)
+* [真乃-S](/translate#json/produce_events/300102601.json)
+* [灯織-S](/translate#json/produce_events/300202401.json)
+* [霧子-S](/translate#json/produce_events/300802401.json)
+* [小糸-S](/translate#json/produce_events/302201501.json)
+* [にちか-S](/translate#json/produce_events/302401601.json)
+* [霧子-birthday](/translate#json/special_communications/4902007008.json)
+
+
 ## 2025/09/09
 
 * [愛依-P](/translate#json/produce_events/201901701.json)
