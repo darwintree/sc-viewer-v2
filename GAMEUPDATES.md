@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/09/29
+
+* [摩美々-P](/translate#json/produce_events/200502001.json)
+* [小糸-P](/translate#json/produce_events/202201401.json)
+* [凛世-S](/translate#json/produce_events/301202301.json)
+* [羽那-S](/translate#json/produce_events/302701001.json)
+* [羽那-birthday](/translate#json/special_communications/4902007027.json)
+
+
 ## 2025/09/19
 
 * [雛菜-P](/translate#json/produce_events/202301401.json)
