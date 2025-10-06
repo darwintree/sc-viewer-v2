@@ -1,5 +1,47 @@
 # Updates
 
+## 2025/09/29
+
+* [摩美々-P](/translate#json/produce_events/200502001.json)
+* [小糸-P](/translate#json/produce_events/202201401.json)
+* [凛世-S](/translate#json/produce_events/301202301.json)
+* [羽那-S](/translate#json/produce_events/302701001.json)
+* [羽那-birthday](/translate#json/special_communications/4902007027.json)
+
+
+## 2025/09/19
+
+* [雛菜-P](/translate#json/produce_events/202301401.json)
+* [真乃-S](/translate#json/produce_events/300102601.json)
+* [灯織-S](/translate#json/produce_events/300202401.json)
+* [霧子-S](/translate#json/produce_events/300802401.json)
+* [小糸-S](/translate#json/produce_events/302201501.json)
+* [にちか-S](/translate#json/produce_events/302401601.json)
+* [霧子-birthday](/translate#json/special_communications/4902007008.json)
+
+
+## 2025/09/09
+
+* [愛依-P](/translate#json/produce_events/201901701.json)
+* [結華-S](/translate#json/produce_events/300702101.json)
+
+
+## 2025/08/29
+
+* [夏葉-P](/translate#json/produce_events/201301901.json)
+* [冬優子-S](/translate#json/produce_events/301801901.json)
+* [美琴-S](/translate#json/produce_events/302502001.json)
+* [ルカ-S](/translate#json/produce_events/302601001.json)
+* [美琴-birthday](/translate#json/special_communications/4902007025.json)
+
+
+## 2025/08/20
+
+* [ルカ-P](/translate#json/produce_events/202601101.json)
+* [恋鐘-S](/translate#json/produce_events/300402301.json)
+* [小糸-S](/translate#json/produce_events/302201401.json)
+
+
 ## 2025/08/08
 
 * [美琴-P](/translate#json/produce_events/202501401.json)
