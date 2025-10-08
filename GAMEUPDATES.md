@@ -1,5 +1,15 @@
 # Updates
 
+## 2025/10/08
+
+* [凛世-P](/translate#json/produce_events/201202201.json)
+* [果穂-S](/translate#json/produce_events/300902301.json)
+* [凛世-S](/translate#json/produce_events/301202401.json)
+* [甜花-S](/translate#json/produce_events/301502401.json)
+* [透-S](/translate#json/produce_events/302001901.json)
+* [凛世-birthday](/translate#json/special_communications/4902007012.json)
+
+
 ## 2025/09/29
 
 * [摩美々-P](/translate#json/produce_events/200502001.json)
