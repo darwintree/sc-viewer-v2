@@ -1,5 +1,16 @@
 # Updates
 
+## 2025/10/30
+
+* [event-087](/translate#json/game_event_communications/400108701.json)
+* [灯織-P](/translate#json/produce_events/200202101.json)
+* [千雪-P](/translate#json/produce_events/201602001.json)
+* [灯織-S](/translate#json/produce_events/300202501.json)
+* [小糸-S](/translate#json/produce_events/302201601.json)
+* [小糸-S](/translate#json/produce_events/302201701.json)
+* [小糸-birthday](/translate#json/special_communications/4902007022.json)
+
+
 ## 2025/10/20
 
 * [透-P](/translate#json/produce_events/202001501.json)
