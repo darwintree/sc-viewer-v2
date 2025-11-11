@@ -1,5 +1,12 @@
 # Updates
 
+## 2025/11/11
+
+* [めぐる-P](/translate#json/produce_events/200302001.json)
+* [愛依-S](/translate#json/produce_events/301901801.json)
+* [にちか-S](/translate#json/produce_events/302401701.json)
+
+
 ## 2025/10/30
 
 * [event-087](/translate#json/game_event_communications/400108701.json)
