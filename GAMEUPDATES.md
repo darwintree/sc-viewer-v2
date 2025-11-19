@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/11/19
+
+* [霧子-P](/translate#json/produce_events/200802001.json)
+* [樹里-S](/translate#json/produce_events/301102201.json)
+* [夏葉-S](/translate#json/produce_events/301302501.json)
+* [羽那-S](/translate#json/produce_events/302701201.json)
+* [樹里-birthday](/translate#json/special_communications/4902007011.json)
+
+
 ## 2025/11/11
 
 * [めぐる-P](/translate#json/produce_events/200302001.json)
