@@ -1,5 +1,14 @@
 # Updates
 
+## 2025/11/28
+
+* [果穂-P](/translate#json/produce_events/200902101.json)
+* [あさひ-P](/translate#json/produce_events/201701901.json)
+* [冬優子-S](/translate#json/produce_events/301802001.json)
+* [雛菜-S](/translate#json/produce_events/302301501.json)
+* [冬優子-birthday](/translate#json/special_communications/4902007018.json)
+
+
 ## 2025/11/19
 
 * [霧子-P](/translate#json/produce_events/200802001.json)
