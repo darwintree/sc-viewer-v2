@@ -1,5 +1,17 @@
 # Updates
 
+## 2025/12/17
+
+* [event-088](/translate#json/game_event_communications/400108801.json)
+* [恋鐘-P](/translate#json/produce_events/200402101.json)
+* [甘奈-P](/translate#json/produce_events/201402101.json)
+* [甘奈-S](/translate#json/produce_events/301402701.json)
+* [甜花-S](/translate#json/produce_events/301502501.json)
+* [はるき-S](/translate#json/produce_events/302800801.json)
+* [甘奈-birthday](/translate#json/special_communications/4902007014.json)
+* [甜花-birthday](/translate#json/special_communications/4902007015.json)
+
+
 ## 2025/12/08
 
 * [結華-P](/translate#json/produce_events/200701901.json)
