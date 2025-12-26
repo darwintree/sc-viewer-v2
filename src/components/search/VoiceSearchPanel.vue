@@ -36,6 +36,7 @@
     :columns="columns"
     :data="data"
     :loading="loading"
+    :row-key="rowKey"
     :bordered="false"
     :pagination="paginationReactive"
     @update:page="fetchData"
@@ -43,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref, computed, onMounted, reactive } from 'vue'
+import { h, ref, reactive } from 'vue'
 import {
   NDataTable,
   NSelect,
@@ -51,8 +52,8 @@ import {
   NInputGroupLabel,
   NInput,
   NButton,
-  NTag,
 } from 'naive-ui'
+import type { DataTableRowKey } from 'naive-ui'
 import AudioLabel from '../translate/AudioLabel.vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -157,8 +158,27 @@ function extractAudioLabelPropFromVoiceId(_id: string) {
 const router = useRouter()
 const { t } = useI18n()
 
+function rowKey(row: VoiceMeta): DataTableRowKey {
+  return row._id
+}
+
 const createColumns = (): any => {
   const base = [
+    {
+      type: 'expand',
+      renderExpand(row: VoiceMeta) {
+        return h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => useAsReferenceFromRow(row),
+          },
+          {
+            default: () => '作为参考音频',
+          }
+        )
+      },
+    },
     {
       title: 'speaker',
       key: '_id',
@@ -223,6 +243,17 @@ const createColumns = (): any => {
 }
 
 const columns = ref(createColumns())
+
+function useAsReferenceFromRow(row: VoiceMeta) {
+  store.ttsReference = {
+    speaker: row.speaker,
+    text: row.text,
+    audioId: row._id,
+  }
+  router.push({
+    path: '/voice-tts',
+  })
+}
 </script>
 
 <style scoped>
@@ -234,4 +265,5 @@ const columns = ref(createColumns())
 .filter-group {
   margin-bottom: 10px;
 }
+
 </style>
