@@ -1,5 +1,20 @@
 # Updates
 
+## 2025/12/26
+
+* [event-089](/translate#json/game_event_communications/400108901.json)
+* [羽那-P](/translate#json/produce_events/202700901.json)
+* [恋鐘-S](/translate#json/produce_events/300402401.json)
+* [摩美々-S](/translate#json/produce_events/300502301.json)
+* [咲耶-S](/translate#json/produce_events/300602501.json)
+* [霧子-S](/translate#json/produce_events/300802701.json)
+* [あさひ-S](/translate#json/produce_events/301702201.json)
+* [冬優子-S](/translate#json/produce_events/301802101.json)
+* [美琴-S](/translate#json/produce_events/302502201.json)
+* [ルカ-S](/translate#json/produce_events/302601101.json)
+* [あさひ-birthday](/translate#json/special_communications/4902007017.json)
+
+
 ## 2025/12/17
 
 * [event-088](/translate#json/game_event_communications/400108801.json)
