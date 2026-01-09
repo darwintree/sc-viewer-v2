@@ -1,5 +1,15 @@
 # Updates
 
+## 2026/01/09
+
+* [真乃-P](/translate#json/produce_events/200102101.json)
+* [結華-S](/translate#json/produce_events/300702201.json)
+* [霧子-S](/translate#json/produce_events/300802601.json)
+* [果穂-S](/translate#json/produce_events/300902401.json)
+* [円香-S](/translate#json/produce_events/302102301.json)
+* [結華-birthday](/translate#json/special_communications/4902007007.json)
+
+
 ## 2025/12/26
 
 * [event-089](/translate#json/game_event_communications/400108901.json)
