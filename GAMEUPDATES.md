@@ -1,5 +1,13 @@
 # Updates
 
+## 2026/01/20
+
+* [灯織-P](/translate#json/produce_events/200202201.json)
+* [霧子-S](/translate#json/produce_events/300802501.json)
+* [甜花-S](/translate#json/produce_events/301502601.json)
+* [雛菜-S](/translate#json/produce_events/302301601.json)
+
+
 ## 2026/01/09
 
 * [真乃-P](/translate#json/produce_events/200102101.json)
