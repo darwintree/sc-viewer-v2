@@ -24,15 +24,15 @@
               v-if="referenceAudioProps"
               v-bind="referenceAudioProps"
               extra-text="点击播放"
+              display-download
             />
             <div v-else class="status-value">未选择</div>
           </div>
         </n-space>
         <n-input
-          v-model:value="referenceText"
+          v-model:value="referenceTextInput"
           type="textarea"
           placeholder="Reference Text"
-          readonly
           :autosize="{ minRows: 2, maxRows: 4 }"
           size="small"
         />
@@ -105,6 +105,7 @@
             <AudioLabel
               v-bind="sentReferenceAudioProps"
               extra-text="点击播放"
+              display-download
             />
           </span>
         </div>
@@ -125,10 +126,8 @@
             <n-button
               v-for="item in downloadLinks"
               :key="item.label"
-              tag="a"
-              :href="item.url"
-              :download="item.filename"
               size="small"
+              @click="downloadTtsFile(item)"
             >
               {{ item.label }}
             </n-button>
@@ -205,6 +204,7 @@
               <AudioLabel
                 v-bind="historyAudioPropsMap[item.taskId]"
                 extra-text="点击播放"
+                display-download
               />
             </span>
           </div>
@@ -231,10 +231,8 @@
               <n-button
                 v-for="link in getDownloadLinks(item.status)"
                 :key="link.label"
-                tag="a"
-                :href="link.url"
-                :download="link.filename"
                 size="small"
+                @click="downloadTtsFile(link)"
               >
                 {{ link.label }}
               </n-button>
@@ -247,7 +245,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount, type Component } from 'vue'
+import { ref, computed, onBeforeUnmount, watch, type Component } from 'vue'
 import { NAlert, NButton, NCard, NInput, NIcon, NSpace, NTag } from 'naive-ui'
 import axios from 'axios'
 import { store } from '../../store'
@@ -284,6 +282,12 @@ type StatusMeta = {
   label: string
   type: StatusMetaType
   icon: Component
+}
+
+type DownloadLink = {
+  label: string
+  url: string
+  filename: string
 }
 
 const GENIE_SERVER = import.meta.env.VITE_GENIE_SERVER as string | undefined
@@ -323,10 +327,15 @@ const referenceSpeaker = computed({
   get: () => reference.value?.speaker || '',
   set: () => undefined,
 })
-const referenceText = computed({
-  get: () => reference.value?.text || '',
-  set: () => undefined,
-})
+const referenceTextInput = ref('')
+
+watch(
+  reference,
+  (value) => {
+    referenceTextInput.value = value?.text || ''
+  },
+  { immediate: true }
+)
 
 function getAudioProps(audioId?: string): { id: string; base: string } | null {
   if (!audioId) return null
@@ -378,7 +387,7 @@ const compressedUrl = computed(() =>
 
 function getDownloadLinks(status?: TaskStatus | null) {
   if (!status) return []
-  const links: Array<{ label: string; url: string; filename: string }> = []
+  const links: DownloadLink[] = []
   const raw = status.save_path
   const compressed = status.save_path_compressed
 
@@ -406,6 +415,31 @@ function getDownloadLinks(status?: TaskStatus | null) {
 }
 
 const downloadLinks = computed(() => getDownloadLinks(taskStatus.value))
+
+async function triggerDownload(url: string, filename: string) {
+  if (typeof window === 'undefined') return
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error('download failed')
+    const blob = await response.blob()
+    const objectUrl = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = objectUrl
+    link.download = filename
+    link.rel = 'noopener'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(objectUrl)
+  } catch (error) {
+    window.open(url, '_blank')
+  }
+}
+
+function downloadTtsFile(link: DownloadLink) {
+  if (!link.url) return
+  triggerDownload(link.url, link.filename)
+}
 
 function toErrorMessage(error: unknown, fallback: string) {
   if (axios.isAxiosError(error)) {
@@ -521,14 +555,14 @@ async function createTask() {
     const response = await axios.post(`${genieBase}/tasks`, {
       character_name: reference.value.speaker,
       reference_audio_id: reference.value.audioId,
-      reference_audio_text: reference.value.text,
+      reference_audio_text: referenceTextInput.value,
       text: ttsText.value,
     })
     taskId.value = response.data.task_id
     taskStatus.value = null
     sentTtsText.value = ttsText.value
     sentSpeaker.value = reference.value.speaker
-    sentReferenceText.value = reference.value.text
+    sentReferenceText.value = referenceTextInput.value
     sentReferenceAudioId.value = reference.value.audioId
     sentAt.value = new Date()
     addHistoryItem({
