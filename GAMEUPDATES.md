@@ -1,5 +1,18 @@
 # Updates
 
+## 2026/01/30
+
+* [event-090](/translate#json/game_event_communications/400109001.json)
+* [智代子-P](/translate#json/produce_events/201001901.json)
+* [小糸-P](/translate#json/produce_events/202201501.json)
+* [摩美々-S](/translate#json/produce_events/300502201.json)
+* [ルカ-S](/translate#json/produce_events/302601201.json)
+* [ルカ-S](/translate#json/produce_events/302601301.json)
+* [idol-91-S](/translate#json/produce_events/309100701.json)
+* [ルカ-birthday](/translate#json/special_communications/4902007026.json)
+* [idol-91-birthday](/translate#json/special_communications/4902007091.json)
+
+
 ## 2026/01/20
 
 * [灯織-P](/translate#json/produce_events/200202201.json)
