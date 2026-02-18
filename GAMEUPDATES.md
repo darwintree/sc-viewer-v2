@@ -1,5 +1,17 @@
 # Updates
 
+## 2026/02/18
+
+* [愛依-P](/translate#json/produce_events/201901801.json)
+* [恋鐘-S](/translate#json/produce_events/300402501.json)
+* [智代子-S](/translate#json/produce_events/301002501.json)
+* [智代子-S](/translate#json/produce_events/301002601.json)
+* [夏葉-S](/translate#json/produce_events/301302601.json)
+* [美琴-S](/translate#json/produce_events/302502301.json)
+* [恋鐘-birthday](/translate#json/special_communications/4902007004.json)
+* [智代子-birthday](/translate#json/special_communications/4902007010.json)
+
+
 ## 2026/02/09
 
 * [甜花-P](/translate#json/produce_events/201502101.json)
