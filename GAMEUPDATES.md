@@ -1,5 +1,16 @@
 # Updates
 
+## 2026/02/27
+
+* [event-091](/translate#json/game_event_communications/400109101.json)
+* [にちか-P](/translate#json/produce_events/202401501.json)
+* [ルカ-P](/translate#json/produce_events/202601201.json)
+* [灯織-S](/translate#json/produce_events/300202601.json)
+* [灯織-S](/translate#json/produce_events/300202701.json)
+* [冬優子-S](/translate#json/produce_events/301802201.json)
+* [灯織-birthday](/translate#json/special_communications/4902007002.json)
+
+
 ## 2026/02/18
 
 * [愛依-P](/translate#json/produce_events/201901801.json)
