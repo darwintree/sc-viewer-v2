@@ -1,5 +1,12 @@
 # Updates
 
+## 2026/03/18
+
+* [樹里-P](/translate#json/produce_events/201102001.json)
+* [めぐる-S](/translate#json/produce_events/300302601.json)
+* [凛世-S](/translate#json/produce_events/301202501.json)
+
+
 ## 2026/03/09
 
 * [千雪-P](/translate#json/produce_events/201602101.json)
