@@ -1,5 +1,16 @@
 # Updates
 
+## 2026/03/30
+
+* [event-092](/translate#json/game_event_communications/400109201.json)
+* [摩美々-P](/translate#json/produce_events/200502101.json)
+* [めぐる-S](/translate#json/produce_events/300302701.json)
+* [凛世-S](/translate#json/produce_events/301202601.json)
+* [円香-S](/translate#json/produce_events/302102401.json)
+* [はるき-S](/translate#json/produce_events/302800901.json)
+* [はるき-birthday](/translate#json/special_communications/4902007028.json)
+
+
 ## 2026/03/18
 
 * [樹里-P](/translate#json/produce_events/201102001.json)
