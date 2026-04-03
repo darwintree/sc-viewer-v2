@@ -40,6 +40,7 @@ jobs:
       with:
         branch: asset-update-branch
         create_branch: true
+        push_options: --force
         commit_message: ${{ steps.msg.outputs.msg }}
 
     - name: Create viewer PR
@@ -48,9 +49,25 @@ jobs:
       with:
         github-token: ${{ secrets.PAT }}
         script: |
+          const { owner, repo } = context.repo
+          const head = `${owner}:asset-update-branch`
+
+          const { data: existingPrs } = await github.rest.pulls.list({
+            owner,
+            repo,
+            state: 'open',
+            head,
+            base: 'main',
+          })
+
+          if (existingPrs.length > 0) {
+            core.info(`PR already exists: ${existingPrs[0].html_url}`)
+            return
+          }
+
           await github.rest.pulls.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
+            owner,
+            repo,
             title: 'New game assets detected',
             head: 'asset-update-branch',
             base: 'main',
