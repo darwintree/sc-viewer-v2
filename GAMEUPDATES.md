@@ -1,5 +1,14 @@
 # Updates
 
+## 2026/04/09
+
+* [夏葉-P](/translate#json/produce_events/201302001.json)
+* [透-P](/translate#json/produce_events/202001601.json)
+* [冬優子-S](/translate#json/produce_events/301802301.json)
+* [はるき-S](/translate#json/produce_events/302801001.json)
+* [真乃-birthday](/translate#json/special_communications/490260001.json)
+
+
 ## 2026/03/30
 
 * [event-092](/translate#json/game_event_communications/400109201.json)
