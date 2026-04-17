@@ -1,5 +1,26 @@
 # Updates
 
+## 2026/04/17
+
+* [霧子-P](/translate#json/produce_events/200802101.json)
+* [真乃-S](/translate#json/produce_events/300102801.json)
+* [恋鐘-S](/translate#json/produce_events/300402601.json)
+* [果穂-S](/translate#json/produce_events/300902601.json)
+* [千雪-S](/translate#json/produce_events/301602401.json)
+* [あさひ-S](/translate#json/produce_events/301702401.json)
+* [円香-S](/translate#json/produce_events/302102501.json)
+* [千雪-birthday](/translate#json/special_communications/4902007016.json)
+* [真乃-birthday](/translate#json/special_communications/4902008001.json)
+* [真乃-birthday](/translate#json/special_communications/490270001.json)
+* [灯織-birthday](/translate#json/special_communications/490270002.json)
+* [めぐる-birthday](/translate#json/special_communications/490270003.json)
+* [恋鐘-birthday](/translate#json/special_communications/490270004.json)
+* [摩美々-birthday](/translate#json/special_communications/490270005.json)
+* [咲耶-birthday](/translate#json/special_communications/490270006.json)
+* [結華-birthday](/translate#json/special_communications/490270007.json)
+* [霧子-birthday](/translate#json/special_communications/490270008.json)
+
+
 ## 2026/04/09
 
 * [夏葉-P](/translate#json/produce_events/201302001.json)
