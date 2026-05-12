@@ -1,5 +1,11 @@
 # Updates
 
+## 2026/05/12
+
+* [咲耶-S](/translate#json/produce_events/300602601.json)
+* [甘奈-S](/translate#json/produce_events/301402801.json)
+
+
 ## 2026/04/28
 
 * [event-093](/translate#json/game_event_communications/400109301.json)
