@@ -1,5 +1,14 @@
 # Updates
 
+## 2026/05/21
+
+* [にちか-P](/translate#json/produce_events/202401601.json)
+* [摩美々-S](/translate#json/produce_events/300502401.json)
+* [樹里-S](/translate#json/produce_events/301102301.json)
+* [小糸-S](/translate#json/produce_events/302201901.json)
+* [摩美々-birthday](/translate#json/special_communications/4902008005.json)
+
+
 ## 2026/05/12
 
 * [咲耶-S](/translate#json/produce_events/300602601.json)
