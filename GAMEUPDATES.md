@@ -1,5 +1,12 @@
 # Updates
 
+## 2026/06/09
+
+* [円香-P](/translate#json/produce_events/202101601.json)
+* [雛菜-S](/translate#json/produce_events/302301801.json)
+* [美琴-S](/translate#json/produce_events/302502401.json)
+
+
 ## 2026/05/29
 
 * [event-094](/translate#json/game_event_communications/400109401.json)
