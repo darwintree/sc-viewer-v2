@@ -1,5 +1,14 @@
 # Updates
 
+## 2026/06/18
+
+* [ルカ-P](/translate#json/produce_events/202601301.json)
+* [咲耶-S](/translate#json/produce_events/300602701.json)
+* [凛世-S](/translate#json/produce_events/301202701.json)
+* [はるき-S](/translate#json/produce_events/302801101.json)
+* [咲耶-birthday](/translate#json/special_communications/4902008006.json)
+
+
 ## 2026/06/09
 
 * [円香-P](/translate#json/produce_events/202101601.json)
