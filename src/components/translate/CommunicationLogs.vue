@@ -142,7 +142,11 @@ import {
   getIndexData,
 } from '../../helper/path'
 import { CsvDataLine, toCsvText } from '../../helper/csv'
-import { processSourceInput } from '../../helper/source'
+import {
+  processSourceInput,
+  detectJsonFormat,
+  exportToScspJson,
+} from '../../helper/source'
 
 export default defineComponent({
   // define the "DialogueLine" component as a child component
@@ -184,6 +188,7 @@ export default defineComponent({
       // extendedCsvPath: "",
       hasPreviewed: false,
       showIndexModal: false,
+      originalJsonData: null as unknown | null, // 保存原始JSON数据用于导出
     }
   },
   computed: {
@@ -320,20 +325,29 @@ export default defineComponent({
     // },
     async loadDataFromSourceInput(
       sourceInput: File | string,
-      source: DataSource | null
+      source: DataSource | null,
+      jsonFormat?: 'sc' | 'scsp'
     ) {
       try {
         this.data = []
         this.isPreviewing = false
         this.hasPreviewed = false
         this.isLoading = true
-        const { data, jsonUrl, name, path, translator, mode } =
-          await processSourceInput(sourceInput, source)
+        const {
+          data,
+          jsonUrl,
+          name,
+          path,
+          translator,
+          mode,
+          originalJsonData,
+        } = await processSourceInput(sourceInput, source, jsonFormat)
         store.jsonUrl = jsonUrl
         store.csvFilename = name
         store.path = path
         this.translator = translator
         store.currentMode = mode
+        this.originalJsonData = originalJsonData
         this.updateRelatedChapterStatus()
         if (mode === DataMode.Raw) {
           this.getNotification().warning({
@@ -408,14 +422,28 @@ export default defineComponent({
         lines[index + offset].local_trans = trans[index]
       }
     },
-    downloadData() {
-      const csv = this.getCurrentDataString()
-
-      // create a new Blob object with the CSV string as its content
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-
-      // use the FileSaver library to save the Blob object as a file
-      FileSaver.saveAs(blob, store.csvFilename)
+    downloadData(format: 'csv' | 'json' = 'csv') {
+      if (format === 'json' && this.originalJsonData) {
+        // 导出为JSON格式
+        const lines = this.$refs.lines as InstanceType<typeof DialogueLine>[]
+        const updatedData = this.data.map((item, index) => {
+          return {
+            ...item,
+            trans: lines[index].local_trans,
+          }
+        })
+        const jsonString = exportToScspJson(updatedData, this.originalJsonData)
+        const blob = new Blob([jsonString], {
+          type: 'application/json;charset=utf-8',
+        })
+        const filename = store.csvFilename.replace('.csv', '.json')
+        FileSaver.saveAs(blob, filename)
+      } else {
+        // 导出为CSV格式
+        const csv = this.getCurrentDataString()
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+        FileSaver.saveAs(blob, store.csvFilename)
+      }
     },
     b64EncodeUnicode(str: string) {
       // first we use encodeURIComponent to get percent-encoded UTF-8,

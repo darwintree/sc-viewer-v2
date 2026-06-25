@@ -6,6 +6,56 @@ import {
   metaInfoFromJsonPathUrl,
 } from './path'
 import { store } from '../store'
+import CSV from 'papaparse'
+
+// SCSP格式数据接口
+interface ScspDataItem {
+  key: string
+  text: string
+}
+
+// 检测是否为SCSP格式
+function isScspFormat(data: any): data is ScspDataItem[] {
+  if (!Array.isArray(data)) return false
+  if (data.length === 0) return true // 空数组视为SCSP格式
+  const firstItem = data[0]
+  return (
+    firstItem &&
+    typeof firstItem === 'object' &&
+    'key' in firstItem &&
+    'text' in firstItem &&
+    Object.keys(firstItem).length === 2
+  )
+}
+
+// SCSP格式转换为CSV文本
+function scspTextToCsvText(data: ScspDataItem[]): string {
+  const csvData: CsvDataLine[] = data.map((item) => ({
+    id: item.key,
+    name: '',
+    text: item.text,
+    trans: '',
+  }))
+
+  // 添加元信息行
+  csvData.push({
+    id: 'info',
+    name: `${crypto.randomUUID()}.json`,
+    text: '',
+    trans: '',
+  })
+
+  // 添加译者行
+  csvData.push({
+    id: '译者',
+    name: '',
+    text: '',
+    trans: '',
+  })
+
+  // 转换为CSV文本
+  return CSV.unparse(csvData)
+}
 
 async function preprocessRemoteSourceInput(sourceInput: string): Promise<{
   csvText: string // csv text
@@ -64,20 +114,33 @@ async function preprocessBrowserSourceInput(sourceInput: string): Promise<{
   }
 }
 
-async function preprocessDiskSourceInput(sourceInput: File): Promise<{
+async function preprocessDiskSourceInput(
+  sourceInput: File,
+  jsonFormat?: 'sc' | 'scsp'
+): Promise<{
   csvText: string // csv text
   name: string
   path: string
   mode: DataMode
+  originalJsonData?: any // 保存原始JSON数据用于导出
 }> {
   const name = sourceInput.name
   const text = await sourceInput.text()
   let csvText: string
   const mode = DataMode.File
+  let originalJsonData: any
+
   if (name.endsWith('.csv')) {
     csvText = text
   } else if (name.endsWith('.json')) {
-    csvText = jsonTextToCsvText(JSON.parse(text), null)
+    const jsonData = JSON.parse(text)
+    originalJsonData = jsonData
+
+    if (jsonFormat === 'scsp' || isScspFormat(jsonData)) {
+      csvText = scspTextToCsvText(jsonData)
+    } else {
+      csvText = jsonTextToCsvText(jsonData, null)
+    }
   } else {
     throw new Error('expected .json or .csv file')
   }
@@ -88,17 +151,20 @@ async function preprocessDiskSourceInput(sourceInput: File): Promise<{
     name,
     path,
     mode,
+    originalJsonData,
   }
 }
 
 async function preprocessSourceInput(
   sourceInput: File | string,
-  source: DataSource | null
+  source: DataSource | null,
+  jsonFormat?: 'sc' | 'scsp'
 ): Promise<{
   csvText: string // csv text
   name: string
   path: string
   mode: DataMode
+  originalJsonData?: any // 保存原始JSON数据用于导出
 }> {
   switch (source) {
     case DataSource.Remote:
@@ -112,7 +178,7 @@ async function preprocessSourceInput(
     case null:
       if (typeof sourceInput === 'string')
         throw new Error('unexpected source input')
-      return preprocessDiskSourceInput(sourceInput)
+      return preprocessDiskSourceInput(sourceInput, jsonFormat)
     default:
       throw new Error('unreachable')
   }
@@ -120,7 +186,8 @@ async function preprocessSourceInput(
 
 async function processSourceInput(
   sourceInput: File | string,
-  source: DataSource | null // remote, browser or file(null)
+  source: DataSource | null, // remote, browser or file(null)
+  jsonFormat?: 'sc' | 'scsp'
 ): Promise<{
   data: CsvDataLine[]
   jsonUrl: string
@@ -128,11 +195,10 @@ async function processSourceInput(
   path: string
   translator: string
   mode: DataMode
+  originalJsonData?: unknown // 保存原始JSON数据用于导出
 }> {
-  const { csvText, name, mode, path } = await preprocessSourceInput(
-    sourceInput,
-    source
-  )
+  const { csvText, name, mode, path, originalJsonData } =
+    await preprocessSourceInput(sourceInput, source, jsonFormat)
   const { data, translator, jsonUrl } = extractInfoFromCsvText(csvText)
   return {
     data,
@@ -141,7 +207,59 @@ async function processSourceInput(
     path,
     translator,
     mode,
+    originalJsonData,
   }
+}
+
+// 检测文件是否为JSON格式
+export async function detectJsonFormat(
+  file: File
+): Promise<'sc' | 'scsp' | null> {
+  if (!file.name.endsWith('.json')) return null
+
+  try {
+    const text = await file.text()
+    const data = JSON.parse(text)
+
+    if (isScspFormat(data)) {
+      return 'scsp'
+    }
+    return 'sc'
+  } catch (error) {
+    console.error('Error detecting JSON format:', error)
+    return null
+  }
+}
+
+// 导出函数：将CSV数据转换回SCSP格式JSON
+export function exportToScspJson(
+  csvData: CsvDataLine[],
+  originalJsonData?: unknown
+): string {
+  if (!originalJsonData || !Array.isArray(originalJsonData)) {
+    throw new Error('原始JSON数据无效')
+  }
+
+  // 创建key到翻译文本的映射
+  const translationMap = new Map<string, string>()
+  csvData.forEach((item) => {
+    if (item.id && item.id !== 'info' && item.id !== '译者' && item.trans) {
+      translationMap.set(item.id, item.trans)
+    }
+  })
+
+  // 更新原始JSON数据的text字段
+  const updatedData = (originalJsonData as any[]).map((item) => {
+    if (item.key && translationMap.has(item.key)) {
+      return {
+        ...item,
+        text: translationMap.get(item.key),
+      }
+    }
+    return item
+  })
+
+  return JSON.stringify(updatedData, null, 2)
 }
 
 export { processSourceInput }
