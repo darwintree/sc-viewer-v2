@@ -1,5 +1,13 @@
 # Updates
 
+## 2026/06/29
+
+* [event-095](/translate#json/game_event_communications/400109501.json)
+* [めぐる-P](/translate#json/produce_events/200302101.json)
+* [霧子-P](/translate#json/produce_events/200802201.json)
+* [結華-S](/translate#json/produce_events/300702401.json)
+
+
 ## 2026/06/18
 
 * [ルカ-P](/translate#json/produce_events/202601301.json)
