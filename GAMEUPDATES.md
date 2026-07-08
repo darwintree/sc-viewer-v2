@@ -1,5 +1,12 @@
 # Updates
 
+## 2026/07/08
+
+* [夏葉-S](/translate#json/produce_events/301302701.json)
+* [千雪-S](/translate#json/produce_events/301602601.json)
+* [idol-91-S](/translate#json/produce_events/309100801.json)
+
+
 ## 2026/06/29
 
 * [event-095](/translate#json/game_event_communications/400109501.json)
