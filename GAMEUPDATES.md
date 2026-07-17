@@ -1,5 +1,18 @@
 # Updates
 
+## 2026/07/17
+
+* [甘奈-P](/translate#json/produce_events/201402201.json)
+* [めぐる-S](/translate#json/produce_events/300302801.json)
+* [果穂-S](/translate#json/produce_events/300902501.json)
+* [樹里-S](/translate#json/produce_events/301102401.json)
+* [透-S](/translate#json/produce_events/302002101.json)
+* [にちか-S](/translate#json/produce_events/302401901.json)
+* [めぐる-birthday](/translate#json/special_communications/4902008003.json)
+* [果穂-birthday](/translate#json/special_communications/4902008009.json)
+* [にちか-birthday](/translate#json/special_communications/4902008024.json)
+
+
 ## 2026/07/08
 
 * [夏葉-S](/translate#json/produce_events/301302701.json)
