@@ -1,5 +1,16 @@
 # Updates
 
+## 2026/07/30
+
+* [event-096](/translate#json/game_event_communications/400109601.json)
+* [樹里-P](/translate#json/produce_events/201102101.json)
+* [羽那-P](/translate#json/produce_events/202701001.json)
+* [冬優子-S](/translate#json/produce_events/301802401.json)
+* [愛依-S](/translate#json/produce_events/301902001.json)
+* [にちか-S](/translate#json/produce_events/302402001.json)
+* [愛依-birthday](/translate#json/special_communications/4902008019.json)
+
+
 ## 2026/07/17
 
 * [甘奈-P](/translate#json/produce_events/201402201.json)
