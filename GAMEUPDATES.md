@@ -1,5 +1,15 @@
 # Updates
 
+## 2026/08/07
+
+* [智代子-P](/translate#json/produce_events/201002001.json)
+* [恋鐘-S](/translate#json/produce_events/300402701.json)
+* [摩美々-S](/translate#json/produce_events/300502501.json)
+* [夏葉-S](/translate#json/produce_events/301302801.json)
+* [千雪-S](/translate#json/produce_events/301602701.json)
+* [夏葉-birthday](/translate#json/special_communications/4902008013.json)
+
+
 ## 2026/07/30
 
 * [event-096](/translate#json/game_event_communications/400109601.json)
