@@ -1,5 +1,12 @@
 # Updates
 
+## 2026/08/19
+
+* [雛菜-P](/translate#json/produce_events/202301501.json)
+* [めぐる-S](/translate#json/produce_events/300302901.json)
+* [咲耶-S](/translate#json/produce_events/300602801.json)
+
+
 ## 2026/08/07
 
 * [智代子-P](/translate#json/produce_events/201002001.json)
