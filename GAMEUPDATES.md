@@ -1,5 +1,14 @@
 # Updates
 
+## 2026/08/28
+
+* [event-097](/translate#json/game_event_communications/400109701.json)
+* [摩美々-P](/translate#json/produce_events/200502201.json)
+* [はるき-P](/translate#json/produce_events/202801001.json)
+* [千雪-S](/translate#json/produce_events/301602801.json)
+* [小糸-S](/translate#json/produce_events/302202001.json)
+
+
 ## 2026/08/19
 
 * [雛菜-P](/translate#json/produce_events/202301501.json)
