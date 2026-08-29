@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026/08/29
+
+* feat: add responsive sticky top navigation
+
 ## 2025/01/09
 
 * feat: add comment
