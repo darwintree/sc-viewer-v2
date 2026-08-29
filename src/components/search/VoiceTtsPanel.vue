@@ -111,6 +111,10 @@
             </template>
             {{ currentStatusMeta.label }}
           </n-tag>
+          <div v-if="sentSpeaker" class="model-chip" aria-label="使用模型">
+            <span>模型</span>
+            <strong>{{ sentSpeaker }}</strong>
+          </div>
           <div class="status-meta">
             <span class="status-label">发送时间</span>
             <span class="status-value">{{ sentAtLabel }}</span>
@@ -124,48 +128,61 @@
           <span class="status-label">TTS 文本</span>
           <span class="status-value">{{ sentTtsText }}</span>
         </div>
-        <div v-if="sentSpeaker" class="status-meta">
-          <span class="status-label">Speaker</span>
-          <span class="status-value">{{ sentSpeaker }}</span>
-        </div>
-        <div v-if="sentReferenceAudioProps" class="status-meta">
-          <span class="status-label">参考音频</span>
-          <span class="status-value">
-            <AudioLabel
-              v-bind="sentReferenceAudioProps"
-              extra-text="点击播放"
-              display-download
-            />
-          </span>
-        </div>
-        <div v-if="sentReferenceText" class="status-meta status-text">
-          <span class="status-label">参考文本</span>
-          <span class="status-value">{{ sentReferenceText }}</span>
-        </div>
         <div v-if="taskStatus?.error" class="status-meta status-error">
           <span class="status-label">Error</span>
           <span class="status-value">{{ taskStatus.error }}</span>
         </div>
-        <template v-if="isCompleted">
-          <div v-if="compressedUrl" class="audio-block">
+        <div
+          v-if="isCompleted && (compressedUrl || downloadLinks.length)"
+          class="audio-result"
+        >
+          <div v-if="compressedUrl" class="audio-preview">
             <div class="status-label">在线试听</div>
             <audio :src="compressedUrl" controls />
           </div>
-          <n-space
-            v-if="downloadLinks.length"
-            size="small"
-            class="download-actions"
-          >
-            <n-button
-              v-for="item in downloadLinks"
-              :key="item.label"
-              size="small"
-              @click="downloadTtsFile(item)"
-            >
-              {{ item.label }}
-            </n-button>
-          </n-space>
-        </template>
+          <div v-if="downloadLinks.length" class="download-shelf">
+            <div class="download-shelf-title">下载音频</div>
+            <div class="download-options">
+              <button
+                v-for="item in downloadLinks"
+                :key="item.format"
+                type="button"
+                class="download-option"
+                :class="{ 'download-option--expired': item.expired }"
+                :aria-label="`下载 ${item.format}，${item.expiry}`"
+                @click="downloadTtsFile(item)"
+              >
+                <span class="download-format">{{ item.format }}</span>
+                <span class="download-expiry">{{ item.expiry }}</span>
+                <n-icon class="download-option-icon" aria-hidden="true">
+                  <Download />
+                </n-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <details
+          v-if="sentReferenceAudioProps || sentReferenceText"
+          class="task-details"
+        >
+          <summary>生成详情</summary>
+          <div class="task-details-body">
+            <div v-if="sentReferenceAudioProps" class="status-meta">
+              <span class="status-label">参考音频</span>
+              <span class="status-value">
+                <AudioLabel
+                  v-bind="sentReferenceAudioProps"
+                  extra-text="点击播放"
+                  display-download
+                />
+              </span>
+            </div>
+            <div v-if="sentReferenceText" class="status-meta status-text">
+              <span class="status-label">参考文本</span>
+              <span class="status-value">{{ sentReferenceText }}</span>
+            </div>
+          </div>
+        </details>
       </n-space>
     </n-card>
 
@@ -178,7 +195,7 @@
       <n-space vertical size="small">
         <n-space justify="space-between" align="center" class="history-toolbar">
           <div class="status-label">最近 {{ historyItems.length }} 条</div>
-          <n-button size="tiny" tertiary @click="clearHistory">
+          <n-button size="small" type="error" tertiary @click="clearHistory">
             清空历史
           </n-button>
         </n-space>
@@ -188,93 +205,136 @@
           class="history-item"
         >
           <div class="history-header">
-            <n-tag :type="getStatusMeta(item.status?.status).type" size="small">
-              <template #icon>
-                <n-icon>
-                  <component :is="getStatusMeta(item.status?.status).icon" />
-                </n-icon>
-              </template>
-              {{ getStatusMeta(item.status?.status).label }}
-            </n-tag>
-            <div class="status-meta">
-              <span class="status-label">发送时间</span>
-              <span class="status-value">{{ formatSentAt(item.sentAt) }}</span>
-            </div>
-            <div
-              v-if="isWaitingStatus(item.status?.status)"
-              class="status-meta"
-            >
-              <span class="status-label">排队</span>
-              <span class="status-value">{{ item.status?.pending ?? 0 }}</span>
-            </div>
-            <n-button
-              size="tiny"
-              tertiary
-              @click="removeHistoryItem(item.taskId)"
-            >
-              删除
-            </n-button>
-            <n-button
-              v-if="item.status?.status === 'running'"
-              size="tiny"
-              tertiary
-              @click="refreshHistoryStatus(item.taskId)"
-            >
-              刷新状态
-            </n-button>
-          </div>
-          <div v-if="item.ttsText.trim()" class="status-meta status-text">
-            <span class="status-label">TTS 文本</span>
-            <span class="status-value">{{ item.ttsText }}</span>
-          </div>
-          <div v-if="item.speaker" class="status-meta">
-            <span class="status-label">Speaker</span>
-            <span class="status-value">{{ item.speaker }}</span>
-          </div>
-          <div v-if="historyAudioPropsMap[item.taskId]" class="status-meta">
-            <span class="status-label">参考音频</span>
-            <span class="status-value">
-              <AudioLabel
-                v-bind="historyAudioPropsMap[item.taskId]"
-                extra-text="点击播放"
-                display-download
-              />
-            </span>
-          </div>
-          <div v-if="item.referenceText" class="status-meta status-text">
-            <span class="status-label">参考文本</span>
-            <span class="status-value">{{ item.referenceText }}</span>
-          </div>
-          <div v-if="item.status?.error" class="status-meta status-error">
-            <span class="status-label">Error</span>
-            <span class="status-value">{{ item.status.error }}</span>
-          </div>
-          <template v-if="item.status?.status === 'completed'">
-            <div
-              v-if="resolveTaskUrl(item.status?.save_path_compressed)"
-              class="audio-block"
-            >
-              <div class="status-label">在线试听</div>
-              <audio
-                :src="resolveTaskUrl(item.status?.save_path_compressed)"
-                controls
-              />
-            </div>
-            <n-space
-              v-if="getDownloadLinks(item.status).length"
-              size="small"
-              class="download-actions"
-            >
-              <n-button
-                v-for="link in getDownloadLinks(item.status)"
-                :key="link.label"
+            <div class="history-summary">
+              <n-tag
+                :type="getStatusMeta(item.status?.status).type"
                 size="small"
-                @click="downloadTtsFile(link)"
               >
-                {{ link.label }}
+                <template #icon>
+                  <n-icon>
+                    <component :is="getStatusMeta(item.status?.status).icon" />
+                  </n-icon>
+                </template>
+                {{ getStatusMeta(item.status?.status).label }}
+              </n-tag>
+              <span
+                v-if="item.speaker"
+                class="model-chip"
+                aria-label="使用模型"
+              >
+                <span>模型</span>
+                <strong>{{ item.speaker }}</strong>
+              </span>
+              <div class="history-time" aria-label="发送时间">
+                <n-icon><Time /></n-icon>
+                <span>{{ formatSentAt(item.sentAt) }}</span>
+              </div>
+              <span
+                v-if="isWaitingStatus(item.status?.status)"
+                class="history-queue"
+              >
+                排队 {{ item.status?.pending ?? 0 }}
+              </span>
+            </div>
+            <div class="history-actions">
+              <n-button
+                v-if="item.status?.status === 'running'"
+                size="small"
+                tertiary
+                @click="refreshHistoryStatus(item.taskId)"
+              >
+                刷新状态
               </n-button>
-            </n-space>
-          </template>
+              <n-button
+                size="small"
+                type="error"
+                tertiary
+                @click="removeHistoryItem(item.taskId)"
+              >
+                删除
+              </n-button>
+            </div>
+          </div>
+          <div class="history-body">
+            <div
+              v-if="item.ttsText.trim()"
+              class="status-meta status-text history-primary-text"
+            >
+              <span class="status-label">TTS 文本</span>
+              <span class="status-value">{{ item.ttsText }}</span>
+            </div>
+            <div v-if="item.status?.error" class="status-meta status-error">
+              <span class="status-label">Error</span>
+              <span class="status-value">{{ item.status.error }}</span>
+            </div>
+            <div
+              v-if="
+                item.status?.status === 'completed' &&
+                (resolveTaskUrl(item.status?.save_path_compressed) ||
+                  getDownloadLinks(item.status).length)
+              "
+              class="audio-result"
+            >
+              <div
+                v-if="resolveTaskUrl(item.status?.save_path_compressed)"
+                class="audio-preview"
+              >
+                <div class="status-label">在线试听</div>
+                <audio
+                  :src="resolveTaskUrl(item.status?.save_path_compressed)"
+                  controls
+                />
+              </div>
+              <div
+                v-if="getDownloadLinks(item.status).length"
+                class="download-shelf"
+              >
+                <div class="download-shelf-title">下载音频</div>
+                <div class="download-options">
+                  <button
+                    v-for="link in getDownloadLinks(item.status)"
+                    :key="link.format"
+                    type="button"
+                    class="download-option"
+                    :class="{ 'download-option--expired': link.expired }"
+                    :aria-label="`下载 ${link.format}，${link.expiry}`"
+                    @click="downloadTtsFile(link)"
+                  >
+                    <span class="download-format">{{ link.format }}</span>
+                    <span class="download-expiry">{{ link.expiry }}</span>
+                    <n-icon class="download-option-icon" aria-hidden="true">
+                      <Download />
+                    </n-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <details
+              v-if="historyAudioPropsMap[item.taskId] || item.referenceText"
+              class="task-details"
+            >
+              <summary>生成详情</summary>
+              <div class="task-details-body">
+                <div
+                  v-if="historyAudioPropsMap[item.taskId]"
+                  class="status-meta"
+                >
+                  <span class="status-label">参考音频</span>
+                  <span class="status-value">
+                    <AudioLabel
+                      v-bind="historyAudioPropsMap[item.taskId]"
+                      extra-text="点击播放"
+                      display-download
+                    />
+                  </span>
+                </div>
+                <div v-if="item.referenceText" class="status-meta status-text">
+                  <span class="status-label">参考文本</span>
+                  <span class="status-value">{{ item.referenceText }}</span>
+                </div>
+              </div>
+            </details>
+          </div>
         </div>
       </n-space>
     </n-card>
@@ -287,7 +347,13 @@ import { NAlert, NButton, NCard, NInput, NIcon, NSpace, NTag } from 'naive-ui'
 import axios from 'axios'
 import { store } from '../../store'
 import AudioLabel from '../translate/AudioLabel.vue'
-import { CheckmarkFilled, CloseFilled, Play, Time } from '@vicons/carbon'
+import {
+  CheckmarkFilled,
+  CloseFilled,
+  Download,
+  Play,
+  Time,
+} from '@vicons/carbon'
 
 type TaskStatus = {
   status: string
@@ -324,7 +390,9 @@ type StatusMeta = {
 }
 
 type DownloadLink = {
-  label: string
+  format: 'WAV' | 'OGG'
+  expiry: string
+  expired: boolean
   url: string
   filename: string
 }
@@ -426,11 +494,16 @@ const compressedUrl = computed(() =>
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
-function formatRemainingDays(expiresAt?: string | null) {
+function getExpiry(expiresAt?: string | null) {
   const timestamp = expiresAt ? Date.parse(expiresAt) : Number.NaN
   const remainingMs = timestamp - Date.now()
-  if (!Number.isFinite(remainingMs) || remainingMs <= 0) return '已过期'
-  return `剩余 ${Math.ceil(remainingMs / DAY_MS)} 天`
+  if (!Number.isFinite(remainingMs) || remainingMs <= 0) {
+    return { expiry: '已过期 · 可尝试', expired: true }
+  }
+  return {
+    expiry: `剩余 ${Math.ceil(remainingMs / DAY_MS)} 天`,
+    expired: false,
+  }
 }
 
 function getDownloadLinks(status?: TaskStatus | null) {
@@ -442,7 +515,8 @@ function getDownloadLinks(status?: TaskStatus | null) {
   const rawUrl = resolveTaskUrl(raw)
   if (rawUrl) {
     links.push({
-      label: `下载 WAV · ${formatRemainingDays(status.wav_expires_at)}`,
+      format: 'WAV',
+      ...getExpiry(status.wav_expires_at),
       url: rawUrl,
       filename: raw ? raw.split('/').pop() || 'tts.wav' : 'tts.wav',
     })
@@ -451,7 +525,8 @@ function getDownloadLinks(status?: TaskStatus | null) {
   const compressedUrlValue = resolveTaskUrl(compressed)
   if (compressedUrlValue) {
     links.push({
-      label: `下载 OGG · ${formatRemainingDays(status.ogg_expires_at)}`,
+      format: 'OGG',
+      ...getExpiry(status.ogg_expires_at),
       url: compressedUrlValue,
       filename: compressed
         ? compressed.split('/').pop() || 'tts.mp3'
@@ -820,6 +895,7 @@ historyItems.value = loadHistory()
 }
 
 .reference-audio-inline {
+  box-sizing: border-box;
   display: flex;
   min-height: 30px;
   align-items: center;
@@ -834,8 +910,7 @@ historyItems.value = loadHistory()
   max-width: 180px;
 }
 
-.action-row,
-.download-actions {
+.action-row {
   margin-top: 4px;
 }
 
@@ -863,6 +938,25 @@ historyItems.value = loadHistory()
   font-size: 13px;
 }
 
+.model-chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(31, 41, 55, 0.055);
+  color: var(--tts-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.model-chip strong {
+  color: #34423c;
+  font-size: 12px;
+  font-weight: 650;
+}
+
 .status-text {
   align-items: flex-start;
 }
@@ -876,7 +970,8 @@ historyItems.value = loadHistory()
   > .n-space
   > .n-space-item
   > .status-meta,
-.history-item > .status-meta {
+.history-body > .status-meta,
+.task-details-body > .status-meta {
   display: grid;
   grid-template-columns: 76px minmax(0, 1fr);
   gap: 12px;
@@ -885,44 +980,192 @@ historyItems.value = loadHistory()
 }
 
 .history-toolbar {
-  padding-bottom: 4px;
+  padding: 0 2px 6px;
 }
 
 .history-item {
-  border: 1px solid rgba(31, 41, 55, 0.09);
-  border-radius: 10px;
-  padding: 14px;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
-  background: #fbfcfc;
+  border: 1px solid rgba(31, 41, 55, 0.09);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(31, 41, 55, 0.045);
 }
 
 .history-header {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 8px;
   align-items: center;
-  padding-bottom: 10px;
-  margin-bottom: 2px;
+  padding: 10px 12px;
   border-bottom: 1px solid rgba(31, 41, 55, 0.08);
+  background: linear-gradient(90deg, #f6faf8, #fbfcfc);
 }
 
-.history-header :deep(.n-button:first-of-type) {
+.history-summary,
+.history-actions,
+.history-time {
+  display: flex;
+  align-items: center;
+}
+
+.history-summary {
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-width: 0;
+}
+
+.history-time {
+  gap: 5px;
+  color: var(--tts-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-queue {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(24, 160, 88, 0.08);
+  color: #456056;
+  font-size: 11px;
+}
+
+.history-actions {
+  gap: 4px;
   margin-left: auto;
 }
 
-.audio-block {
-  padding: 10px 12px 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  background: #f3f6f5;
+.history-actions :deep(.n-button),
+.history-toolbar :deep(.n-button) {
+  min-height: 30px;
 }
 
-.audio-block audio {
+.history-body {
+  padding: 0 14px 14px;
+}
+
+.history-primary-text .status-value {
+  color: #1f2d27;
+  font-weight: 600;
+}
+
+.audio-result {
+  overflow: hidden;
+  margin-top: 10px;
+  border: 1px solid rgba(31, 41, 55, 0.08);
+  border-radius: 12px;
+  background: #f7f8f8;
+}
+
+.audio-preview {
+  padding: 11px 12px 12px;
+}
+
+.audio-preview audio {
   display: block;
   width: 100%;
   height: 36px;
   margin-top: 6px;
+}
+
+.download-shelf {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 10px 9px 12px;
+  border-top: 1px solid rgba(31, 41, 55, 0.07);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.download-shelf-title {
+  flex: 0 0 auto;
+  color: var(--tts-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.download-options {
+  display: flex;
+  gap: 7px;
+  min-width: 0;
+}
+
+.download-option {
+  display: grid;
+  grid-template-columns: auto auto 16px;
+  gap: 8px;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid rgba(31, 41, 55, 0.1);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--tts-text);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.download-option:hover {
+  border-color: rgba(24, 160, 88, 0.34);
+  background: #fbfdfc;
+}
+
+.download-option--expired {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.42);
+  color: #66716c;
+}
+
+.download-option--expired .download-option-icon {
+  opacity: 0.64;
+}
+
+.download-option:focus-visible {
+  outline: 2px solid rgba(24, 160, 88, 0.48);
+  outline-offset: 2px;
+}
+
+.download-format {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.download-expiry {
+  color: var(--tts-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.download-option-icon {
+  color: #55635d;
+  font-size: 16px;
+}
+
+.task-details {
+  margin-top: 2px;
+}
+
+.task-details summary {
+  display: list-item;
+  width: max-content;
+  min-height: 30px;
+  padding-top: 8px;
+  color: var(--tts-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.task-details[open] summary {
+  color: var(--tts-text);
+}
+
+.task-details-body {
+  padding-top: 2px;
 }
 
 @media (max-width: 600px) {
@@ -970,13 +1213,11 @@ historyItems.value = loadHistory()
     justify-content: flex-start;
   }
 
-  .action-row,
-  .download-actions {
+  .action-row {
     width: 100%;
   }
 
-  .action-row :deep(.n-button),
-  .download-actions :deep(.n-button) {
+  .action-row :deep(.n-button) {
     flex: 1;
   }
 
@@ -985,9 +1226,89 @@ historyItems.value = loadHistory()
     > .n-space
     > .n-space-item
     > .status-meta,
-  .history-item > .status-meta {
+  .history-body > .status-meta,
+  .task-details-body > .status-meta {
     grid-template-columns: 68px minmax(0, 1fr);
     gap: 8px;
+  }
+
+  .history-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .history-summary {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 6px 8px;
+  }
+
+  .history-summary > :deep(.n-tag) {
+    grid-column: 1;
+  }
+
+  .history-summary > .model-chip {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .history-time,
+  .history-queue {
+    grid-column: 1 / -1;
+  }
+
+  .history-actions {
+    grid-column: 2;
+    grid-row: 1;
+    flex-direction: column;
+    margin-left: 0;
+  }
+
+  .history-actions :deep(.n-button),
+  .history-toolbar :deep(.n-button) {
+    min-height: 44px;
+  }
+
+  .history-body {
+    padding: 0 12px 12px;
+  }
+
+  .download-shelf {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 7px;
+    padding: 9px;
+  }
+
+  .download-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .download-option {
+    grid-template-areas:
+      'format icon'
+      'expiry icon';
+    grid-template-columns: minmax(0, 1fr) 16px;
+    gap: 1px 8px;
+    min-height: 50px;
+    justify-items: start;
+  }
+
+  .download-format {
+    grid-area: format;
+  }
+
+  .download-expiry {
+    grid-area: expiry;
+  }
+
+  .download-option-icon {
+    grid-area: icon;
+    align-self: center;
   }
 }
 </style>
