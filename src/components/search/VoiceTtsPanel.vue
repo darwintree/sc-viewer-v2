@@ -294,6 +294,8 @@ type TaskStatus = {
   pending: number
   save_path?: string | null
   save_path_compressed?: string | null
+  wav_expires_at?: string | null
+  ogg_expires_at?: string | null
   error?: string | null
 }
 
@@ -422,6 +424,15 @@ const compressedUrl = computed(() =>
   resolveTaskUrl(taskStatus.value?.save_path_compressed)
 )
 
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function formatRemainingDays(expiresAt?: string | null) {
+  const timestamp = expiresAt ? Date.parse(expiresAt) : Number.NaN
+  const remainingMs = timestamp - Date.now()
+  if (!Number.isFinite(remainingMs) || remainingMs <= 0) return '已过期'
+  return `剩余 ${Math.ceil(remainingMs / DAY_MS)} 天`
+}
+
 function getDownloadLinks(status?: TaskStatus | null) {
   if (!status) return []
   const links: DownloadLink[] = []
@@ -431,7 +442,7 @@ function getDownloadLinks(status?: TaskStatus | null) {
   const rawUrl = resolveTaskUrl(raw)
   if (rawUrl) {
     links.push({
-      label: '下载原始文件',
+      label: `下载 WAV · ${formatRemainingDays(status.wav_expires_at)}`,
       url: rawUrl,
       filename: raw ? raw.split('/').pop() || 'tts.wav' : 'tts.wav',
     })
@@ -440,7 +451,7 @@ function getDownloadLinks(status?: TaskStatus | null) {
   const compressedUrlValue = resolveTaskUrl(compressed)
   if (compressedUrlValue) {
     links.push({
-      label: '下载压缩文件',
+      label: `下载 OGG · ${formatRemainingDays(status.ogg_expires_at)}`,
       url: compressedUrlValue,
       filename: compressed
         ? compressed.split('/').pop() || 'tts.mp3'
