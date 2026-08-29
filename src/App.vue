@@ -4,10 +4,20 @@
 import { onMounted, watch, computed } from 'vue'
 import { RouterView, useRoute, type RouteLocationRaw } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { NSelect, NNotificationProvider, NDialogProvider } from 'naive-ui'
+import {
+  NSelect,
+  NNotificationProvider,
+  NDialogProvider,
+  NAlert,
+} from 'naive-ui'
 
 const route = useRoute()
 const { locale, availableLocales, t } = useI18n()
+
+const showAlert = computed(() => {
+  // return location.hostname === 'viewer.strawberrytree.top'
+  return true
+})
 
 const options = availableLocales.map((item) => {
   return {
@@ -46,6 +56,9 @@ watch(locale, (newVal) => {
   <div class="main">
     <n-notification-provider placement="top" :max="2">
       <n-dialog-provider>
+        <!-- <n-alert v-if="showAlert" type="warning" closable>
+          网站后端近日迁移中，可能存在不稳定
+        </n-alert> -->
         <header class="topbar">
           <nav class="full-nav">
             <router-link :to="navTo('/')">{{ t('tab.Home') }}</router-link>
