@@ -8,9 +8,6 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-      },
       manifest: {
         name: 'SC-VIEWER',
         short_name: 'SC-VIEWER',
@@ -37,41 +34,15 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: ({ url }) => {
-              if (
-                url.hostname === 'event.strawberrytree.top' ||
-                url.hostname === 'viewer.strawberrytree.top' ||
-                url.hostname === 'sc-viewer.top' ||
-                url.hostname === 'www.sc-viewer.top' ||
-                url.hostname === 'event.sc-viewer.top'
-              ) {
-                return true
-              }
-              return false
-            },
-            handler: 'NetworkFirst',
-          },
-          {
-            urlPattern: ({ url }) => {
-              if (
-                url.pathname.startsWith('/convert/cache') ||
-                url.pathname.startsWith('/raw') ||
+              return (
+                (url.hostname === 'service.sc-viewer.top' &&
+                  (url.pathname.startsWith('/convert/cache') ||
+                    url.pathname.startsWith('/raw'))) ||
                 url.hostname === 'cdn.skypack.dev' ||
                 url.hostname === 'esm.sh'
-              ) {
-                return true
-              }
-              return false
+              )
             },
             handler: 'StaleWhileRevalidate',
-          },
-          {
-            urlPattern: ({ url }) => {
-              if (url.pathname.startsWith('/api')) {
-                return true
-              }
-              return false
-            },
-            handler: 'NetworkOnly',
           },
         ],
       },
