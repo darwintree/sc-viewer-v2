@@ -1,5 +1,14 @@
 # Updates
 
+## 2026/09/07
+
+* [灯織-S](/translate#json/produce_events/300202901.json)
+* [智代子-S](/translate#json/produce_events/301002701.json)
+* [愛依-S](/translate#json/produce_events/301902101.json)
+* [美琴-S](/translate#json/produce_events/302502501.json)
+* [美琴-birthday](/translate#json/special_communications/4902008025.json)
+
+
 ## 2026/08/28
 
 * [event-097](/translate#json/game_event_communications/400109701.json)
