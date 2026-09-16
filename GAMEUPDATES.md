@@ -1,5 +1,16 @@
 # Updates
 
+## 2026/09/16
+
+* [果穂-P](/translate#json/produce_events/200902201.json)
+* [灯織-S](/translate#json/produce_events/300203001.json)
+* [霧子-S](/translate#json/produce_events/300802901.json)
+* [樹里-S](/translate#json/produce_events/301102701.json)
+* [甜花-S](/translate#json/produce_events/301502801.json)
+* [美琴-S](/translate#json/produce_events/302502601.json)
+* [霧子-birthday](/translate#json/special_communications/4902008008.json)
+
+
 ## 2026/09/07
 
 * [灯織-S](/translate#json/produce_events/300202901.json)
