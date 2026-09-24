@@ -79,6 +79,36 @@ export default defineComponent({
     getBaseName(filePath: string) {
       return filePath.split('/').pop()
     },
+    sanitizeFilename(name: string) {
+      return name.trim().replace(/[\\/:*?"<>|]/g, '_')
+    },
+    getDownloadFilename() {
+      const baseName = this.getBaseName(this.audioUrl) || 'audio.m4a'
+      const ext = baseName.includes('.') ? `.${baseName.split('.').pop()}` : ''
+      if (!this.audioText) return baseName
+      const safeName = this.sanitizeFilename(this.audioText)
+      if (!safeName) return baseName
+      return `${safeName}${ext || '.m4a'}`
+    },
+    async triggerDownload(url: string, filename: string) {
+      if (typeof window === 'undefined') return
+      try {
+        const response = await fetch(url)
+        if (!response.ok) throw new Error('download failed')
+        const blob = await response.blob()
+        const objectUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = objectUrl
+        link.download = filename
+        link.rel = 'noopener'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(objectUrl)
+      } catch (error) {
+        window.open(url, '_blank')
+      }
+    },
     // define the "playAudio" function to play the audio file
     playAudio() {
       // create a new Audio object with the audio URL
@@ -98,8 +128,7 @@ export default defineComponent({
       this.isPlaying = true
     },
     downloadAudio() {
-      // download the audio file
-      window.open(this.audioUrl, '_blank')
+      this.triggerDownload(this.audioUrl, this.getDownloadFilename())
       // const request = new XMLHttpRequest()
       // request.open('GET', this.audioUrl, true)
       // request.responseType = 'blob'
