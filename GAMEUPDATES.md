@@ -1,5 +1,16 @@
 # Updates
 
+## 2026/09/29
+
+* [event-098](/translate#json/game_event_communications/400109801.json)
+* [咲耶-P](/translate#json/produce_events/200602001.json)
+* [円香-P](/translate#json/produce_events/202101701.json)
+* [恋鐘-S](/translate#json/produce_events/300402801.json)
+* [果穂-S](/translate#json/produce_events/300902701.json)
+* [羽那-S](/translate#json/produce_events/302701301.json)
+* [羽那-birthday](/translate#json/special_communications/4902008027.json)
+
+
 ## 2026/09/16
 
 * [果穂-P](/translate#json/produce_events/200902201.json)
