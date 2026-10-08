@@ -1,5 +1,15 @@
 # Updates
 
+## 2026/10/08
+
+* [凛世-S](/translate#json/produce_events/301202801.json)
+* [夏葉-S](/translate#json/produce_events/301302901.json)
+* [透-S](/translate#json/produce_events/302002201.json)
+* [はるき-S](/translate#json/produce_events/302801301.json)
+* [idol-91-S](/translate#json/produce_events/309100901.json)
+* [凛世-birthday](/translate#json/special_communications/4902008012.json)
+
+
 ## 2026/09/29
 
 * [event-098](/translate#json/game_event_communications/400109801.json)
