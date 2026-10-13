@@ -96,6 +96,13 @@ const store = reactive({
   csvFilename: '',
   jsonUrl: '', // e.g. produce_events/xxx.json
   eventsCollectionMeta: null as null | EventsCollectionMeta,
+
+  // reference audio for Genie TTS
+  ttsReference: null as null | {
+    speaker: string
+    text: string
+    audioId: string
+  },
 })
 
 async function tryLogin() {
