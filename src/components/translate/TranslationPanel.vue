@@ -44,7 +44,10 @@ import LoadingSpin from '../icon/LoadingSpin.vue'
 import TaskCompleteIcon from '../icon/TaskCompleteIcon.vue'
 import CsvFilenameSetter from './modal/CsvFilenameSetter.vue'
 import AutoTranslateModal from './modal/AutoTranslateModal.vue'
+import JsonFormatSelector from './modal/JsonFormatSelector.vue'
+import ExportFormatSelector from './modal/ExportFormatSelector.vue'
 import { inject } from '@vercel/analytics'
+import { detectJsonFormat } from '../../helper/source'
 
 // inject()
 
@@ -90,13 +93,19 @@ const showPushDrawer = ref(false)
 
 function handleCompleteSelect(key: string) {
   if (key === 'download') {
-    communication?.value?.downloadData()
-    inject({
-      beforeSend: (event) => {
-        event.url = event.url.replace('/translate', '/download')
-        return event
-      },
-    })
+    // 检查是否有原始JSON数据，如果有则显示导出格式选择
+    if (communication.value?.originalJsonData) {
+      showExportFormatSelector.value = true
+    } else {
+      // 没有原始JSON数据，直接导出CSV
+      communication?.value?.downloadData('csv')
+      inject({
+        beforeSend: (event) => {
+          event.url = event.url.replace('/translate', '/download')
+          return event
+        },
+      })
+    }
   }
   if (key === 'push') {
     if (!communication.value) {
@@ -114,6 +123,16 @@ function handleCompleteSelect(key: string) {
   }
 }
 
+function handleExportFormatSelect(format: 'csv' | 'json') {
+  communication?.value?.downloadData(format)
+  inject({
+    beforeSend: (event) => {
+      event.url = event.url.replace('/translate', '/download')
+      return event
+    },
+  })
+}
+
 const csvUrl = ref('')
 const communication = ref<InstanceType<typeof Communication> | null>(null)
 const fileInput = ref<InstanceType<typeof HTMLInputElement> | null>(null)
@@ -121,6 +140,9 @@ const urlInput = ref<InstanceType<typeof NInput> | null>(null)
 const showCsvFilenameSetter = ref(false)
 // TODO: use this variable as extra reminder
 const csvFilenameSetterExtraInfo = ref('')
+const showJsonFormatSelector = ref(false)
+const showExportFormatSelector = ref(false)
+const pendingFile = ref<File | null>(null)
 
 const translatedCsvUrl = computed(() => {
   if (communication.value) return communication.value.translatedCsvUrl
@@ -210,19 +232,45 @@ async function loadDataFromEncodedUrl(encodedSrcUrl: string) {
   )
 }
 
-function handleFileChange(e: Event) {
+async function handleFileChange(e: Event) {
   const files = (e.target as HTMLInputElement).files
 
   if (files && files.length > 0) {
     const file = files[0]
-    if (communication.value !== null) {
-      csvUrl.value = ''
-      router.replace({
-        path: route.path,
-        hash: '',
-      })
-      communication.value?.loadDataFromSourceInput(file, null)
+
+    // 检测是否为JSON文件
+    if (file.name.endsWith('.json')) {
+      const format = await detectJsonFormat(file)
+      if (format === 'scsp') {
+        // SCSP格式，显示选择对话框
+        pendingFile.value = file
+        showJsonFormatSelector.value = true
+      } else {
+        // SC格式，直接处理
+        loadFile(file, 'sc')
+      }
+    } else {
+      // 非JSON文件，直接处理
+      loadFile(file)
     }
+  }
+}
+
+function loadFile(file: File, jsonFormat?: 'sc' | 'scsp') {
+  if (communication.value !== null) {
+    csvUrl.value = ''
+    router.replace({
+      path: route.path,
+      hash: '',
+    })
+    communication.value?.loadDataFromSourceInput(file, null, jsonFormat)
+  }
+}
+
+function handleJsonFormatSelect(format: 'sc' | 'scsp') {
+  if (pendingFile.value) {
+    loadFile(pendingFile.value, format)
+    pendingFile.value = null
   }
 }
 
@@ -643,6 +691,16 @@ const currentDialogueCount = computed(() => {
     @save="() => communication?.saveCsvToLocalstorage()"
   >
   </CsvFilenameSetter>
+  <JsonFormatSelector
+    :show-modal="showJsonFormatSelector"
+    @close-modal="showJsonFormatSelector = false"
+    @select-format="handleJsonFormatSelect"
+  />
+  <ExportFormatSelector
+    :show-modal="showExportFormatSelector"
+    @close-modal="showExportFormatSelector = false"
+    @select-format="handleExportFormatSelect"
+  />
   <n-drawer
     v-model:show="showPushDrawer"
     placement="bottom"
@@ -662,7 +720,7 @@ const currentDialogueCount = computed(() => {
     ref="communication"
     :csv-url="csvUrl"
     @load-data="
-      (jsonUrl) => {
+      (jsonUrl: string) => {
         to(undefined, jsonUrl)
       }
     "
