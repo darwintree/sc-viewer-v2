@@ -1,5 +1,15 @@
 # Updates
 
+## 2026/10/30
+
+* [event-099](/translate#json/game_event_communications/400109901.json)
+* [甜花-P](/translate#json/produce_events/201502201.json)
+* [愛依-P](/translate#json/produce_events/201901901.json)
+* [雛菜-S](/translate#json/produce_events/302301901.json)
+* [にちか-S](/translate#json/produce_events/302402101.json)
+* [はるき-S](/translate#json/produce_events/302801201.json)
+
+
 ## 2026/10/20
 
 * [灯織-P](/translate#json/produce_events/200202301.json)
