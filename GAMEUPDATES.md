@@ -1,5 +1,15 @@
 # Updates
 
+## 2026/11/10
+
+* [めぐる-P](/translate#json/produce_events/200302201.json)
+* [真乃-S](/translate#json/produce_events/300102901.json)
+* [果穂-S](/translate#json/produce_events/300902801.json)
+* [愛依-S](/translate#json/produce_events/301902201.json)
+* [小糸-S](/translate#json/produce_events/302202101.json)
+* [小糸-birthday](/translate#json/special_communications/4902008022.json)
+
+
 ## 2026/10/30
 
 * [event-099](/translate#json/game_event_communications/400109901.json)
