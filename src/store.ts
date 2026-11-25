@@ -97,7 +97,7 @@ const store = reactive({
   jsonUrl: '', // e.g. produce_events/xxx.json
   eventsCollectionMeta: null as null | EventsCollectionMeta,
 
-  // reference audio for Genie TTS
+  // reference audio for TTS
   ttsReference: null as null | {
     speaker: string
     text: string

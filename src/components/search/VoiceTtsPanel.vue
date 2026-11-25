@@ -1,80 +1,159 @@
 <template>
-  <div class="tts-panel">
+  <div ref="panelRef" class="tts-panel">
     <header class="tts-hero">
       <div>
-        <div class="tts-kicker">GENIE TTS</div>
+        <div class="tts-kicker">IRODORI TTS</div>
         <h1>语音生成</h1>
-        <p>选择一段角色语音作为参考，再输入希望生成的台词。</p>
+        <p>直接选择角色内置音色或搭配参考音频，再输入日文语气描述与台词。</p>
       </div>
       <div class="tts-flow" aria-label="生成步骤">
-        <span>参考音频</span>
+        <span>音色选择</span>
         <i aria-hidden="true"></i>
-        <span>输入文本</span>
+        <span>语气描述</span>
         <i aria-hidden="true"></i>
         <span>生成结果</span>
       </div>
     </header>
 
     <n-alert
-      v-if="!genieBase"
+      v-if="!ttsBase"
       type="warning"
       title="服务未配置"
       :show-icon="false"
       class="service-alert"
     >
-      请设置环境变量 `VITE_GENIE_SERVER` 指向 Genie TTS 服务地址。
+      请设置环境变量 `VITE_TTS_SERVER`（或 `VITE_GENIE_SERVER`）指向 TTS
+      服务地址。
     </n-alert>
 
     <div class="tts-setup-grid">
-      <n-card title="参考音频" size="small" class="tts-card tts-card-reference">
+      <n-card title="音色与参考" size="small" class="tts-card tts-card-voice">
         <n-space vertical size="small">
-          <n-space
-            justify="space-between"
-            align="center"
-            size="small"
-            wrap
-            class="reference-row"
-          >
-            <n-input
-              v-model:value="referenceSpeaker"
-              placeholder="Speaker"
-              readonly
+          <div class="speaker-select-row">
+            <n-select
+              :value="selectedSpeaker"
+              :options="speakerOptions"
+              :render-label="renderSpeakerOption"
+              placeholder="请选择角色（29 位可选，支持搜索）"
+              filterable
               size="small"
-              class="reference-speaker"
+              class="speaker-select"
+              @update:value="handleSpeakerChange"
             />
-            <div class="reference-audio-inline">
-              <AudioLabel
-                v-if="referenceAudioProps"
-                v-bind="referenceAudioProps"
-                extra-text="点击播放"
-                display-download
-              />
-              <div v-else class="status-value">未选择</div>
+            <n-tag
+              v-if="selectedSpeaker"
+              :type="hasReferenceAudio ? 'success' : 'info'"
+              size="small"
+              round
+              class="voice-mode-tag"
+            >
+              {{ hasReferenceAudio ? '参考音频' : '内置音色' }}
+            </n-tag>
+          </div>
+
+          <div v-if="referenceAudioProps" class="reference-box">
+            <div class="reference-box-header">
+              <div class="reference-audio-inline">
+                <AudioLabel
+                  v-bind="referenceAudioProps"
+                  extra-text="点击播放"
+                  display-download
+                />
+              </div>
+              <n-button
+                size="tiny"
+                quaternary
+                type="warning"
+                @click="clearReference"
+              >
+                清除参考
+              </n-button>
             </div>
-          </n-space>
-          <n-input
-            v-model:value="referenceTextInput"
-            type="textarea"
-            placeholder="Reference Text"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            size="small"
-          />
-          <n-alert v-if="!hasReference" type="warning" :show-icon="false">
-            尚未选择参考音频，请从搜索页选择后进入。
-          </n-alert>
+            <div v-if="referenceText.trim()" class="reference-transcript">
+              <span class="reference-transcript-label">参考原台词</span>
+              <span class="reference-transcript-text">{{ referenceText }}</span>
+            </div>
+          </div>
+
+          <div v-else class="reference-hint-box">
+            <p class="reference-hint-text">
+              {{
+                selectedSpeaker
+                  ? '当前将使用角色内置音色生成；如需参考特定台词语气，可前往搜索页挑选。'
+                  : '可直接选择角色使用内置音色，或从语音搜索页带入一段参考音频。'
+              }}
+            </p>
+            <n-button size="tiny" secondary @click="goToVoiceSearch">
+              去语音搜索选参考音频
+            </n-button>
+          </div>
         </n-space>
       </n-card>
 
-      <n-card title="TTS 生成" size="small" class="tts-card tts-card-generator">
+      <n-card
+        title="语气与风格描述（可选）"
+        size="small"
+        class="tts-card tts-card-caption"
+      >
         <n-space vertical size="small">
+          <div class="caption-input-header">
+            <span class="field-hint">需使用日文描述，留空则由模型自然发挥</span>
+            <n-button
+              v-if="captionText.trim()"
+              size="tiny"
+              quaternary
+              @click="captionText = ''"
+            >
+              清空
+            </n-button>
+          </div>
           <n-input
-            v-model:value="ttsText"
+            v-model:value="captionText"
             type="textarea"
-            placeholder="请输入要生成的文本"
-            :autosize="{ minRows: 3, maxRows: 6 }"
+            placeholder="请输入日文语气/情绪描述，或点选下方内置预设"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             size="small"
           />
-          <n-space justify="space-between" align="center" class="action-row">
+          <div v-if="showNonJapaneseCaptionHint" class="caption-lang-hint">
+            当前内容未检测到日文假名，模型对日文描述控制效果更好，建议使用日文或点选下方预设。
+          </div>
+
+          <div class="preset-section">
+            <div class="preset-section-title">
+              内置预设（点击填入，可继续编辑）
+            </div>
+            <div class="caption-preset-list">
+              <button
+                v-for="preset in CAPTION_PRESETS"
+                :key="preset.ja"
+                type="button"
+                class="caption-preset-item"
+                :class="{
+                  'caption-preset-item--active':
+                    captionText.trim() === preset.ja,
+                }"
+                @click="applyCaptionPreset(preset.ja)"
+              >
+                <span class="caption-preset-zh">{{ preset.zh }}</span>
+                <span class="caption-preset-ja">{{ preset.ja }}</span>
+              </button>
+            </div>
+          </div>
+        </n-space>
+      </n-card>
+    </div>
+
+    <n-card title="生成台词" size="small" class="tts-card tts-card-generator">
+      <n-space vertical size="small">
+        <n-input
+          v-model:value="ttsText"
+          type="textarea"
+          placeholder="请输入要生成的日文台词"
+          :autosize="{ minRows: 3, maxRows: 6 }"
+          size="small"
+        />
+        <div class="action-row">
+          <div class="action-buttons">
             <n-button
               type="primary"
               :loading="submitting"
@@ -87,13 +166,22 @@
             <n-button v-if="taskId" size="small" @click="fetchTaskStatus">
               立即刷新
             </n-button>
-          </n-space>
-          <n-alert v-if="errorMessage" type="error" :show-icon="false">
-            {{ errorMessage }}
-          </n-alert>
-        </n-space>
-      </n-card>
-    </div>
+          </div>
+          <div v-if="selectedSpeaker" class="submit-summary">
+            <span>{{ selectedSpeaker }}</span>
+            <i>·</i>
+            <span>{{ hasReferenceAudio ? '参考音频' : '内置音色' }}</span>
+            <template v-if="captionText.trim()">
+              <i>·</i>
+              <span>含语气描述</span>
+            </template>
+          </div>
+        </div>
+        <n-alert v-if="errorMessage" type="error" :show-icon="false">
+          {{ errorMessage }}
+        </n-alert>
+      </n-space>
+    </n-card>
 
     <n-card
       v-if="taskId"
@@ -111,10 +199,17 @@
             </template>
             {{ currentStatusMeta.label }}
           </n-tag>
-          <div v-if="sentSpeaker" class="model-chip" aria-label="使用模型">
-            <span>模型</span>
+          <div v-if="sentSpeaker" class="model-chip" aria-label="使用角色">
+            <span>角色</span>
             <strong>{{ sentSpeaker }}</strong>
           </div>
+          <n-tag
+            :type="sentVoiceMode === 'reference' ? 'success' : 'info'"
+            size="small"
+            round
+          >
+            {{ sentVoiceMode === 'reference' ? '参考音频' : '内置音色' }}
+          </n-tag>
           <div class="status-meta">
             <span class="status-label">发送时间</span>
             <span class="status-value">{{ sentAtLabel }}</span>
@@ -127,6 +222,10 @@
         <div v-if="sentTtsText.trim()" class="status-meta status-text">
           <span class="status-label">TTS 文本</span>
           <span class="status-value">{{ sentTtsText }}</span>
+        </div>
+        <div v-if="sentCaption.trim()" class="status-meta status-text">
+          <span class="status-label">语气描述</span>
+          <span class="status-value">{{ sentCaption }}</span>
         </div>
         <div v-if="taskStatus?.error" class="status-meta status-error">
           <span class="status-label">Error</span>
@@ -165,7 +264,7 @@
           v-if="sentReferenceAudioProps || sentReferenceText"
           class="task-details"
         >
-          <summary>生成详情</summary>
+          <summary>参考详情</summary>
           <div class="task-details-body">
             <div v-if="sentReferenceAudioProps" class="status-meta">
               <span class="status-label">参考音频</span>
@@ -178,7 +277,7 @@
               </span>
             </div>
             <div v-if="sentReferenceText" class="status-meta status-text">
-              <span class="status-label">参考文本</span>
+              <span class="status-label">参考台词</span>
               <span class="status-value">{{ sentReferenceText }}</span>
             </div>
           </div>
@@ -220,11 +319,24 @@
               <span
                 v-if="item.speaker"
                 class="model-chip"
-                aria-label="使用模型"
+                aria-label="使用角色"
               >
-                <span>模型</span>
+                <span>角色</span>
                 <strong>{{ item.speaker }}</strong>
               </span>
+              <n-tag
+                :type="
+                  getHistoryVoiceMode(item) === 'reference' ? 'success' : 'info'
+                "
+                size="small"
+                round
+              >
+                {{
+                  getHistoryVoiceMode(item) === 'reference'
+                    ? '参考音频'
+                    : '内置音色'
+                }}
+              </n-tag>
               <div class="history-time" aria-label="发送时间">
                 <n-icon><Time /></n-icon>
                 <span>{{ formatSentAt(item.sentAt) }}</span>
@@ -238,7 +350,15 @@
             </div>
             <div class="history-actions">
               <n-button
-                v-if="item.status?.status === 'running'"
+                size="small"
+                tertiary
+                type="primary"
+                @click="reuseHistoryItem(item)"
+              >
+                复用参数
+              </n-button>
+              <n-button
+                v-if="isWaitingStatus(item.status?.status)"
                 size="small"
                 tertiary
                 @click="refreshHistoryStatus(item.taskId)"
@@ -262,6 +382,13 @@
             >
               <span class="status-label">TTS 文本</span>
               <span class="status-value">{{ item.ttsText }}</span>
+            </div>
+            <div
+              v-if="item.caption && item.caption.trim()"
+              class="status-meta status-text"
+            >
+              <span class="status-label">语气描述</span>
+              <span class="status-value">{{ item.caption }}</span>
             </div>
             <div v-if="item.status?.error" class="status-meta status-error">
               <span class="status-label">Error</span>
@@ -313,7 +440,7 @@
               v-if="historyAudioPropsMap[item.taskId] || item.referenceText"
               class="task-details"
             >
-              <summary>生成详情</summary>
+              <summary>参考详情</summary>
               <div class="task-details-body">
                 <div
                   v-if="historyAudioPropsMap[item.taskId]"
@@ -329,7 +456,7 @@
                   </span>
                 </div>
                 <div v-if="item.referenceText" class="status-meta status-text">
-                  <span class="status-label">参考文本</span>
+                  <span class="status-label">参考台词</span>
                   <span class="status-value">{{ item.referenceText }}</span>
                 </div>
               </div>
@@ -342,10 +469,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount, watch, type Component } from 'vue'
-import { NAlert, NButton, NCard, NInput, NIcon, NSpace, NTag } from 'naive-ui'
+import { ref, computed, h, onBeforeUnmount, watch, type Component } from 'vue'
+import { useRouter } from 'vue-router'
+import {
+  NAlert,
+  NButton,
+  NCard,
+  NIcon,
+  NInput,
+  NSelect,
+  NSpace,
+  NTag,
+  type SelectOption,
+} from 'naive-ui'
 import axios from 'axios'
 import { store } from '../../store'
+import { characters, getAvatarPath } from '../../helper/path'
 import AudioLabel from '../translate/AudioLabel.vue'
 import {
   CheckmarkFilled,
@@ -354,6 +493,13 @@ import {
   Play,
   Time,
 } from '@vicons/carbon'
+
+type VoiceMode = 'embed' | 'reference'
+
+type CaptionPreset = {
+  zh: string
+  ja: string
+}
 
 type TaskStatus = {
   status: string
@@ -370,6 +516,8 @@ type HistoryItem = {
   sentAt: string
   ttsText: string
   speaker: string
+  caption?: string
+  voiceMode?: VoiceMode
   referenceText: string
   referenceAudioId: string
   status?: TaskStatus | null
@@ -397,10 +545,105 @@ type DownloadLink = {
   filename: string
 }
 
-const GENIE_SERVER = import.meta.env.VITE_GENIE_SERVER as string | undefined
-const genieBase = GENIE_SERVER?.replace(/\/$/, '')
+const CAPTION_PRESETS: readonly CaptionPreset[] = [
+  {
+    zh: '温柔平静地轻声交谈',
+    ja: '落ち着いた柔らかな口調で、相手を気遣いながら静かに話している。',
+  },
+  {
+    zh: '开心明快、元气满满地说话',
+    ja: '明るく弾んだ口調で、心から嬉しそうに元気よく話している。',
+  },
+  {
+    zh: '带着轻笑、亲切温暖地讲述',
+    ja: '小さく柔らかな笑い声を漏らしながら、温かく親しげに語りかけている。',
+  },
+  {
+    zh: '略带害羞、轻声细语地诉说',
+    ja: '少し照れくさそうに息を漏らしながら、控えめな声で優しく話している。',
+  },
+  {
+    zh: '极轻的气声耳语、悄悄叮嘱',
+    ja: '息を多めに含ませた控えめな囁き声で、そっと語りかけている。',
+  },
+  {
+    zh: '强忍泪水、声音微微颤抖',
+    ja: '涙を堪えながら声を小さく震わせ、今にも消えそうな音量で話している。',
+  },
+  {
+    zh: '压抑怒火、冷静强硬地开口',
+    ja: '怒りを抑えた冷たく強い口調で、語尾を言い切るようにきっぱりと話している。',
+  },
+  {
+    zh: '慌张焦急、语速加快地诉说',
+    ja: '息を切らして慌てたように、早口で焦りを滲ませながら必死に話している。',
+  },
+  {
+    zh: '略微傲娇、嘴硬又带点羞涩',
+    ja: '少し照れ隠しながらもツンとした強気な口調で、早口に話している。',
+  },
+  {
+    zh: '困倦迷糊、慢悠悠地说着',
+    ja: '眠そうに、ぼんやりとゆっくりした口調で話している。',
+  },
+  {
+    zh: '疲惫无力、平淡低落地开口',
+    ja: '疲れ切ったように力を抜いた平坦なトーンで、淡々と話している。',
+  },
+  {
+    zh: '面向舞台大声热情地呼喊',
+    ja: '広い会場に向かって声を張り上げ、全力で明るく元気いっぱいに呼びかけている。',
+  },
+]
 
+const TTS_SERVER = (import.meta.env.VITE_TTS_SERVER ||
+  import.meta.env.VITE_GENIE_SERVER) as string | undefined
+const ttsBase = TTS_SERVER?.replace(/\/$/, '')
+
+const router = useRouter()
+const panelRef = ref<HTMLElement | null>(null)
+
+const speakerOptions: SelectOption[] = characters
+  .filter((item) => Number(item.id) <= 28 || item.id === '32')
+  .map((item) => ({
+    value: item.firstName,
+    label: item.firstName,
+  }))
+
+function renderSpeakerOption(option: SelectOption) {
+  const name = String(option.label || option.value || '')
+  return h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      },
+    },
+    [
+      h('img', {
+        src: getAvatarPath(name),
+        alt: '',
+        style: {
+          width: '22px',
+          height: '22px',
+          borderRadius: '50%',
+          objectFit: 'cover',
+          flexShrink: '0',
+        },
+      }),
+      h('span', null, name),
+    ]
+  )
+}
+
+const selectedSpeaker = ref<string | null>(null)
+const referenceAudioId = ref('')
+const referenceText = ref('')
+const captionText = ref('')
 const ttsText = ref('')
+
 const submitting = ref(false)
 const errorMessage = ref('')
 const taskId = ref('')
@@ -408,6 +651,8 @@ const taskStatus = ref<TaskStatus | null>(null)
 const sentAt = ref<Date | null>(null)
 const sentTtsText = ref('')
 const sentSpeaker = ref('')
+const sentCaption = ref('')
+const sentVoiceMode = ref<VoiceMode>('embed')
 const sentReferenceText = ref('')
 const sentReferenceAudioId = ref('')
 const historyItems = ref<HistoryItem[]>([])
@@ -425,24 +670,47 @@ const historyAudioPropsMap = computed(() =>
   )
 )
 
-const pollIntervalMs = 5000
+const pollIntervalMs = 2000
 let pollTimer: number | null = null
 
 const reference = computed(() => store.ttsReference)
-const hasReference = computed(() => !!reference.value)
-const referenceSpeaker = computed({
-  get: () => reference.value?.speaker || '',
-  set: () => undefined,
-})
-const referenceTextInput = ref('')
 
 watch(
   reference,
   (value) => {
-    referenceTextInput.value = value?.text || ''
+    if (value) {
+      selectedSpeaker.value = value.speaker || null
+      referenceAudioId.value = value.audioId || ''
+      referenceText.value = value.text || ''
+    } else {
+      referenceAudioId.value = ''
+      referenceText.value = ''
+    }
   },
   { immediate: true }
 )
+
+function clearReference() {
+  referenceAudioId.value = ''
+  referenceText.value = ''
+  store.ttsReference = null
+}
+
+function handleSpeakerChange(value: string | null) {
+  const previous = selectedSpeaker.value
+  selectedSpeaker.value = value
+  if (referenceAudioId.value && value !== previous) {
+    clearReference()
+  }
+}
+
+function goToVoiceSearch() {
+  router.push({ path: '/search' })
+}
+
+function applyCaptionPreset(jaCaption: string) {
+  captionText.value = jaCaption
+}
 
 function getAudioProps(audioId?: string): { id: string; base: string } | null {
   if (!audioId) return null
@@ -455,17 +723,26 @@ function getAudioProps(audioId?: string): { id: string; base: string } | null {
 }
 
 const referenceAudioProps = computed(() =>
-  getAudioProps(reference.value?.audioId)
+  getAudioProps(referenceAudioId.value)
 )
+
+const hasReferenceAudio = computed(() => !!referenceAudioId.value.trim())
 
 const sentReferenceAudioProps = computed(() =>
   getAudioProps(sentReferenceAudioId.value)
 )
 
+const JAPANESE_KANA_RE = /[\u3040-\u309f\u30a0-\u30ff]/
+
+const showNonJapaneseCaptionHint = computed(() => {
+  const value = captionText.value.trim()
+  return value.length > 0 && !JAPANESE_KANA_RE.test(value)
+})
+
 const canSubmit = computed(() => {
   return (
-    !!genieBase &&
-    !!reference.value &&
+    !!ttsBase &&
+    !!selectedSpeaker.value &&
     ttsText.value.trim().length > 0 &&
     !submitting.value
   )
@@ -480,12 +757,17 @@ const currentStatusMeta = computed(() =>
   getStatusMeta(taskStatus.value?.status)
 )
 
+function getHistoryVoiceMode(item: HistoryItem): VoiceMode {
+  if (item.voiceMode) return item.voiceMode
+  return item.referenceAudioId ? 'reference' : 'embed'
+}
+
 function resolveTaskUrl(path?: string | null) {
   if (!path) return ''
   if (/^https?:\/\//i.test(path)) return path
-  if (!genieBase) return path
+  if (!ttsBase) return path
   const needsSlash = !path.startsWith('/')
-  return `${genieBase}${needsSlash ? '/' : ''}${path}`
+  return `${ttsBase}${needsSlash ? '/' : ''}${path}`
 }
 
 const compressedUrl = computed(() =>
@@ -529,8 +811,8 @@ function getDownloadLinks(status?: TaskStatus | null) {
       ...getExpiry(status.ogg_expires_at),
       url: compressedUrlValue,
       filename: compressed
-        ? compressed.split('/').pop() || 'tts.mp3'
-        : 'tts.mp3',
+        ? compressed.split('/').pop() || 'tts.ogg'
+        : 'tts.ogg',
     })
   }
 
@@ -566,6 +848,25 @@ function downloadTtsFile(link: DownloadLink) {
 
 function toErrorMessage(error: unknown, fallback: string) {
   if (axios.isAxiosError(error)) {
+    const status = error.response?.status
+    if (status === 429) {
+      return '请求过于频繁或已达到今日生成限额，请稍后再试。'
+    }
+    if (status === 503) {
+      return '当前排队任务已满，请稍后再试。'
+    }
+    if (status === 422) {
+      const detail = error.response?.data?.detail
+      return typeof detail === 'string' && detail.trim()
+        ? `参数校验失败：${detail}`
+        : '输入参数无效，请检查角色与生成文本。'
+    }
+    if (status === 404) {
+      return '任务不存在或已过期。'
+    }
+    if (status && status >= 500) {
+      return 'TTS 服务暂时不可用，请稍后再试。'
+    }
     return error.message || fallback
   }
   if (error instanceof Error) {
@@ -610,13 +911,34 @@ function updateHistoryItem(taskIdValue: string, status: TaskStatus) {
 }
 
 async function refreshHistoryStatus(taskIdValue: string) {
-  if (!genieBase) return
+  if (!ttsBase) return
   try {
-    const response = await axios.get(`${genieBase}/tasks/${taskIdValue}`)
+    const response = await axios.get(`${ttsBase}/tasks/${taskIdValue}`)
     updateHistoryItem(taskIdValue, response.data as TaskStatus)
   } catch {
     // ignore refresh errors for history items
   }
+}
+
+function reuseHistoryItem(item: HistoryItem) {
+  selectedSpeaker.value = item.speaker || null
+  if (item.referenceAudioId) {
+    store.ttsReference = {
+      speaker: item.speaker,
+      text: item.referenceText || '',
+      audioId: item.referenceAudioId,
+    }
+    referenceAudioId.value = item.referenceAudioId
+    referenceText.value = item.referenceText || ''
+  } else {
+    store.ttsReference = null
+    referenceAudioId.value = ''
+    referenceText.value = ''
+  }
+  captionText.value = item.caption || ''
+  ttsText.value = item.ttsText || ''
+  errorMessage.value = ''
+  panelRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 function removeHistoryItem(taskIdValue: string) {
@@ -671,28 +993,45 @@ function stopPolling() {
 }
 
 async function createTask() {
-  if (!reference.value || !genieBase) return
+  if (!selectedSpeaker.value || !ttsBase) return
+  const normalizedText = ttsText.value.trim()
+  if (!normalizedText) return
+
   submitting.value = true
   errorMessage.value = ''
+  const normalizedCaption = captionText.value.trim()
+  const activeReferenceId = referenceAudioId.value.trim()
+  const activeReferenceText = activeReferenceId ? referenceText.value : ''
+  const mode: VoiceMode = activeReferenceId ? 'reference' : 'embed'
+
+  const payload: Record<string, string> = {
+    character_name: selectedSpeaker.value,
+    reference_audio_id: activeReferenceId,
+    reference_audio_text: activeReferenceText,
+    text: normalizedText,
+  }
+  if (normalizedCaption) {
+    payload.caption = normalizedCaption
+  }
+
   try {
-    const response = await axios.post(`${genieBase}/tasks`, {
-      character_name: reference.value.speaker,
-      reference_audio_id: reference.value.audioId,
-      reference_audio_text: referenceTextInput.value,
-      text: ttsText.value,
-    })
+    const response = await axios.post(`${ttsBase}/tasks`, payload)
     taskId.value = response.data.task_id
     taskStatus.value = null
-    sentTtsText.value = ttsText.value
-    sentSpeaker.value = reference.value.speaker
-    sentReferenceText.value = referenceTextInput.value
-    sentReferenceAudioId.value = reference.value.audioId
+    sentTtsText.value = normalizedText
+    sentSpeaker.value = selectedSpeaker.value
+    sentCaption.value = normalizedCaption
+    sentVoiceMode.value = mode
+    sentReferenceText.value = activeReferenceText
+    sentReferenceAudioId.value = activeReferenceId
     sentAt.value = new Date()
     addHistoryItem({
       taskId: taskId.value,
       sentAt: sentAt.value.toISOString(),
       ttsText: sentTtsText.value,
       speaker: sentSpeaker.value,
+      caption: sentCaption.value,
+      voiceMode: sentVoiceMode.value,
       referenceText: sentReferenceText.value,
       referenceAudioId: sentReferenceAudioId.value,
       status: { status: 'pending', pending: 0 },
@@ -707,15 +1046,19 @@ async function createTask() {
 }
 
 async function fetchTaskStatus() {
-  if (!taskId.value || !genieBase) return
+  const currentTaskId = taskId.value
+  if (!currentTaskId || !ttsBase) return
   try {
-    const response = await axios.get(`${genieBase}/tasks/${taskId.value}`)
-    taskStatus.value = response.data as TaskStatus
-    updateHistoryItem(taskId.value, taskStatus.value)
-    if (!['pending', 'running'].includes(taskStatus.value.status)) {
+    const response = await axios.get(`${ttsBase}/tasks/${currentTaskId}`)
+    const status = response.data as TaskStatus
+    updateHistoryItem(currentTaskId, status)
+    if (taskId.value !== currentTaskId) return
+    taskStatus.value = status
+    if (!['pending', 'running'].includes(status.status)) {
       stopPolling()
     }
   } catch (error: unknown) {
+    if (taskId.value !== currentTaskId) return
     errorMessage.value = toErrorMessage(error, '查询失败')
     stopPolling()
   }
@@ -802,8 +1145,9 @@ historyItems.value = loadHistory()
 
 .tts-setup-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   gap: 12px;
+  align-items: start;
 }
 
 .service-alert {
@@ -833,7 +1177,8 @@ historyItems.value = loadHistory()
   padding: 12px 18px 16px;
 }
 
-.tts-card-reference {
+.tts-card-voice,
+.tts-card-caption {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), #f7faf9);
 }
 
@@ -846,7 +1191,8 @@ historyItems.value = loadHistory()
   background: linear-gradient(90deg, rgba(24, 160, 88, 0.08), transparent);
 }
 
-.tts-card-reference :deep(.n-card-header__main)::before,
+.tts-card-voice :deep(.n-card-header__main)::before,
+.tts-card-caption :deep(.n-card-header__main)::before,
 .tts-card-generator :deep(.n-card-header__main)::before {
   display: inline-grid;
   width: 22px;
@@ -860,12 +1206,16 @@ historyItems.value = loadHistory()
   font-weight: 700;
 }
 
-.tts-card-reference :deep(.n-card-header__main)::before {
+.tts-card-voice :deep(.n-card-header__main)::before {
   content: '1';
 }
 
-.tts-card-generator :deep(.n-card-header__main)::before {
+.tts-card-caption :deep(.n-card-header__main)::before {
   content: '2';
+}
+
+.tts-card-generator :deep(.n-card-header__main)::before {
+  content: '3';
 }
 
 .tts-panel :deep(.n-button) {
@@ -875,6 +1225,173 @@ historyItems.value = loadHistory()
 
 .tts-panel :deep(.n-input) {
   border-radius: 8px;
+}
+
+.speaker-select-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.speaker-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.voice-mode-tag {
+  flex: 0 0 auto;
+}
+
+.reference-box,
+.reference-hint-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(31, 41, 55, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.reference-box-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.reference-audio-inline {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(24, 160, 88, 0.08);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.reference-transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(31, 41, 55, 0.1);
+}
+
+.reference-transcript-label {
+  color: var(--tts-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.reference-transcript-text {
+  color: var(--tts-text);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.reference-hint-box {
+  align-items: flex-start;
+}
+
+.reference-hint-text {
+  margin: 0;
+  color: var(--tts-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.caption-input-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-hint {
+  color: var(--tts-muted);
+  font-size: 12px;
+}
+
+.caption-lang-hint {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(240, 160, 32, 0.1);
+  color: #9a6400;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.preset-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preset-section-title {
+  color: var(--tts-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.caption-preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 228px;
+  padding-right: 4px;
+  overflow-y: auto;
+}
+
+.caption-preset-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(31, 41, 55, 0.1);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--tts-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.caption-preset-item:hover {
+  border-color: rgba(24, 160, 88, 0.4);
+  background: #f5fbf8;
+}
+
+.caption-preset-item--active {
+  border-color: var(--tts-accent);
+  background: #eef9f3;
+  box-shadow: 0 0 0 1px rgba(24, 160, 88, 0.2);
+}
+
+.caption-preset-item:focus-visible {
+  outline: 2px solid rgba(24, 160, 88, 0.48);
+  outline-offset: 1px;
+}
+
+.caption-preset-zh {
+  color: #1f2d27;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.caption-preset-ja {
+  color: var(--tts-muted);
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .status-label {
@@ -890,32 +1407,40 @@ historyItems.value = loadHistory()
   overflow-wrap: anywhere;
 }
 
-.reference-row {
-  min-height: 34px;
-}
-
-.reference-audio-inline {
-  box-sizing: border-box;
-  display: flex;
-  min-height: 30px;
-  align-items: center;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: rgba(24, 160, 88, 0.07);
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.reference-speaker {
-  max-width: 180px;
-}
-
 .action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 4px;
 }
 
-.tts-card-generator .action-row :deep(.n-button--primary-type) {
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tts-card-generator .action-buttons :deep(.n-button--primary-type) {
   min-width: 116px;
+}
+
+.submit-summary {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(24, 160, 88, 0.08);
+  color: #355848;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.submit-summary i {
+  font-style: normal;
+  opacity: 0.5;
 }
 
 .status-error {
@@ -925,7 +1450,7 @@ historyItems.value = loadHistory()
 .status-header {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 8px 12px;
   align-items: center;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(31, 41, 55, 0.08);
@@ -1012,7 +1537,7 @@ historyItems.value = loadHistory()
 
 .history-summary {
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 8px 10px;
   min-width: 0;
 }
 
@@ -1203,22 +1728,26 @@ historyItems.value = loadHistory()
     padding: 10px 14px 14px;
   }
 
-  .reference-speaker {
-    width: 100%;
-    max-width: none;
-  }
-
   .reference-audio-inline {
     width: 100%;
     justify-content: flex-start;
   }
 
   .action-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .action-buttons {
     width: 100%;
   }
 
-  .action-row :deep(.n-button) {
+  .action-buttons :deep(.n-button) {
     flex: 1;
+  }
+
+  .submit-summary {
+    justify-content: center;
   }
 
   .tts-card-status
@@ -1241,23 +1770,14 @@ historyItems.value = loadHistory()
   }
 
   .history-summary {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 6px 8px;
-  }
-
-  .history-summary > :deep(.n-tag) {
-    grid-column: 1;
-  }
-
-  .history-summary > .model-chip {
-    grid-column: 2;
-    justify-self: start;
   }
 
   .history-time,
   .history-queue {
-    grid-column: 1 / -1;
+    width: 100%;
   }
 
   .history-actions {
@@ -1269,7 +1789,7 @@ historyItems.value = loadHistory()
 
   .history-actions :deep(.n-button),
   .history-toolbar :deep(.n-button) {
-    min-height: 44px;
+    min-height: 36px;
   }
 
   .history-body {
