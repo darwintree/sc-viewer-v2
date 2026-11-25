@@ -503,7 +503,7 @@
               <span>
                 {{
                   currentTaskItem.status?.status === 'running'
-                    ? '正在合成语音，通常约 2 秒完成，结果将自动显示在此处…'
+                    ? '正在合成语音，请稍候，完成后将自动显示在此处…'
                     : `任务已提交，当前排队 ${
                         currentTaskItem.status?.pending ?? 0
                       }，完成后将自动更新…`
