@@ -194,8 +194,8 @@
               </label>
               <span class="optional-label">选填</span>
               <span class="band-meta">
-                <template v-if="matchedCaptionPreset">
-                  已选：{{ matchedCaptionPreset.zh }}
+                <template v-if="activeCaptionSummary">
+                  已选：{{ activeCaptionSummary }}
                 </template>
                 <template v-else>日文自然句控制语气，留空自然发挥</template>
               </span>
@@ -212,6 +212,8 @@
                   {{
                     presetsOpen
                       ? '收起预设'
+                      : isFuyukoSelected
+                      ? `展开冬優子专属预设（${FUYUKO_PRESETS.length} 条 · 含日文）`
                       : `全部 ${CAPTION_PRESETS.length} 条（含日文）`
                   }}
                 </span>
@@ -235,13 +237,33 @@
             </div>
           </div>
 
+          <!-- Fuyuko-Exclusive Trigger Phrase Hint -->
+          <div v-if="isFuyukoSelected" class="fuyuko-guide" role="note">
+            <div class="fuyuko-guide-title">
+              冬優子双人格触发提示：手写日文描述时，在句首加上以下触发词可精准切换声线
+            </div>
+            <ul class="fuyuko-trigger-list">
+              <li
+                v-for="trigger in FUYUKO_TRIGGERS"
+                :key="trigger.key"
+                class="fuyuko-trigger-item"
+              >
+                <strong class="fuyuko-trigger-mode">{{ trigger.mode }}</strong>
+                <code class="fuyuko-trigger-code" lang="ja">{{
+                  trigger.prefix
+                }}</code>
+                <span class="fuyuko-trigger-desc">{{ trigger.desc }}</span>
+              </li>
+            </ul>
+          </div>
+
           <textarea
             id="tts-caption-input"
             v-model="captionText"
             class="studio-textarea studio-textarea--caption"
             rows="2"
             lang="ja"
-            placeholder="留空自然发挥；可输入日文语气描述，或直接点选下方常用语气"
+            :placeholder="captionPlaceholder"
             @keydown="handleScriptKeydown"
           />
 
@@ -259,10 +281,12 @@
             <div
               class="quick-preset-list"
               role="group"
-              aria-label="常用语气快捷选择"
+              :aria-label="
+                isFuyukoSelected ? '冬優子专属语气预设' : '常用语气快捷选择'
+              "
             >
               <button
-                v-for="preset in QUICK_PRESETS"
+                v-for="preset in activeQuickPresets"
                 :key="preset.ja"
                 type="button"
                 class="quick-preset-btn"
@@ -282,6 +306,7 @@
           <div v-else id="tts-preset-drawer" class="preset-block">
             <div class="preset-toolbar">
               <div
+                v-if="!isFuyukoSelected"
                 class="segmented-tabs"
                 role="group"
                 aria-label="语气分类筛选"
@@ -300,6 +325,7 @@
                   {{ tab.label }}
                 </button>
               </div>
+              <span v-else class="band-meta">冬優子专属语气预设</span>
               <span class="band-meta">点选填入并收起，再次点击取消</span>
             </div>
 
@@ -354,8 +380,8 @@
           <p v-if="!missingFieldGuide && ttsBase" class="composer-summary">
             {{ selectedSpeaker }} ·
             {{ hasReferenceAudio ? '参考音频' : '内置音色' }}
-            <template v-if="matchedCaptionPreset">
-              · {{ matchedCaptionPreset.shortZh }}
+            <template v-if="activeCaptionShortLabel">
+              · {{ activeCaptionShortLabel }}
             </template>
             <template v-else-if="captionText.trim()"> · 自定义语气</template>
           </p>
@@ -888,9 +914,17 @@ import TtsAudioPlayer from './TtsAudioPlayer.vue'
 
 type VoiceMode = 'embed' | 'reference'
 type PresetCategory = 'all' | 'gentle' | 'bright' | 'drama'
+type FuyukoTriggerKey = 'omote' | 'ura' | 'switch'
+
+type FuyukoTrigger = {
+  key: FuyukoTriggerKey
+  mode: string
+  prefix: string
+  desc: string
+}
 
 type CaptionPreset = {
-  category: Exclude<PresetCategory, 'all'>
+  category: Exclude<PresetCategory, 'all'> | 'fuyuko'
   quick?: boolean
   shortZh: string
   zh: string
@@ -983,6 +1017,68 @@ const themeOverrides: GlobalThemeOverrides = {
   },
 }
 
+const FUYUKO_SPEAKER = '冬優子'
+
+const FUYUKO_TRIGGERS: readonly FuyukoTrigger[] = [
+  {
+    key: 'omote',
+    mode: '表（营业 / ふゆ）',
+    prefix: '猫かぶりな営業口調で、',
+    desc: '甜美可爱、装乖礼貌的偶像营业声线',
+  },
+  {
+    key: 'ura',
+    mode: '裏（素の本音）',
+    prefix: '素の本音口調で、',
+    desc: '卸下伪装的真实低沉/直率/傲娇声线',
+  },
+  {
+    key: 'switch',
+    mode: '切替（破防露馅）',
+    prefix: '営業口調から素が漏れ出しながら、',
+    desc: '同句内由甜美营业切到本音地声',
+  },
+]
+
+const FUYUKO_PRESETS: readonly CaptionPreset[] = [
+  {
+    category: 'fuyuko',
+    shortZh: '表 · 甜美营业',
+    zh: '表 · 甜美可爱地营业说话',
+    ja: '猫かぶりな営業口調で、甘く可愛らしい高い声で明るく話している。',
+  },
+  {
+    category: 'fuyuko',
+    shortZh: '表 · 礼貌营业',
+    zh: '表 · 温柔礼貌地营业问候',
+    ja: '猫かぶりな営業口調で、丁寧で落ち着いた優しい声で礼儀正しく挨拶している。',
+  },
+  {
+    category: 'fuyuko',
+    shortZh: '裏 · 素颜本音',
+    zh: '裏 · 卸下伪装、略带无语地本音开口',
+    ja: '素の本音口調で、低めの少しぶっきらぼうなトーンで呆れたように話している。',
+  },
+  {
+    category: 'fuyuko',
+    shortZh: '裏 · 本音激昂',
+    zh: '裏 · 压不住火气、犀利强硬地回怼',
+    ja: '素の本音口調で、苛立ちを抑えきれず強く鋭い声で言い放っている。',
+  },
+  {
+    category: 'fuyuko',
+    shortZh: '裏 · 本音害羞',
+    zh: '裏 · 略带害羞、语速加快地掩饰',
+    ja: '素の本音口調で、少し照れくさそうに早口で誤魔化している。',
+  },
+  {
+    category: 'fuyuko',
+    shortZh: '切替 · 破防露馅',
+    zh: '切替 · 营业中突然破防漏出本音',
+    ja: '営業口調から素が漏れ出しながら、前半は可愛らしく話し後半で思わず低い地声が出ている。',
+  },
+]
+
 const PRESET_CATEGORIES: readonly { key: PresetCategory; label: string }[] = [
   { key: 'all', label: '全部' },
   { key: 'gentle', label: '柔和' },
@@ -1073,9 +1169,32 @@ const CAPTION_PRESETS: readonly CaptionPreset[] = [
 
 const QUICK_PRESETS = CAPTION_PRESETS.filter((preset) => preset.quick)
 
+const ALL_KNOWN_PRESETS: readonly CaptionPreset[] = [
+  ...FUYUKO_PRESETS,
+  ...CAPTION_PRESETS,
+]
+
 const PRESET_JA_TO_SHORT_ZH = new Map(
-  CAPTION_PRESETS.map((preset) => [preset.ja, preset.shortZh])
+  ALL_KNOWN_PRESETS.map((preset) => [preset.ja, preset.shortZh])
 )
+
+const FUYUKO_PRESET_SET = new Set(FUYUKO_PRESETS.map((preset) => preset.ja))
+
+function detectFuyukoTrigger(text?: string | null): FuyukoTrigger | null {
+  const normalized = (text || '').trim()
+  if (!normalized) return null
+  return (
+    FUYUKO_TRIGGERS.find((trigger) => normalized.startsWith(trigger.prefix)) ||
+    null
+  )
+}
+
+function stripFuyukoPrefix(text: string) {
+  const normalized = text.trim()
+  const trigger = detectFuyukoTrigger(normalized)
+  if (!trigger) return normalized
+  return normalized.slice(trigger.prefix.length).trim()
+}
 
 // Full-name, Simplified Chinese & common alias search index for all 29 speakers
 const SPEAKER_SEARCH_ALIASES: Record<string, string> = {
@@ -1384,18 +1503,45 @@ const selectedSpeakerUnit = computed(() =>
   selectedSpeaker.value ? speakerUnitMap.get(selectedSpeaker.value) || '' : ''
 )
 
-const matchedCaptionPreset = computed(() => {
+const isFuyukoSelected = computed(
+  () => selectedSpeaker.value === FUYUKO_SPEAKER
+)
+
+const captionPlaceholder = computed(() =>
+  isFuyukoSelected.value
+    ? '留空自然发挥；句首输入「猫かぶりな営業口調で、」或「素の本音口調で、」可触发冬優子双人格，或直接点选下方专属预设'
+    : '留空自然发挥；可输入日文语气描述，或直接点选下方常用语气'
+)
+
+const activeQuickPresets = computed(() =>
+  isFuyukoSelected.value ? FUYUKO_PRESETS : QUICK_PRESETS
+)
+
+const activeCaptionSummary = computed(() => {
   const normalized = captionText.value.trim()
-  if (!normalized) return null
-  return CAPTION_PRESETS.find((preset) => preset.ja === normalized) || null
+  if (!normalized) return ''
+  const exact = ALL_KNOWN_PRESETS.find((preset) => preset.ja === normalized)
+  if (exact) return exact.zh
+  const trigger = detectFuyukoTrigger(normalized)
+  if (trigger) return trigger.mode
+  return ''
 })
 
+const activeCaptionShortLabel = computed(() =>
+  getCaptionZhLabel(captionText.value)
+)
+
 function getCaptionZhLabel(caption?: string) {
-  if (!caption) return ''
-  return PRESET_JA_TO_SHORT_ZH.get(caption.trim()) || ''
+  const normalized = (caption || '').trim()
+  if (!normalized) return ''
+  const exact = PRESET_JA_TO_SHORT_ZH.get(normalized)
+  if (exact) return exact
+  const trigger = detectFuyukoTrigger(normalized)
+  return trigger ? trigger.mode : ''
 }
 
 const filteredPresets = computed(() => {
+  if (isFuyukoSelected.value) return FUYUKO_PRESETS
   if (activePresetCategory.value === 'all') return CAPTION_PRESETS
   return CAPTION_PRESETS.filter(
     (preset) => preset.category === activePresetCategory.value
@@ -1537,6 +1683,15 @@ watch(
       if (value.speaker) {
         selectedSpeaker.value = value.speaker
         recordRecentSpeaker(value.speaker)
+        if (
+          value.speaker !== FUYUKO_SPEAKER &&
+          detectFuyukoTrigger(captionText.value)
+        ) {
+          const normalized = captionText.value.trim()
+          captionText.value = FUYUKO_PRESET_SET.has(normalized)
+            ? ''
+            : stripFuyukoPrefix(normalized)
+        }
       }
       referenceAudioId.value = value.audioId || ''
       referenceText.value = value.text || ''
@@ -1563,15 +1718,39 @@ function clearReferenceWithUndo() {
 function handleSpeakerChange(value: string | null) {
   const previous = selectedSpeaker.value
   if (value === previous) return
-  if (referenceAudioId.value) {
-    const snapshot = captureVoiceSnapshot()
+  const hasFuyukoPrefix =
+    value !== FUYUKO_SPEAKER && !!detectFuyukoTrigger(captionText.value)
+  const hadReference = !!referenceAudioId.value
+
+  if (hadReference || hasFuyukoPrefix) {
+    const snapshot: PartialFormSnapshot = {
+      speaker: selectedSpeaker.value,
+      ...(hadReference
+        ? {
+            referenceAudioId: referenceAudioId.value,
+            referenceText: referenceText.value,
+          }
+        : {}),
+      ...(hasFuyukoPrefix ? { captionText: captionText.value } : {}),
+    }
     selectedSpeaker.value = value
     recordRecentSpeaker(value)
-    clearReferenceSilent()
-    showUndoNotice(
-      `已切换为 ${value || '新角色'} 内置音色，并自动清除原参考音频。`,
-      snapshot
-    )
+    if (hadReference) {
+      clearReferenceSilent()
+    }
+    if (hasFuyukoPrefix) {
+      const normalized = captionText.value.trim()
+      captionText.value = FUYUKO_PRESET_SET.has(normalized)
+        ? ''
+        : stripFuyukoPrefix(normalized)
+    }
+    const reason =
+      hadReference && hasFuyukoPrefix
+        ? '已清除原参考音频与冬優子专属描述。'
+        : hadReference
+        ? '已自动清除原参考音频。'
+        : '已自动清除冬優子专属触发词。'
+    showUndoNotice(`已切换为 ${value || '新角色'}，${reason}`, snapshot)
     return
   }
   dismissUndoNotice()
@@ -2280,6 +2459,60 @@ onBeforeUnmount(() => {
   color: var(--tts-muted);
   font-size: var(--tts-fs-sm);
   line-height: 1.5;
+}
+
+/* Fuyuko Trigger Phrase Input Hint */
+.fuyuko-guide {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--tts-accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--tts-accent-soft);
+}
+
+.fuyuko-guide-title {
+  color: var(--tts-ink);
+  font-size: var(--tts-fs-sm);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.fuyuko-trigger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fuyuko-trigger-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  font-size: var(--tts-fs-sm);
+  line-height: 1.5;
+}
+
+.fuyuko-trigger-mode {
+  color: var(--tts-accent-text);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fuyuko-trigger-code {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #ffffff;
+  color: var(--tts-ink);
+  font-family: inherit;
+  font-size: var(--tts-fs-sm);
+  font-weight: 600;
+}
+
+.fuyuko-trigger-desc {
+  color: var(--tts-muted);
 }
 
 /* Voice Identity Row & Frameless Recent Speakers Strip */
