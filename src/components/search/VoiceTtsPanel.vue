@@ -1,883 +1,748 @@
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
     <div ref="panelRef" class="tts-studio">
-      <!-- Primary Unified Studio Sheet -->
-      <section class="studio-sheet" aria-label="语音生成工作区">
-        <header class="studio-masthead">
-          <h1>语音生成</h1>
-          <p>选择角色并输入日文台词即可合成，可按需搭配语气描述或参考音频。</p>
-        </header>
-
-        <div
-          v-if="!ttsBase"
-          class="inline-notice inline-notice--warn"
-          role="alert"
+      <!-- Mobile Mode Switcher (Option 1C: < 960px) -->
+      <div
+        v-if="isMobileLayout"
+        class="mobile-studio-tabs"
+        role="tablist"
+        aria-label="语音生成视图切换"
+      >
+        <button
+          id="tts-tab-compose"
+          type="button"
+          role="tab"
+          class="mobile-studio-tab"
+          :class="{
+            'mobile-studio-tab--active': mobileActiveTab === 'compose',
+          }"
+          :aria-selected="mobileActiveTab === 'compose'"
+          aria-controls="tts-panel-compose"
+          @click="switchMobileTab('compose')"
         >
-          <span>
-            服务未配置：请设置环境变量 <code>VITE_TTS_SERVER</code>（或
-            <code>VITE_GENIE_SERVER</code>）指向 TTS 服务地址。
+          <span>创作配置</span>
+        </button>
+        <button
+          id="tts-tab-results"
+          type="button"
+          role="tab"
+          class="mobile-studio-tab"
+          :class="{
+            'mobile-studio-tab--active': mobileActiveTab === 'results',
+          }"
+          :aria-selected="mobileActiveTab === 'results'"
+          aria-controls="tts-panel-results"
+          @click="switchMobileTab('results')"
+        >
+          <span>结果与历史</span>
+          <span
+            v-if="waitingTaskCount > 0"
+            class="mobile-tab-badge mobile-tab-badge--running tabular"
+          >
+            {{ waitingTaskCount }} 进行中
           </span>
-        </div>
+          <span
+            v-else-if="historyItems.length > 0"
+            class="mobile-tab-badge tabular"
+          >
+            {{ historyItems.length }}
+          </span>
+        </button>
+      </div>
 
-        <div
-          v-if="undoNotice"
-          class="inline-notice inline-notice--info"
-          role="status"
+      <!-- Desktop Split Workspace / Mobile Tab Panels -->
+      <div class="studio-workspace">
+        <!-- Primary Unified Studio Sheet (Left Column on Desktop) -->
+        <section
+          v-show="!isMobileLayout || mobileActiveTab === 'compose'"
+          id="tts-panel-compose"
+          class="studio-sheet"
+          :role="isMobileLayout ? 'tabpanel' : undefined"
+          :aria-labelledby="isMobileLayout ? 'tts-tab-compose' : undefined"
+          aria-label="语音生成工作区"
         >
-          <span>{{ undoNotice.message }}</span>
-          <div class="inline-notice-actions">
-            <button
-              type="button"
-              class="text-action text-action--accent"
-              @click="applyUndoNotice"
-            >
-              撤销
-            </button>
-            <button
-              type="button"
-              class="text-action"
-              @click="dismissUndoNotice"
-            >
-              关闭
-            </button>
-          </div>
-        </div>
+          <header class="studio-masthead">
+            <h1>语音生成</h1>
+            <p>选角色并输入日文台词即可合成，按需搭配语气或参考音频。</p>
+          </header>
 
-        <!-- Band 1: Voice Identity & Quick Recent Speakers -->
-        <div class="studio-band">
-          <div class="band-head">
-            <h2>角色与音色</h2>
-            <span class="band-meta">
-              <template v-if="selectedSpeaker">
-                {{ selectedSpeakerUnit || '283 PRO' }} ·
-                {{ hasReferenceAudio ? '参考音频克隆' : '内置音色' }}
-              </template>
-              <template v-else
-                >29 位角色，支持简体中文、全名与团体名搜索</template
-              >
+          <div
+            v-if="!ttsBase"
+            class="inline-notice inline-notice--warn"
+            role="alert"
+          >
+            <span>
+              服务未配置：请设置环境变量 <code>VITE_TTS_SERVER</code>（或
+              <code>VITE_GENIE_SERVER</code>）指向 TTS 服务地址。
             </span>
-          </div>
-
-          <div class="voice-picker-row">
-            <div
-              class="voice-avatar-frame"
-              :class="{ 'voice-avatar-frame--active': !!selectedSpeaker }"
-              aria-hidden="true"
-            >
-              <img
-                v-if="selectedSpeaker"
-                :src="getAvatarPath(selectedSpeaker)"
-                :alt="selectedSpeaker"
-                class="voice-avatar-img"
-              />
-              <n-icon v-else size="20" class="voice-avatar-icon">
-                <Microphone />
-              </n-icon>
-            </div>
-
-            <div ref="speakerControlRef" class="voice-picker-control">
-              <n-select
-                ref="speakerSelectRef"
-                :value="selectedSpeaker"
-                :options="speakerGroupOptions"
-                :render-label="renderSpeakerOption"
-                :render-tag="renderSpeakerTrigger"
-                :filter="filterSpeakerOption"
-                :input-props="{ 'aria-label': '选择角色与音色' }"
-                placeholder="搜索角色名、全名或团体（如：圆香 / 樋口 / noctchill）"
-                filterable
-                size="medium"
-                class="speaker-select"
-                @update:value="handleSpeakerChange"
-              />
-            </div>
           </div>
 
           <div
-            v-if="recentSpeakers.length"
-            class="recent-speakers"
-            role="group"
-            aria-label="最近使用的角色"
+            v-if="undoNotice"
+            class="inline-notice inline-notice--info"
+            role="status"
           >
-            <span class="recent-speakers-label">最近</span>
-            <div class="recent-speakers-list">
-              <button
-                v-for="name in recentSpeakers"
-                :key="name"
-                type="button"
-                class="recent-speaker-item"
-                :class="{
-                  'recent-speaker-item--active': selectedSpeaker === name,
-                }"
-                :aria-pressed="selectedSpeaker === name"
-                @click="handleSpeakerChange(name)"
-              >
-                <img :src="getAvatarPath(name)" alt="" class="recent-avatar" />
-                <span>{{ name }}</span>
-              </button>
-            </div>
-          </div>
-
-          <div v-if="referenceAudioProps" class="reference-strip">
-            <div class="reference-strip-top">
-              <div class="reference-audio-wrap">
-                <span class="reference-label">参考音频</span>
-                <AudioLabel
-                  v-bind="referenceAudioProps"
-                  :audio-text="referenceText"
-                  extra-text="点击试听"
-                  display-download
-                />
-              </div>
-              <button
-                type="button"
-                class="text-action text-action--warn"
-                @click="clearReferenceWithUndo"
-              >
-                恢复内置音色
-              </button>
-            </div>
-            <p class="reference-mode-explain">
-              当前将按下方参考音频克隆音色与语调；切换其他角色会自动恢复内置音色（可撤销）。
-            </p>
-            <p
-              v-if="referenceText.trim()"
-              class="reference-transcript"
-              lang="ja"
-            >
-              <span class="reference-transcript-prefix">原台词</span>
-              {{ referenceText }}
-            </p>
-          </div>
-          <p v-else class="voice-mode-note">
-            <template v-if="selectedSpeaker">
-              当前使用
-              {{ selectedSpeaker }} 的内置音色；如需模仿特定台词语调，可
-            </template>
-            <template v-else>选择角色即可直接用内置音色生成，也可</template>
-            <button type="button" class="inline-link" @click="goToVoiceSearch">
-              去语音搜索页挑选参考音频
-            </button>
-            。
-          </p>
-        </div>
-
-        <!-- Band 2: Script Composer -->
-        <div class="studio-band studio-band--script">
-          <div class="band-head">
-            <label for="tts-script-input" class="band-heading-label">
-              台词
-            </label>
-            <span class="band-meta tabular">
-              {{ ttsText.trim().length }} 字 · Ctrl / Cmd + Enter 生成
-            </span>
-          </div>
-
-          <textarea
-            id="tts-script-input"
-            ref="scriptInputRef"
-            v-model="ttsText"
-            class="studio-textarea studio-textarea--script"
-            rows="3"
-            lang="ja"
-            placeholder="请输入要生成的日文台词"
-            @keydown="handleScriptKeydown"
-          />
-
-          <div class="script-samples" role="group" aria-label="示例台词">
-            <span class="script-samples-label">示例</span>
-            <button
-              v-for="sample in SAMPLE_SCRIPTS"
-              :key="sample.label"
-              type="button"
-              class="script-sample-btn"
-              :class="{
-                'script-sample-btn--active': ttsText.trim() === sample.ja,
-              }"
-              :title="sample.ja"
-              @click="applySampleScript(sample.ja)"
-            >
-              {{ sample.label }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Band 3: Optional Direction + Always-Discoverable Quick Presets -->
-        <div class="studio-band studio-band--direction">
-          <div class="band-head">
-            <div class="band-head-group">
-              <label for="tts-caption-input" class="band-heading-label">
-                语气描述
-              </label>
-              <span class="optional-label">选填</span>
-              <span class="band-meta">
-                <template v-if="activeCaptionSummary">
-                  已选：{{ activeCaptionSummary }}
-                </template>
-                <template v-else>日文自然句控制语气，留空自然发挥</template>
-              </span>
-            </div>
-            <div class="direction-head-actions">
-              <button
-                type="button"
-                class="text-action text-action--accent preset-expand-trigger"
-                :aria-expanded="presetsOpen"
-                aria-controls="tts-preset-drawer"
-                @click="presetsOpen = !presetsOpen"
-              >
-                <span>
-                  {{
-                    presetsOpen
-                      ? '收起预设'
-                      : hasCharacterPresets
-                      ? `全部 ${
-                          activeCharacterPresets.length +
-                          UNIVERSAL_CAPTION_PRESETS.length
-                        } 条（含日文）`
-                      : `全部 ${UNIVERSAL_CAPTION_PRESETS.length} 条（含日文）`
-                  }}
-                </span>
-                <n-icon
-                  size="14"
-                  class="chevron-icon"
-                  :class="{ 'chevron-icon--open': presetsOpen }"
-                  aria-hidden="true"
-                >
-                  <ChevronDown />
-                </n-icon>
-              </button>
-              <button
-                v-if="captionText.trim()"
-                type="button"
-                class="text-action"
-                @click="captionText = ''"
-              >
-                清空
-              </button>
-            </div>
-          </div>
-
-          <!-- Fuyuko-Exclusive Trigger Phrase Hint -->
-          <div v-if="isFuyukoSelected" class="fuyuko-guide" role="note">
-            <div class="fuyuko-guide-title">
-              冬優子双人格触发提示：手写日文描述时，在句首加上以下触发词可精准切换声线
-            </div>
-            <ul class="fuyuko-trigger-list">
-              <li
-                v-for="trigger in FUYUKO_TRIGGERS"
-                :key="trigger.key"
-                class="fuyuko-trigger-item"
-              >
-                <strong class="fuyuko-trigger-mode">{{ trigger.mode }}</strong>
-                <code class="fuyuko-trigger-code" lang="ja">{{
-                  trigger.prefix
-                }}</code>
-                <span class="fuyuko-trigger-desc">{{ trigger.desc }}</span>
-              </li>
-            </ul>
-          </div>
-
-          <textarea
-            id="tts-caption-input"
-            v-model="captionText"
-            class="studio-textarea studio-textarea--caption"
-            rows="2"
-            lang="ja"
-            :placeholder="captionPlaceholder"
-            @keydown="handleScriptKeydown"
-          />
-
-          <p
-            v-if="showNonJapaneseCaptionHint"
-            class="inline-notice inline-notice--warn"
-          >
-            <span>
-              未检测到日文假名，模型对日文自然句描述控制效果更好，建议改用日文或点选下方预设。
-            </span>
-          </p>
-
-          <!-- Compact Quick-Pick Row (Visible When Collapsed) -->
-          <div v-if="!presetsOpen" class="quick-preset-bar">
-            <div
-              class="quick-preset-list"
-              role="group"
-              :aria-label="
-                hasCharacterPresets
-                  ? `${selectedSpeaker}专属语气预设`
-                  : '通用语气快捷选择'
-              "
-            >
-              <button
-                v-for="preset in activeQuickPresets"
-                :key="preset.ja"
-                type="button"
-                class="quick-preset-btn"
-                :class="{
-                  'quick-preset-btn--active': captionText.trim() === preset.ja,
-                }"
-                :aria-pressed="captionText.trim() === preset.ja"
-                :title="`${preset.shortZh}（${preset.zh}）：${preset.ja}`"
-                @click="toggleQuickPreset(preset.ja)"
-              >
-                {{ preset.shortZh }}
-              </button>
-            </div>
-          </div>
-
-          <!-- Full Bilingual Preset Drawer -->
-          <div v-else id="tts-preset-drawer" class="preset-block">
-            <div class="preset-toolbar">
-              <div
-                v-if="hasCharacterPresets"
-                class="segmented-tabs"
-                role="group"
-                aria-label="语气预设分组"
-              >
-                <button
-                  type="button"
-                  :aria-pressed="activePresetScope === 'character'"
-                  class="segmented-tab"
-                  :class="{
-                    'segmented-tab--active': activePresetScope === 'character',
-                  }"
-                  @click="activePresetScope = 'character'"
-                >
-                  {{ selectedSpeaker }}专属（{{
-                    activeCharacterPresets.length
-                  }}）
-                </button>
-                <button
-                  type="button"
-                  :aria-pressed="activePresetScope === 'universal'"
-                  class="segmented-tab"
-                  :class="{
-                    'segmented-tab--active': activePresetScope === 'universal',
-                  }"
-                  @click="activePresetScope = 'universal'"
-                >
-                  通用场景（{{ UNIVERSAL_CAPTION_PRESETS.length }}）
-                </button>
-              </div>
-              <span v-else class="band-meta">
-                通用声学与状态预设（选择角色后解锁 6 条专属情绪）
-              </span>
-              <span class="band-meta">点选填入并收起，再次点击取消</span>
-            </div>
-
-            <div class="preset-grid" role="group" aria-label="日文语气预设列表">
-              <button
-                v-for="preset in filteredPresets"
-                :key="preset.ja"
-                type="button"
-                :aria-pressed="captionText.trim() === preset.ja"
-                class="preset-cell"
-                :class="{
-                  'preset-cell--active': captionText.trim() === preset.ja,
-                }"
-                @click="selectCaptionPreset(preset.ja)"
-              >
-                <span class="preset-cell-head">
-                  <span class="preset-cell-zh">{{ preset.shortZh }}</span>
-                  <span class="preset-cell-desc">{{ preset.zh }}</span>
-                </span>
-                <span class="preset-cell-ja" lang="ja">{{ preset.ja }}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Band 4: Form Footer CTA With Immediate Missing-Field Guidance -->
-        <div class="studio-footer">
-          <div class="composer-actions">
-            <button
-              type="button"
-              class="primary-cta"
-              :disabled="!canSubmit"
-              @click="createTask"
-            >
-              {{ submitting ? '提交中…' : '生成语音' }}
-            </button>
-
-            <button
-              v-if="missingFieldGuide"
-              type="button"
-              class="missing-guide-btn"
-              @click="focusMissingField"
-            >
-              {{ missingFieldGuide.label }}
-            </button>
-            <span
-              v-else-if="waitingTaskCount > 0"
-              class="waiting-summary tabular"
-              role="status"
-            >
-              {{ waitingTaskCount }} 个任务处理中
-            </span>
-          </div>
-
-          <p v-if="!missingFieldGuide && ttsBase" class="composer-summary">
-            {{ selectedSpeaker }} ·
-            {{ hasReferenceAudio ? '参考音频' : '内置音色' }}
-            <template v-if="activeCaptionShortLabel">
-              · {{ activeCaptionShortLabel }}
-            </template>
-            <template v-else-if="captionText.trim()"> · 自定义语气</template>
-          </p>
-        </div>
-
-        <div
-          v-if="errorMessage"
-          class="inline-notice inline-notice--error studio-sheet-error"
-          role="alert"
-        >
-          <span>{{ errorMessage }}</span>
-        </div>
-      </section>
-
-      <!-- Output & Deduplicated History Ledger (Directly Below CTA) -->
-      <section
-        v-if="currentTaskItem || visibleHistoryItems.length"
-        ref="ledgerRef"
-        class="ledger-sheet"
-        aria-label="生成结果与历史记录"
-      >
-        <!-- Current Active Task -->
-        <div
-          v-if="currentTaskItem"
-          class="ledger-section ledger-section--current"
-          :class="{
-            'ledger-section--just-ready':
-              justCompletedTaskId === currentTaskItem.taskId,
-          }"
-        >
-          <div class="ledger-section-head">
-            <h2>当前结果</h2>
-            <div class="task-actions">
-              <button
-                v-if="isWaitingStatus(currentTaskItem.status?.status)"
-                type="button"
-                class="text-action"
-                @click="refreshCurrentTask"
-              >
-                刷新状态
-              </button>
+            <span>{{ undoNotice.message }}</span>
+            <div class="inline-notice-actions">
               <button
                 type="button"
                 class="text-action text-action--accent"
-                @click="reuseCurrentTask"
+                @click="applyUndoNotice"
               >
-                复用参数
+                撤销
               </button>
               <button
                 type="button"
-                class="text-action text-action--danger"
-                @click="removeCurrentTask"
+                class="text-action"
+                @click="dismissUndoNotice"
               >
-                删除
+                关闭
               </button>
             </div>
           </div>
 
-          <article class="task-entry task-entry--current">
-            <div class="task-entry-head">
-              <div class="task-identity">
+          <!-- Band 1: Voice Identity & Quick Recent Speakers -->
+          <div class="studio-band">
+            <div class="band-head">
+              <h2>角色与音色</h2>
+              <span class="band-meta">
+                <template v-if="selectedSpeaker">
+                  {{ selectedSpeakerUnit || '283 PRO' }} ·
+                  {{ hasReferenceAudio ? '参考音频克隆' : '内置音色' }}
+                </template>
+                <template v-else
+                  >29 位角色，支持简体中文、全名与团体名搜索</template
+                >
+              </span>
+            </div>
+
+            <div class="voice-picker-row">
+              <div
+                class="voice-avatar-frame"
+                :class="{ 'voice-avatar-frame--active': !!selectedSpeaker }"
+                aria-hidden="true"
+              >
                 <img
-                  v-if="currentTaskItem.speaker"
-                  :src="getAvatarPath(currentTaskItem.speaker)"
-                  :alt="currentTaskItem.speaker"
-                  class="task-avatar task-avatar--lg"
+                  v-if="selectedSpeaker"
+                  :src="getAvatarPath(selectedSpeaker)"
+                  :alt="selectedSpeaker"
+                  class="voice-avatar-img"
                 />
-                <div class="task-identity-line">
-                  <strong class="task-speaker">{{
-                    currentTaskItem.speaker || '未知角色'
-                  }}</strong>
-                  <span class="meta-dot" aria-hidden="true">·</span>
-                  <span class="task-mode">
-                    {{
-                      getHistoryVoiceMode(currentTaskItem) === 'reference'
-                        ? '参考音频'
-                        : '内置音色'
-                    }}
-                  </span>
-                  <template v-if="getCaptionZhLabel(currentTaskItem.caption)">
-                    <span class="meta-dot" aria-hidden="true">·</span>
-                    <span class="task-tone-highlight">{{
-                      getCaptionZhLabel(currentTaskItem.caption)
-                    }}</span>
-                  </template>
-                  <span class="meta-dot" aria-hidden="true">·</span>
-                  <time class="task-time tabular">{{
-                    formatSentAt(currentTaskItem.sentAt)
-                  }}</time>
-                </div>
+                <n-icon v-else size="18" class="voice-avatar-icon">
+                  <Microphone />
+                </n-icon>
               </div>
 
-              <span
-                class="status-indicator"
-                :class="
-                  playingTaskId === currentTaskItem.taskId
-                    ? 'status-indicator--playing'
-                    : `status-indicator--${
-                        getStatusMeta(currentTaskItem.status?.status).tone
-                      }`
-                "
-              >
-                <template v-if="playingTaskId === currentTaskItem.taskId">
-                  播放中
-                </template>
-                <template v-else>
-                  {{ getStatusMeta(currentTaskItem.status?.status).label }}
-                  <template
-                    v-if="isWaitingStatus(currentTaskItem.status?.status)"
-                  >
-                    · 排队 {{ currentTaskItem.status?.pending ?? 0 }}
-                  </template>
-                </template>
-              </span>
-            </div>
-
-            <p
-              v-if="currentTaskItem.ttsText.trim()"
-              class="task-script"
-              lang="ja"
-            >
-              {{ currentTaskItem.ttsText }}
-            </p>
-            <p
-              v-if="currentTaskItem.caption && currentTaskItem.caption.trim()"
-              class="task-caption"
-              lang="ja"
-            >
-              <span class="task-caption-label">语气</span>
-              {{ currentTaskItem.caption }}
-            </p>
-            <p
-              v-if="currentTaskItem.status?.error"
-              class="inline-notice inline-notice--error"
-            >
-              <span>{{ currentTaskItem.status.error }}</span>
-            </p>
-
-            <div
-              v-if="isWaitingStatus(currentTaskItem.status?.status)"
-              class="progress-strip"
-              role="status"
-            >
-              <span class="progress-spinner" aria-hidden="true" />
-              <span>
-                {{
-                  currentTaskItem.status?.status === 'running'
-                    ? '正在合成语音，请稍候，完成后将自动显示在此处…'
-                    : `任务已提交，当前排队 ${
-                        currentTaskItem.status?.pending ?? 0
-                      }，完成后将自动更新…`
-                }}
-              </span>
+              <div ref="speakerControlRef" class="voice-picker-control">
+                <n-select
+                  ref="speakerSelectRef"
+                  :value="selectedSpeaker"
+                  :options="speakerGroupOptions"
+                  :render-label="renderSpeakerOption"
+                  :render-tag="renderSpeakerTrigger"
+                  :filter="filterSpeakerOption"
+                  :input-props="{ 'aria-label': '选择角色与音色' }"
+                  placeholder="搜索角色名、全名或团体（如：圆香 / 樋口 / noctchill）"
+                  filterable
+                  size="medium"
+                  class="speaker-select"
+                  @update:value="handleSpeakerChange"
+                />
+              </div>
             </div>
 
             <div
-              v-if="
-                currentTaskItem.status?.status === 'completed' &&
-                (resolveTaskUrl(currentTaskItem.status?.save_path_compressed) ||
-                  getDownloadLinks(currentTaskItem.status).length)
-              "
-              class="media-bar"
-              :class="{
-                'media-bar--playing': playingTaskId === currentTaskItem.taskId,
-              }"
+              v-if="recentSpeakers.length"
+              class="recent-speakers"
+              role="group"
+              aria-label="最近使用的角色"
             >
-              <TtsAudioPlayer
-                v-if="
-                  resolveTaskUrl(currentTaskItem.status?.save_path_compressed)
-                "
-                :key="currentTaskItem.taskId"
-                :src="
-                  resolveTaskUrl(currentTaskItem.status?.save_path_compressed)
-                "
-                preload="metadata"
-                @playing-change="handleCurrentPlayingChange"
-              />
-              <div
-                v-if="getDownloadLinks(currentTaskItem.status).length"
-                class="download-row"
-              >
+              <span class="recent-speakers-label">最近</span>
+              <div class="recent-speakers-list">
                 <button
-                  v-for="link in getDownloadLinks(currentTaskItem.status)"
-                  :key="link.format"
+                  v-for="name in recentSpeakers"
+                  :key="name"
                   type="button"
-                  class="download-link"
-                  :class="{ 'download-link--expired': link.expired }"
-                  :disabled="isDownloading(currentTaskItem.taskId, link.format)"
-                  :aria-label="
-                    link.expiry
-                      ? `下载 ${link.format}，${link.expiry}`
-                      : `下载 ${link.format}`
-                  "
-                  @click="downloadCurrentTtsFile(link)"
+                  class="recent-speaker-item"
+                  :class="{
+                    'recent-speaker-item--active': selectedSpeaker === name,
+                  }"
+                  :aria-pressed="selectedSpeaker === name"
+                  @click="handleSpeakerChange(name)"
                 >
-                  <span class="download-link-fmt">{{ link.format }}</span>
-                  <span
-                    v-if="
-                      isDownloading(currentTaskItem.taskId, link.format) ||
-                      link.expiry
-                    "
-                    class="download-link-exp tabular"
-                  >
+                  <img
+                    :src="getAvatarPath(name)"
+                    alt=""
+                    class="recent-avatar"
+                  />
+                  <span>{{ name }}</span>
+                </button>
+              </div>
+            </div>
+
+            <div v-if="referenceAudioProps" class="reference-strip">
+              <div class="reference-strip-top">
+                <div class="reference-audio-wrap">
+                  <span class="reference-label">参考音频</span>
+                  <AudioLabel
+                    v-bind="referenceAudioProps"
+                    :audio-text="referenceText"
+                    extra-text="点击试听"
+                    display-download
+                  />
+                </div>
+                <button
+                  type="button"
+                  class="text-action text-action--warn"
+                  @click="clearReferenceWithUndo"
+                >
+                  恢复内置音色
+                </button>
+              </div>
+              <p class="reference-mode-explain">
+                当前将按下方参考音频克隆音色与语调；切换其他角色会自动恢复内置音色（可撤销）。
+              </p>
+              <p
+                v-if="referenceText.trim()"
+                class="reference-transcript"
+                lang="ja"
+              >
+                <span class="reference-transcript-prefix">原台词</span>
+                {{ referenceText }}
+              </p>
+            </div>
+            <p v-else class="voice-mode-note">
+              <template v-if="selectedSpeaker">
+                当前使用 {{ selectedSpeaker }} 内置音色；如需模仿特定语调，可
+              </template>
+              <template v-else>选择角色即可直接用内置音色生成，也可</template>
+              <button
+                type="button"
+                class="inline-link"
+                @click="goToVoiceSearch"
+              >
+                去语音搜索页挑选参考音频
+              </button>
+              。
+            </p>
+          </div>
+
+          <!-- Band 2: Script Composer -->
+          <div class="studio-band studio-band--script">
+            <div class="band-head">
+              <label for="tts-script-input" class="band-heading-label">
+                台词
+              </label>
+              <span class="band-meta tabular">
+                {{ ttsText.trim().length }} 字 · Ctrl / Cmd + Enter 生成
+              </span>
+            </div>
+
+            <textarea
+              id="tts-script-input"
+              ref="scriptInputRef"
+              v-model="ttsText"
+              class="studio-textarea studio-textarea--script"
+              rows="3"
+              lang="ja"
+              placeholder="请输入要生成的日文台词"
+              @keydown="handleScriptKeydown"
+            />
+
+            <div class="script-samples" role="group" aria-label="示例台词">
+              <span class="script-samples-label">示例</span>
+              <button
+                v-for="sample in SAMPLE_SCRIPTS"
+                :key="sample.label"
+                type="button"
+                class="script-sample-btn"
+                :class="{
+                  'script-sample-btn--active': ttsText.trim() === sample.ja,
+                }"
+                :title="sample.ja"
+                @click="applySampleScript(sample.ja)"
+              >
+                {{ sample.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Band 3: Optional Direction + Always-Discoverable Quick Presets -->
+          <div class="studio-band studio-band--direction">
+            <div class="band-head">
+              <div class="band-head-group">
+                <label for="tts-caption-input" class="band-heading-label">
+                  语气描述
+                </label>
+                <span class="optional-label">选填</span>
+                <span class="band-meta">
+                  <template v-if="activeCaptionSummary">
+                    已选：{{ activeCaptionSummary }}
+                  </template>
+                  <template v-else>日文自然句控制语气，留空自然发挥</template>
+                </span>
+              </div>
+              <div class="direction-head-actions">
+                <button
+                  type="button"
+                  class="text-action text-action--accent preset-expand-trigger"
+                  :aria-expanded="presetsOpen"
+                  aria-controls="tts-preset-drawer"
+                  @click="presetsOpen = !presetsOpen"
+                >
+                  <span>
                     {{
-                      isDownloading(currentTaskItem.taskId, link.format)
-                        ? '下载中…'
-                        : link.expiry
+                      presetsOpen
+                        ? '收起预设'
+                        : hasCharacterPresets
+                        ? `全部 ${
+                            activeCharacterPresets.length +
+                            UNIVERSAL_CAPTION_PRESETS.length
+                          } 条（含日文）`
+                        : `全部 ${UNIVERSAL_CAPTION_PRESETS.length} 条（含日文）`
                     }}
                   </span>
-                  <n-icon size="15" aria-hidden="true">
-                    <Download />
+                  <n-icon
+                    size="14"
+                    class="chevron-icon"
+                    :class="{ 'chevron-icon--open': presetsOpen }"
+                    aria-hidden="true"
+                  >
+                    <ChevronDown />
                   </n-icon>
                 </button>
-              </div>
-            </div>
-
-            <details
-              v-if="
-                historyAudioPropsMap[currentTaskItem.taskId] ||
-                currentTaskItem.referenceText
-              "
-              class="ref-details"
-            >
-              <summary>参考音频与原台词</summary>
-              <div class="ref-details-body">
-                <div
-                  v-if="historyAudioPropsMap[currentTaskItem.taskId]"
-                  class="ref-details-row"
-                >
-                  <span class="ref-details-key">参考音频</span>
-                  <span class="ref-details-val ref-details-val--audio">
-                    <AudioLabel
-                      v-bind="historyAudioPropsMap[currentTaskItem.taskId]"
-                      :audio-text="currentTaskItem.referenceText"
-                      extra-text="点击试听"
-                      display-download
-                    />
-                  </span>
-                </div>
-                <div
-                  v-if="currentTaskItem.referenceText"
-                  class="ref-details-row"
-                >
-                  <span class="ref-details-key">原台词</span>
-                  <span class="ref-details-val" lang="ja">{{
-                    currentTaskItem.referenceText
-                  }}</span>
-                </div>
-              </div>
-            </details>
-          </article>
-        </div>
-
-        <!-- Deduplicated History Ledger (Compact for Fast A/B Comparison) -->
-        <div v-if="visibleHistoryItems.length" class="ledger-section">
-          <div class="ledger-section-head">
-            <div class="ledger-head-left">
-              <h2>{{ currentTaskItem ? '更早的历史记录' : '历史记录' }}</h2>
-              <span class="band-meta tabular">
-                共 {{ visibleHistoryItems.length }} 条
-              </span>
-            </div>
-
-            <div class="clear-confirm-group">
-              <template v-if="confirmingClearHistory">
-                <span class="band-meta">确认清空？</span>
                 <button
-                  ref="confirmClearBtnRef"
-                  type="button"
-                  class="text-action text-action--danger"
-                  @click="confirmClearHistory"
-                >
-                  确认
-                </button>
-                <button
+                  v-if="captionText.trim()"
                   type="button"
                   class="text-action"
-                  @click="cancelClearHistory"
+                  @click="captionText = ''"
                 >
-                  取消
+                  清空
                 </button>
-              </template>
-              <button
-                v-else
-                ref="askClearBtnRef"
-                type="button"
-                class="text-action text-action--danger"
-                @click="askClearHistory"
+              </div>
+            </div>
+
+            <!-- Fuyuko-Exclusive Trigger Phrase Hint -->
+            <div v-if="isFuyukoSelected" class="fuyuko-guide" role="note">
+              <div class="fuyuko-guide-title">
+                冬優子双人格触发提示：手写日文描述时，在句首加上以下触发词可精准切换声线
+              </div>
+              <ul class="fuyuko-trigger-list">
+                <li
+                  v-for="trigger in FUYUKO_TRIGGERS"
+                  :key="trigger.key"
+                  class="fuyuko-trigger-item"
+                >
+                  <strong class="fuyuko-trigger-mode">{{
+                    trigger.mode
+                  }}</strong>
+                  <code class="fuyuko-trigger-code" lang="ja">{{
+                    trigger.prefix
+                  }}</code>
+                  <span class="fuyuko-trigger-desc">{{ trigger.desc }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <textarea
+              id="tts-caption-input"
+              v-model="captionText"
+              class="studio-textarea studio-textarea--caption"
+              rows="2"
+              lang="ja"
+              :placeholder="captionPlaceholder"
+              @keydown="handleScriptKeydown"
+            />
+
+            <p
+              v-if="showNonJapaneseCaptionHint"
+              class="inline-notice inline-notice--warn"
+            >
+              <span>
+                未检测到日文假名，模型对日文自然句描述控制效果更好，建议改用日文或点选下方预设。
+              </span>
+            </p>
+
+            <!-- Compact Quick-Pick Row (Visible When Collapsed) -->
+            <div v-if="!presetsOpen" class="quick-preset-bar">
+              <div
+                class="quick-preset-list"
+                role="group"
+                :aria-label="
+                  hasCharacterPresets
+                    ? `${selectedSpeaker}专属语气预设`
+                    : '通用语气快捷选择'
+                "
               >
-                清空历史
-              </button>
+                <button
+                  v-for="preset in activeQuickPresets"
+                  :key="preset.ja"
+                  type="button"
+                  class="quick-preset-btn"
+                  :class="{
+                    'quick-preset-btn--active':
+                      captionText.trim() === preset.ja,
+                  }"
+                  :aria-pressed="captionText.trim() === preset.ja"
+                  :title="`${preset.shortZh}（${preset.zh}）：${preset.ja}`"
+                  @click="toggleQuickPreset(preset.ja)"
+                >
+                  {{ preset.shortZh }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Full Bilingual Preset Drawer -->
+            <div v-else id="tts-preset-drawer" class="preset-block">
+              <div class="preset-toolbar">
+                <div
+                  v-if="hasCharacterPresets"
+                  class="segmented-tabs"
+                  role="group"
+                  aria-label="语气预设分组"
+                >
+                  <button
+                    type="button"
+                    :aria-pressed="activePresetScope === 'character'"
+                    class="segmented-tab"
+                    :class="{
+                      'segmented-tab--active':
+                        activePresetScope === 'character',
+                    }"
+                    @click="activePresetScope = 'character'"
+                  >
+                    {{ selectedSpeaker }}专属（{{
+                      activeCharacterPresets.length
+                    }}）
+                  </button>
+                  <button
+                    type="button"
+                    :aria-pressed="activePresetScope === 'universal'"
+                    class="segmented-tab"
+                    :class="{
+                      'segmented-tab--active':
+                        activePresetScope === 'universal',
+                    }"
+                    @click="activePresetScope = 'universal'"
+                  >
+                    通用场景（{{ UNIVERSAL_CAPTION_PRESETS.length }}）
+                  </button>
+                </div>
+                <span v-else class="band-meta">
+                  通用声学与状态预设（选择角色后解锁 6 条专属情绪）
+                </span>
+                <span class="band-meta">点选填入并收起，再次点击取消</span>
+              </div>
+
+              <div
+                class="preset-grid"
+                role="group"
+                aria-label="日文语气预设列表"
+              >
+                <button
+                  v-for="preset in filteredPresets"
+                  :key="preset.ja"
+                  type="button"
+                  :aria-pressed="captionText.trim() === preset.ja"
+                  class="preset-cell"
+                  :class="{
+                    'preset-cell--active': captionText.trim() === preset.ja,
+                  }"
+                  @click="selectCaptionPreset(preset.ja)"
+                >
+                  <span class="preset-cell-head">
+                    <span class="preset-cell-zh">{{ preset.shortZh }}</span>
+                    <span class="preset-cell-desc">{{ preset.zh }}</span>
+                  </span>
+                  <span class="preset-cell-ja" lang="ja">{{ preset.ja }}</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="history-list">
-            <article
-              v-for="item in visibleHistoryItems"
-              :key="item.taskId"
-              class="task-entry task-entry--history"
+          <!-- Band 4: Form Footer CTA With Immediate Missing-Field Guidance -->
+          <div class="studio-footer">
+            <div class="composer-actions">
+              <button
+                type="button"
+                class="primary-cta"
+                :disabled="!canSubmit"
+                @click="createTask"
+              >
+                {{ submitting ? '提交中…' : '生成语音' }}
+              </button>
+
+              <button
+                v-if="missingFieldGuide"
+                type="button"
+                class="missing-guide-btn"
+                @click="focusMissingField"
+              >
+                {{ missingFieldGuide.label }}
+              </button>
+              <span
+                v-else-if="waitingTaskCount > 0"
+                class="waiting-summary tabular"
+                role="status"
+              >
+                {{ waitingTaskCount }} 个任务处理中
+              </span>
+            </div>
+
+            <p v-if="!missingFieldGuide && ttsBase" class="composer-summary">
+              {{ selectedSpeaker }} ·
+              {{ hasReferenceAudio ? '参考音频' : '内置音色' }}
+              <template v-if="activeCaptionShortLabel">
+                · {{ activeCaptionShortLabel }}
+              </template>
+              <template v-else-if="captionText.trim()"> · 自定义语气</template>
+            </p>
+          </div>
+
+          <div
+            v-if="errorMessage"
+            class="inline-notice inline-notice--error studio-sheet-error"
+            role="alert"
+          >
+            <span>{{ errorMessage }}</span>
+          </div>
+        </section>
+
+        <!-- Output & Deduplicated History Ledger (Sticky Right Column on Desktop, Second Tab on Mobile) -->
+        <section
+          v-show="!isMobileLayout || mobileActiveTab === 'results'"
+          id="tts-panel-results"
+          ref="ledgerRef"
+          class="ledger-sheet"
+          :class="{
+            'ledger-sheet--has-history': olderHistoryItems.length > 0,
+            'ledger-sheet--empty': !featuredTaskItem,
+          }"
+          :role="isMobileLayout ? 'tabpanel' : undefined"
+          :aria-labelledby="isMobileLayout ? 'tts-tab-results' : undefined"
+          aria-label="生成结果与历史记录"
+        >
+          <!-- Empty Stage State (Keeps Split Layout Balanced Before First Task) -->
+          <div v-if="!featuredTaskItem" class="ledger-empty">
+            <div class="ledger-empty-icon" aria-hidden="true">
+              <n-icon size="24">
+                <Microphone />
+              </n-icon>
+            </div>
+            <h2>最新任务与试听区</h2>
+            <p>
+              选择角色并输入日文台词点击「生成语音」后，正在进行的进度与最新试听结果会实时常驻在此处。
+            </p>
+            <button
+              v-if="isMobileLayout"
+              type="button"
+              class="primary-cta ledger-empty-cta"
+              @click="switchMobileTab('compose')"
             >
+              去创作配置
+            </button>
+          </div>
+
+          <!-- Featured Active / Latest Task (Always Pinned at Top of Results Panel) -->
+          <div
+            v-if="featuredTaskItem"
+            class="ledger-section ledger-section--current"
+            :class="{
+              'ledger-section--just-ready':
+                justCompletedTaskId === featuredTaskItem.taskId,
+            }"
+          >
+            <div class="ledger-section-head">
+              <div class="ledger-head-left">
+                <h2>{{ featuredTaskHeading }}</h2>
+                <span
+                  v-if="waitingTaskCount > 1"
+                  class="band-meta tabular waiting-inline-count"
+                >
+                  共 {{ waitingTaskCount }} 个进行中
+                </span>
+              </div>
+              <div class="task-actions">
+                <button
+                  v-if="isWaitingStatus(featuredTaskItem.status?.status)"
+                  type="button"
+                  class="text-action"
+                  @click="refreshFeaturedTask"
+                >
+                  刷新状态
+                </button>
+                <button
+                  type="button"
+                  class="text-action text-action--accent"
+                  @click="reuseFeaturedTask"
+                >
+                  复用参数
+                </button>
+                <button
+                  type="button"
+                  class="text-action text-action--danger"
+                  @click="removeFeaturedTask"
+                >
+                  删除
+                </button>
+              </div>
+            </div>
+
+            <article class="task-entry task-entry--current">
               <div class="task-entry-head">
                 <div class="task-identity">
                   <img
-                    v-if="item.speaker"
-                    :src="getAvatarPath(item.speaker)"
-                    :alt="item.speaker"
-                    class="task-avatar"
+                    v-if="featuredTaskItem.speaker"
+                    :src="getAvatarPath(featuredTaskItem.speaker)"
+                    :alt="featuredTaskItem.speaker"
+                    class="task-avatar task-avatar--lg"
                   />
                   <div class="task-identity-line">
                     <strong class="task-speaker">{{
-                      item.speaker || '未知角色'
+                      featuredTaskItem.speaker || '未知角色'
                     }}</strong>
                     <span class="meta-dot" aria-hidden="true">·</span>
                     <span class="task-mode">
                       {{
-                        getHistoryVoiceMode(item) === 'reference'
+                        getHistoryVoiceMode(featuredTaskItem) === 'reference'
                           ? '参考音频'
                           : '内置音色'
                       }}
                     </span>
-                    <template v-if="getCaptionZhLabel(item.caption)">
+                    <template
+                      v-if="getCaptionZhLabel(featuredTaskItem.caption)"
+                    >
                       <span class="meta-dot" aria-hidden="true">·</span>
                       <span class="task-tone-highlight">{{
-                        getCaptionZhLabel(item.caption)
+                        getCaptionZhLabel(featuredTaskItem.caption)
                       }}</span>
                     </template>
                     <span class="meta-dot" aria-hidden="true">·</span>
                     <time class="task-time tabular">{{
-                      formatSentAt(item.sentAt)
+                      formatSentAt(featuredTaskItem.sentAt)
                     }}</time>
-                    <template
-                      v-if="
-                        playingTaskId === item.taskId ||
-                        item.status?.status !== 'completed'
-                      "
-                    >
-                      <span class="meta-dot" aria-hidden="true">·</span>
-                      <span
-                        class="status-indicator"
-                        :class="
-                          playingTaskId === item.taskId
-                            ? 'status-indicator--playing'
-                            : `status-indicator--${
-                                getStatusMeta(item.status?.status).tone
-                              }`
-                        "
-                      >
-                        <template v-if="playingTaskId === item.taskId">
-                          播放中
-                        </template>
-                        <template v-else>
-                          {{ getStatusMeta(item.status?.status).label }}
-                          <template v-if="isWaitingStatus(item.status?.status)">
-                            · 排队 {{ item.status?.pending ?? 0 }}
-                          </template>
-                        </template>
-                      </span>
-                    </template>
                   </div>
                 </div>
 
-                <div class="task-actions">
-                  <button
-                    type="button"
-                    class="text-action text-action--accent"
-                    @click="reuseHistoryItem(item)"
-                  >
-                    复用参数
-                  </button>
-                  <button
-                    v-if="isWaitingStatus(item.status?.status)"
-                    type="button"
-                    class="text-action"
-                    @click="refreshHistoryStatus(item.taskId)"
-                  >
-                    刷新
-                  </button>
-                  <button
-                    type="button"
-                    class="text-action text-action--danger"
-                    @click="removeHistoryItem(item.taskId)"
-                  >
-                    删除
-                  </button>
-                </div>
+                <span
+                  class="status-indicator"
+                  :class="
+                    playingTaskId === featuredTaskItem.taskId
+                      ? 'status-indicator--playing'
+                      : `status-indicator--${
+                          getStatusMeta(featuredTaskItem.status?.status).tone
+                        }`
+                  "
+                >
+                  <template v-if="playingTaskId === featuredTaskItem.taskId">
+                    播放中
+                  </template>
+                  <template v-else>
+                    {{ getStatusMeta(featuredTaskItem.status?.status).label }}
+                    <template
+                      v-if="isWaitingStatus(featuredTaskItem.status?.status)"
+                    >
+                      · 排队 {{ featuredTaskItem.status?.pending ?? 0 }}
+                    </template>
+                  </template>
+                </span>
               </div>
 
-              <p v-if="item.ttsText.trim()" class="task-script" lang="ja">
-                {{ item.ttsText }}
+              <p
+                v-if="featuredTaskItem.ttsText.trim()"
+                class="task-script"
+                lang="ja"
+              >
+                {{ featuredTaskItem.ttsText }}
               </p>
               <p
                 v-if="
-                  item.caption &&
-                  item.caption.trim() &&
-                  !getCaptionZhLabel(item.caption)
+                  featuredTaskItem.caption && featuredTaskItem.caption.trim()
                 "
                 class="task-caption"
                 lang="ja"
               >
                 <span class="task-caption-label">语气</span>
-                {{ item.caption }}
+                {{ featuredTaskItem.caption }}
               </p>
               <p
-                v-if="item.status?.error"
+                v-if="featuredTaskItem.status?.error"
                 class="inline-notice inline-notice--error"
               >
-                <span>{{ item.status.error }}</span>
+                <span>{{ featuredTaskItem.status.error }}</span>
               </p>
 
               <div
+                v-if="isWaitingStatus(featuredTaskItem.status?.status)"
+                class="progress-strip"
+                role="status"
+              >
+                <span class="progress-spinner" aria-hidden="true" />
+                <span>
+                  {{
+                    featuredTaskItem.status?.status === 'running'
+                      ? '正在合成语音，请稍候，完成后将自动显示在此处…'
+                      : `任务已提交，当前排队 ${
+                          featuredTaskItem.status?.pending ?? 0
+                        }，完成后将自动更新…`
+                  }}
+                </span>
+              </div>
+
+              <div
                 v-if="
-                  item.status?.status === 'completed' &&
-                  (resolveTaskUrl(item.status?.save_path_compressed) ||
-                    getDownloadLinks(item.status).length)
+                  featuredTaskItem.status?.status === 'completed' &&
+                  (featuredAudioUrl ||
+                    getDownloadLinks(featuredTaskItem.status).length)
                 "
-                class="media-bar media-bar--compact"
+                class="media-bar"
                 :class="{
-                  'media-bar--playing': playingTaskId === item.taskId,
+                  'media-bar--playing':
+                    playingTaskId === featuredTaskItem.taskId,
                 }"
               >
                 <TtsAudioPlayer
-                  v-if="resolveTaskUrl(item.status?.save_path_compressed)"
-                  :src="resolveTaskUrl(item.status?.save_path_compressed)"
-                  compact
-                  @playing-change="handlePlayingChange(item.taskId, $event)"
+                  v-if="featuredAudioUrl"
+                  :key="featuredTaskItem.taskId"
+                  :src="featuredAudioUrl"
+                  preload="metadata"
+                  @playing-change="handleFeaturedPlayingChange"
                 />
                 <div
-                  v-if="getDownloadLinks(item.status).length"
+                  v-if="getDownloadLinks(featuredTaskItem.status).length"
                   class="download-row"
                 >
                   <button
-                    v-for="link in getDownloadLinks(item.status)"
+                    v-for="link in getDownloadLinks(featuredTaskItem.status)"
                     :key="link.format"
                     type="button"
-                    class="download-link download-link--compact"
+                    class="download-link"
                     :class="{ 'download-link--expired': link.expired }"
-                    :disabled="isDownloading(item.taskId, link.format)"
+                    :disabled="
+                      isDownloading(featuredTaskItem.taskId, link.format)
+                    "
                     :aria-label="
                       link.expiry
                         ? `下载 ${link.format}，${link.expiry}`
                         : `下载 ${link.format}`
                     "
-                    @click="downloadTtsFile(item.taskId, link)"
+                    @click="downloadFeaturedTtsFile(link)"
                   >
                     <span class="download-link-fmt">{{ link.format }}</span>
                     <span
                       v-if="
-                        isDownloading(item.taskId, link.format) || link.expiry
+                        isDownloading(featuredTaskItem.taskId, link.format) ||
+                        link.expiry
                       "
                       class="download-link-exp tabular"
                     >
                       {{
-                        isDownloading(item.taskId, link.format)
+                        isDownloading(featuredTaskItem.taskId, link.format)
                           ? '下载中…'
                           : link.expiry
                       }}
                     </span>
-                    <n-icon size="14" aria-hidden="true">
+                    <n-icon size="15" aria-hidden="true">
                       <Download />
                     </n-icon>
                   </button>
@@ -885,37 +750,383 @@
               </div>
 
               <details
-                v-if="historyAudioPropsMap[item.taskId] || item.referenceText"
+                v-if="
+                  historyAudioPropsMap[featuredTaskItem.taskId] ||
+                  featuredTaskItem.referenceText
+                "
                 class="ref-details"
               >
                 <summary>参考音频与原台词</summary>
                 <div class="ref-details-body">
                   <div
-                    v-if="historyAudioPropsMap[item.taskId]"
+                    v-if="historyAudioPropsMap[featuredTaskItem.taskId]"
                     class="ref-details-row"
                   >
                     <span class="ref-details-key">参考音频</span>
                     <span class="ref-details-val ref-details-val--audio">
                       <AudioLabel
-                        v-bind="historyAudioPropsMap[item.taskId]"
-                        :audio-text="item.referenceText"
+                        v-bind="historyAudioPropsMap[featuredTaskItem.taskId]"
+                        :audio-text="featuredTaskItem.referenceText"
                         extra-text="点击试听"
                         display-download
                       />
                     </span>
                   </div>
-                  <div v-if="item.referenceText" class="ref-details-row">
+                  <div
+                    v-if="featuredTaskItem.referenceText"
+                    class="ref-details-row"
+                  >
                     <span class="ref-details-key">原台词</span>
                     <span class="ref-details-val" lang="ja">{{
-                      item.referenceText
+                      featuredTaskItem.referenceText
                     }}</span>
                   </div>
                 </div>
               </details>
             </article>
           </div>
+
+          <!-- Deduplicated History Ledger (Scrollable Independently on Desktop) -->
+          <div
+            v-if="olderHistoryItems.length"
+            class="ledger-section ledger-section--history"
+          >
+            <div class="ledger-section-head">
+              <div class="ledger-head-left">
+                <h2>更早的历史记录</h2>
+                <span class="band-meta tabular">
+                  共 {{ olderHistoryItems.length }} 条
+                </span>
+              </div>
+
+              <div class="clear-confirm-group">
+                <template v-if="confirmingClearHistory">
+                  <span class="band-meta">确认清空？</span>
+                  <button
+                    ref="confirmClearBtnRef"
+                    type="button"
+                    class="text-action text-action--danger"
+                    @click="confirmClearHistory"
+                  >
+                    确认
+                  </button>
+                  <button
+                    type="button"
+                    class="text-action"
+                    @click="cancelClearHistory"
+                  >
+                    取消
+                  </button>
+                </template>
+                <button
+                  v-else
+                  ref="askClearBtnRef"
+                  type="button"
+                  class="text-action text-action--danger"
+                  @click="askClearHistory"
+                >
+                  清空历史
+                </button>
+              </div>
+            </div>
+
+            <div class="history-list">
+              <article
+                v-for="item in olderHistoryItems"
+                :key="item.taskId"
+                class="task-entry task-entry--history"
+              >
+                <div class="task-entry-head">
+                  <div class="task-identity">
+                    <img
+                      v-if="item.speaker"
+                      :src="getAvatarPath(item.speaker)"
+                      :alt="item.speaker"
+                      class="task-avatar"
+                    />
+                    <div class="task-identity-line">
+                      <strong class="task-speaker">{{
+                        item.speaker || '未知角色'
+                      }}</strong>
+                      <span class="meta-dot" aria-hidden="true">·</span>
+                      <span class="task-mode">
+                        {{
+                          getHistoryVoiceMode(item) === 'reference'
+                            ? '参考音频'
+                            : '内置音色'
+                        }}
+                      </span>
+                      <template v-if="getCaptionZhLabel(item.caption)">
+                        <span class="meta-dot" aria-hidden="true">·</span>
+                        <span class="task-tone-highlight">{{
+                          getCaptionZhLabel(item.caption)
+                        }}</span>
+                      </template>
+                      <span class="meta-dot" aria-hidden="true">·</span>
+                      <time class="task-time tabular">{{
+                        formatSentAt(item.sentAt)
+                      }}</time>
+                      <template
+                        v-if="
+                          playingTaskId === item.taskId ||
+                          item.status?.status !== 'completed'
+                        "
+                      >
+                        <span class="meta-dot" aria-hidden="true">·</span>
+                        <span
+                          class="status-indicator"
+                          :class="
+                            playingTaskId === item.taskId
+                              ? 'status-indicator--playing'
+                              : `status-indicator--${
+                                  getStatusMeta(item.status?.status).tone
+                                }`
+                          "
+                        >
+                          <template v-if="playingTaskId === item.taskId">
+                            播放中
+                          </template>
+                          <template v-else>
+                            {{ getStatusMeta(item.status?.status).label }}
+                            <template
+                              v-if="isWaitingStatus(item.status?.status)"
+                            >
+                              · 排队 {{ item.status?.pending ?? 0 }}
+                            </template>
+                          </template>
+                        </span>
+                      </template>
+                    </div>
+                  </div>
+
+                  <div class="task-actions">
+                    <button
+                      type="button"
+                      class="text-action text-action--accent"
+                      @click="reuseHistoryItem(item)"
+                    >
+                      复用参数
+                    </button>
+                    <button
+                      v-if="isWaitingStatus(item.status?.status)"
+                      type="button"
+                      class="text-action"
+                      @click="refreshHistoryStatus(item.taskId)"
+                    >
+                      刷新
+                    </button>
+                    <button
+                      type="button"
+                      class="text-action text-action--danger"
+                      @click="removeHistoryItem(item.taskId)"
+                    >
+                      删除
+                    </button>
+                  </div>
+                </div>
+
+                <p v-if="item.ttsText.trim()" class="task-script" lang="ja">
+                  {{ item.ttsText }}
+                </p>
+                <p
+                  v-if="
+                    item.caption &&
+                    item.caption.trim() &&
+                    !getCaptionZhLabel(item.caption)
+                  "
+                  class="task-caption"
+                  lang="ja"
+                >
+                  <span class="task-caption-label">语气</span>
+                  {{ item.caption }}
+                </p>
+                <p
+                  v-if="item.status?.error"
+                  class="inline-notice inline-notice--error"
+                >
+                  <span>{{ item.status.error }}</span>
+                </p>
+
+                <div
+                  v-if="
+                    item.status?.status === 'completed' &&
+                    (resolveTaskUrl(item.status?.save_path_compressed) ||
+                      getDownloadLinks(item.status).length)
+                  "
+                  class="media-bar media-bar--compact"
+                  :class="{
+                    'media-bar--playing': playingTaskId === item.taskId,
+                  }"
+                >
+                  <TtsAudioPlayer
+                    v-if="resolveTaskUrl(item.status?.save_path_compressed)"
+                    :src="resolveTaskUrl(item.status?.save_path_compressed)"
+                    compact
+                    @playing-change="handlePlayingChange(item.taskId, $event)"
+                  />
+                  <div
+                    v-if="getDownloadLinks(item.status).length"
+                    class="download-row"
+                  >
+                    <button
+                      v-for="link in getDownloadLinks(item.status)"
+                      :key="link.format"
+                      type="button"
+                      class="download-link download-link--compact"
+                      :class="{ 'download-link--expired': link.expired }"
+                      :disabled="isDownloading(item.taskId, link.format)"
+                      :aria-label="
+                        link.expiry
+                          ? `下载 ${link.format}，${link.expiry}`
+                          : `下载 ${link.format}`
+                      "
+                      @click="downloadTtsFile(item.taskId, link)"
+                    >
+                      <span class="download-link-fmt">{{ link.format }}</span>
+                      <span
+                        v-if="
+                          isDownloading(item.taskId, link.format) || link.expiry
+                        "
+                        class="download-link-exp tabular"
+                      >
+                        {{
+                          isDownloading(item.taskId, link.format)
+                            ? '下载中…'
+                            : link.expiry
+                        }}
+                      </span>
+                      <n-icon size="14" aria-hidden="true">
+                        <Download />
+                      </n-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <details
+                  v-if="historyAudioPropsMap[item.taskId] || item.referenceText"
+                  class="ref-details"
+                >
+                  <summary>参考音频与原台词</summary>
+                  <div class="ref-details-body">
+                    <div
+                      v-if="historyAudioPropsMap[item.taskId]"
+                      class="ref-details-row"
+                    >
+                      <span class="ref-details-key">参考音频</span>
+                      <span class="ref-details-val ref-details-val--audio">
+                        <AudioLabel
+                          v-bind="historyAudioPropsMap[item.taskId]"
+                          :audio-text="item.referenceText"
+                          extra-text="点击试听"
+                          display-download
+                        />
+                      </span>
+                    </div>
+                    <div v-if="item.referenceText" class="ref-details-row">
+                      <span class="ref-details-key">原台词</span>
+                      <span class="ref-details-val" lang="ja">{{
+                        item.referenceText
+                      }}</span>
+                    </div>
+                  </div>
+                </details>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Mobile Sticky Quick-Access Strip (Option 1C: Accessible on Compose Tab) -->
+      <aside
+        v-if="
+          isMobileLayout && mobileActiveTab === 'compose' && featuredTaskItem
+        "
+        class="mobile-latest-bar"
+        :class="{
+          'mobile-latest-bar--playing':
+            playingTaskId === featuredTaskItem.taskId,
+          'mobile-latest-bar--waiting': isWaitingStatus(
+            featuredTaskItem.status?.status
+          ),
+        }"
+        aria-label="最新或进行中任务快捷条"
+      >
+        <div class="mobile-latest-control">
+          <div
+            v-if="isWaitingStatus(featuredTaskItem.status?.status)"
+            class="mobile-latest-spinner-wrap"
+            aria-hidden="true"
+          >
+            <span class="progress-spinner" />
+          </div>
+          <TtsAudioPlayer
+            v-else-if="
+              featuredTaskItem.status?.status === 'completed' &&
+              featuredAudioUrl
+            "
+            :key="`mini-${featuredTaskItem.taskId}`"
+            :src="featuredAudioUrl"
+            mini
+            preload="none"
+            @playing-change="handleFeaturedPlayingChange"
+          />
+          <img
+            v-else-if="featuredTaskItem.speaker"
+            :src="getAvatarPath(featuredTaskItem.speaker)"
+            :alt="featuredTaskItem.speaker"
+            class="mobile-latest-avatar-lg"
+          />
         </div>
-      </section>
+
+        <button
+          type="button"
+          class="mobile-latest-summary"
+          @click="switchMobileTab('results')"
+        >
+          <span class="mobile-latest-top">
+            <span
+              class="mobile-latest-pill"
+              :class="mobileLatestBadge.toneClass"
+            >
+              {{ mobileLatestBadge.label }}
+            </span>
+
+            <img
+              v-if="featuredTaskItem.speaker"
+              :src="getAvatarPath(featuredTaskItem.speaker)"
+              alt=""
+              class="mobile-latest-avatar"
+            />
+            <strong class="mobile-latest-speaker">{{
+              featuredTaskItem.speaker || '未知角色'
+            }}</strong>
+            <span
+              v-if="getCaptionZhLabel(featuredTaskItem.caption)"
+              class="mobile-latest-tone"
+            >
+              · {{ getCaptionZhLabel(featuredTaskItem.caption) }}
+            </span>
+          </span>
+          <span class="mobile-latest-text" lang="ja">
+            {{
+              featuredTaskItem.status?.error ||
+              featuredTaskItem.ttsText ||
+              '查看任务详情'
+            }}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="mobile-latest-jump"
+          @click="switchMobileTab('results')"
+        >
+          <span>详情</span>
+          <n-icon size="15" aria-hidden="true">
+            <ChevronRight />
+          </n-icon>
+        </button>
+      </aside>
     </div>
   </n-config-provider>
 </template>
@@ -943,7 +1154,7 @@ import {
   type SelectOption,
 } from 'naive-ui'
 import axios from 'axios'
-import { ChevronDown, Download, Microphone } from '@vicons/carbon'
+import { ChevronDown, ChevronRight, Download, Microphone } from '@vicons/carbon'
 import { store } from '../../store'
 import { units } from '../../assets/album-index.json'
 import { characters, getAvatarPath } from '../../helper/path'
@@ -966,6 +1177,7 @@ import {
 
 type VoiceMode = 'embed' | 'reference'
 type PresetScope = 'character' | 'universal'
+type MobileTab = 'compose' | 'results'
 
 type TaskStatus = {
   status: string
@@ -1062,6 +1274,7 @@ const HISTORY_LIMIT = 50
 const RECENT_SPEAKERS_KEY = 'tts-recent-speakers'
 const RECENT_SPEAKERS_LIMIT = 6
 const MAX_CONSECUTIVE_POLL_FAILURES = 5
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 959px)'
 
 const router = useRouter()
 const panelRef = ref<HTMLElement | null>(null)
@@ -1243,9 +1456,47 @@ const errorMessage = ref('')
 const activeTaskId = ref('')
 const historyItems = ref<HistoryItem[]>([])
 
-function prefersReducedMotion() {
-  if (typeof window === 'undefined' || !window.matchMedia) return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+function getMediaQuery(query: string): MediaQueryList | null {
+  if (
+    typeof window === 'undefined' ||
+    typeof window.matchMedia !== 'function'
+  ) {
+    return null
+  }
+  return window.matchMedia(query)
+}
+
+const isMobileLayout = ref(
+  getMediaQuery(MOBILE_BREAKPOINT_QUERY)?.matches ?? false
+)
+const mobileActiveTab = ref<MobileTab>('compose')
+let mobileMediaQuery: MediaQueryList | null = null
+
+function handleMobileMediaChange(event: MediaQueryListEvent): void {
+  isMobileLayout.value = event.matches
+}
+
+function scrollPanelToTopIfNeeded(): void {
+  if (typeof window === 'undefined') return
+  const el = panelRef.value
+  if (!el) return
+  const rect = el.getBoundingClientRect()
+  if (rect.top < 56 || rect.top > window.innerHeight * 0.5) {
+    el.scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
+}
+
+async function switchMobileTab(tab: MobileTab): Promise<void> {
+  mobileActiveTab.value = tab
+  await nextTick()
+  scrollPanelToTopIfNeeded()
+}
+
+function prefersReducedMotion(): boolean {
+  return getMediaQuery('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
 function recordRecentSpeaker(name: string | null) {
@@ -1382,18 +1633,63 @@ watch(selectedSpeaker, () => {
   }
 })
 
-const currentTaskItem = computed(() => {
-  if (!activeTaskId.value) return null
-  return (
-    historyItems.value.find((item) => item.taskId === activeTaskId.value) ||
-    null
+const featuredTaskItem = computed(() => {
+  if (activeTaskId.value) {
+    const active = historyItems.value.find(
+      (item) => item.taskId === activeTaskId.value
+    )
+    if (active) return active
+  }
+  const runningOrPending = historyItems.value.find((item) =>
+    isWaitingStatus(item.status?.status)
   )
+  if (runningOrPending) return runningOrPending
+  return historyItems.value[0] || null
 })
 
-const visibleHistoryItems = computed(() => {
-  if (!currentTaskItem.value) return historyItems.value
+const featuredTaskHeading = computed(() => {
+  const item = featuredTaskItem.value
+  if (!item) return '最新任务'
+  if (isWaitingStatus(item.status?.status)) return '进行中任务'
+  if (activeTaskId.value && item.taskId === activeTaskId.value) {
+    return '当前结果'
+  }
+  return '最新任务'
+})
+
+const featuredAudioUrl = computed(() =>
+  resolveTaskUrl(featuredTaskItem.value?.status?.save_path_compressed)
+)
+
+const mobileLatestBadge = computed(() => {
+  const item = featuredTaskItem.value
+  if (!item) {
+    return { label: '最新', toneClass: 'mobile-latest-pill--unknown' }
+  }
+  if (playingTaskId.value === item.taskId) {
+    return { label: '播放中', toneClass: 'mobile-latest-pill--playing' }
+  }
+  const status = item.status?.status
+  const meta = getStatusMeta(status)
+  if (status === 'running') {
+    return { label: '生成中', toneClass: `mobile-latest-pill--${meta.tone}` }
+  }
+  if (status === 'pending') {
+    return {
+      label: `排队 ${item.status?.pending ?? 0}`,
+      toneClass: `mobile-latest-pill--${meta.tone}`,
+    }
+  }
+  if (status === 'completed') {
+    return { label: '最新', toneClass: `mobile-latest-pill--${meta.tone}` }
+  }
+  return { label: meta.label, toneClass: `mobile-latest-pill--${meta.tone}` }
+})
+
+const olderHistoryItems = computed(() => {
+  if (!featuredTaskItem.value) return historyItems.value
   return historyItems.value.filter(
-    (item) => item.taskId !== currentTaskItem.value?.taskId
+    (item) => item.taskId !== featuredTaskItem.value?.taskId
   )
 })
 
@@ -1437,9 +1733,9 @@ function handlePlayingChange(taskIdValue: string, playing: boolean) {
   }
 }
 
-function handleCurrentPlayingChange(playing: boolean) {
-  if (currentTaskItem.value) {
-    handlePlayingChange(currentTaskItem.value.taskId, playing)
+function handleFeaturedPlayingChange(playing: boolean) {
+  if (featuredTaskItem.value) {
+    handlePlayingChange(featuredTaskItem.value.taskId, playing)
   } else if (!playing) {
     playingTaskId.value = ''
   }
@@ -1832,7 +2128,7 @@ function updateHistoryItem(taskIdValue: string, status: TaskStatus) {
   if (
     wasWaiting &&
     status.status === 'completed' &&
-    activeTaskId.value === taskIdValue
+    featuredTaskItem.value?.taskId === taskIdValue
   ) {
     pulseJustCompleted(taskIdValue)
   }
@@ -1899,9 +2195,14 @@ function reuseHistoryItem(item: HistoryItem) {
   } else {
     dismissUndoNotice()
   }
-  panelRef.value?.scrollIntoView({
-    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-    block: 'start',
+  if (isMobileLayout.value) {
+    mobileActiveTab.value = 'compose'
+  }
+  nextTick(() => {
+    panelRef.value?.scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'start',
+    })
   })
 }
 
@@ -1915,7 +2216,7 @@ function removeHistoryItem(taskIdValue: string) {
   if (playingTaskId.value === taskIdValue) {
     playingTaskId.value = ''
   }
-  if (visibleHistoryItems.value.length === 0) {
+  if (olderHistoryItems.value.length === 0) {
     confirmingClearHistory.value = false
   }
   if (waitingTaskCount.value === 0) {
@@ -1923,28 +2224,28 @@ function removeHistoryItem(taskIdValue: string) {
   }
 }
 
-function refreshCurrentTask() {
-  if (currentTaskItem.value) {
+function refreshFeaturedTask() {
+  if (featuredTaskItem.value) {
     consecutivePollFailures = 0
-    refreshHistoryStatus(currentTaskItem.value.taskId, true)
+    refreshHistoryStatus(featuredTaskItem.value.taskId, true)
   }
 }
 
-function reuseCurrentTask() {
-  if (currentTaskItem.value) {
-    reuseHistoryItem(currentTaskItem.value)
+function reuseFeaturedTask() {
+  if (featuredTaskItem.value) {
+    reuseHistoryItem(featuredTaskItem.value)
   }
 }
 
-function removeCurrentTask() {
-  if (currentTaskItem.value) {
-    removeHistoryItem(currentTaskItem.value.taskId)
+function removeFeaturedTask() {
+  if (featuredTaskItem.value) {
+    removeHistoryItem(featuredTaskItem.value.taskId)
   }
 }
 
-function downloadCurrentTtsFile(link: DownloadLink) {
-  if (currentTaskItem.value) {
-    downloadTtsFile(currentTaskItem.value.taskId, link)
+function downloadFeaturedTtsFile(link: DownloadLink) {
+  if (featuredTaskItem.value) {
+    downloadTtsFile(featuredTaskItem.value.taskId, link)
   }
 }
 
@@ -1962,15 +2263,15 @@ async function cancelClearHistory() {
 
 function confirmClearHistory() {
   confirmingClearHistory.value = false
-  if (currentTaskItem.value) {
-    const currentOnly = historyItems.value.filter(
-      (item) => item.taskId === currentTaskItem.value?.taskId
+  if (featuredTaskItem.value) {
+    const featuredOnly = historyItems.value.filter(
+      (item) => item.taskId === featuredTaskItem.value?.taskId
     )
-    historyItems.value = currentOnly
-    persistHistory(currentOnly)
+    historyItems.value = featuredOnly
+    persistHistory(featuredOnly)
     if (
       playingTaskId.value &&
-      playingTaskId.value !== currentTaskItem.value.taskId
+      playingTaskId.value !== featuredTaskItem.value.taskId
     ) {
       playingTaskId.value = ''
     }
@@ -2108,7 +2409,11 @@ async function createTask() {
     })
     ensurePolling()
     pollWaitingTasks()
-    scrollLedgerIntoViewIfHidden()
+    if (isMobileLayout.value) {
+      switchMobileTab('results')
+    } else {
+      scrollLedgerIntoViewIfHidden()
+    }
   } catch (error: unknown) {
     errorMessage.value = toErrorMessage(error, '请求失败')
   } finally {
@@ -2148,10 +2453,22 @@ function resumePollingIfNeeded() {
 }
 
 onMounted(() => {
+  mobileMediaQuery = getMediaQuery(MOBILE_BREAKPOINT_QUERY)
+  if (mobileMediaQuery) {
+    isMobileLayout.value = mobileMediaQuery.matches
+    if (typeof mobileMediaQuery.addEventListener === 'function') {
+      mobileMediaQuery.addEventListener('change', handleMobileMediaChange)
+    } else if (typeof mobileMediaQuery.addListener === 'function') {
+      mobileMediaQuery.addListener(handleMobileMediaChange)
+    }
+  }
   resumePollingIfNeeded()
 })
 
 onActivated(() => {
+  if (mobileMediaQuery) {
+    isMobileLayout.value = mobileMediaQuery.matches
+  }
   resumePollingIfNeeded()
 })
 
@@ -2161,6 +2478,14 @@ onDeactivated(() => {
 })
 
 onBeforeUnmount(() => {
+  if (mobileMediaQuery) {
+    if (typeof mobileMediaQuery.removeEventListener === 'function') {
+      mobileMediaQuery.removeEventListener('change', handleMobileMediaChange)
+    } else if (typeof mobileMediaQuery.removeListener === 'function') {
+      mobileMediaQuery.removeListener(handleMobileMediaChange)
+    }
+    mobileMediaQuery = null
+  }
   stopPolling()
   clearReadyHighlight()
 })
@@ -2188,14 +2513,22 @@ onBeforeUnmount(() => {
 
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  max-width: 900px;
+  gap: 14px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 0 0 36px;
+  padding: 0 0 28px;
   color: var(--tts-ink);
   font-family: HummingStd-E, UDKakugo_SmallPr6-B, 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
   text-align: left;
+}
+
+/* Desktop Split Workspace (>= 960px) */
+.studio-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(370px, 0.92fr);
+  gap: 18px;
+  align-items: start;
 }
 
 .tts-studio button {
@@ -2225,7 +2558,12 @@ onBeforeUnmount(() => {
 
 /* Direct Opening Masthead */
 .studio-masthead {
-  padding: 20px 28px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 15px 24px 13px;
   border-bottom: 1px solid var(--tts-hairline);
   background: linear-gradient(
     180deg,
@@ -2237,28 +2575,27 @@ onBeforeUnmount(() => {
 .studio-masthead h1 {
   margin: 0;
   color: var(--tts-ink);
-  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  font-size: clamp(1.32rem, 2vw, 1.55rem);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
 }
 
 .studio-masthead p {
-  margin: 5px 0 0;
-  max-width: 62ch;
+  margin: 0;
   color: var(--tts-muted);
-  font-size: var(--tts-fs-body);
+  font-size: var(--tts-fs-sm);
   line-height: 1.5;
 }
 
 /* Hairline-Divided Bands Inside the Studio Sheet */
 .studio-band {
-  padding: 20px 28px;
+  padding: 15px 24px;
   border-bottom: 1px solid var(--tts-hairline);
 }
 
 .studio-band--script {
-  padding-top: 18px;
+  padding-top: 14px;
 }
 
 .studio-band--direction {
@@ -2268,10 +2605,10 @@ onBeforeUnmount(() => {
 .band-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 16px;
+  gap: 4px 14px;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .band-head-group {
@@ -2373,8 +2710,8 @@ onBeforeUnmount(() => {
 .voice-avatar-frame {
   display: grid;
   flex: 0 0 auto;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   padding: 2px;
   box-sizing: border-box;
   place-items: center;
@@ -2564,7 +2901,7 @@ onBeforeUnmount(() => {
 }
 
 .studio-textarea--script {
-  min-height: 98px;
+  min-height: 84px;
 }
 
 .script-samples {
@@ -2609,7 +2946,7 @@ onBeforeUnmount(() => {
 }
 
 .studio-textarea--caption {
-  min-height: 62px;
+  min-height: 54px;
 }
 
 /* Compact Quick-Preset Bar (Always Discoverable) */
@@ -2676,10 +3013,10 @@ onBeforeUnmount(() => {
 .studio-footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 20px;
+  gap: 10px 18px;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 28px;
+  padding: 14px 24px;
   background: rgba(255, 255, 255, 0.96);
 }
 
@@ -2993,9 +3330,57 @@ onBeforeUnmount(() => {
   line-height: 1.45;
 }
 
-/* Output & History Ledger Sheet */
+/* Output & History Ledger Sheet (Sticky Right Column on Desktop) */
+.ledger-sheet {
+  position: sticky;
+  top: 66px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 82px);
+}
+
+.ledger-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.ledger-empty-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--tts-hairline);
+  border-radius: 50%;
+  background: var(--tts-tint);
+  color: var(--tts-accent-text);
+}
+
+.ledger-empty h2 {
+  margin: 0;
+  color: var(--tts-ink);
+  font-size: var(--tts-fs-heading);
+  font-weight: 700;
+}
+
+.ledger-empty p {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--tts-muted);
+  font-size: var(--tts-fs-sm);
+  line-height: 1.6;
+}
+
+.ledger-empty-cta {
+  margin-top: 6px;
+}
+
 .ledger-section {
-  padding: 20px 28px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--tts-hairline);
   background-color: transparent;
   transition: background-color 360ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -3006,11 +3391,29 @@ onBeforeUnmount(() => {
 }
 
 .ledger-section--current {
-  background-color: rgba(253, 242, 245, 0.28);
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  background-color: rgba(253, 242, 245, 0.3);
+}
+
+.ledger-sheet--has-history .ledger-section--current {
+  max-height: 56%;
+}
+
+.ledger-section--history {
+  flex: 1 1 auto;
+  min-height: 160px;
+  overflow-y: auto;
 }
 
 .ledger-section--just-ready {
   background-color: rgba(253, 242, 245, 0.85);
+}
+
+.waiting-inline-count {
+  color: #1d4ed8;
+  font-weight: 600;
 }
 
 .ledger-section-head {
@@ -3330,13 +3733,270 @@ onBeforeUnmount(() => {
   align-items: center;
 }
 
-/* Responsive: Tablet & Mobile */
+/* Mobile Mode Switcher & Sticky Latest-Task Strip (Option 1C) */
+.mobile-studio-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--tts-border);
+  border-radius: 14px;
+  background: var(--tts-surface);
+  box-shadow: 0 8px 22px rgba(62, 83, 105, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.mobile-studio-tab {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--tts-muted);
+  font-size: var(--tts-fs-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-studio-tab--active {
+  background: var(--tts-accent-soft);
+  color: var(--tts-accent-text);
+  box-shadow: inset 0 0 0 1px var(--tts-accent-border);
+}
+
+.mobile-studio-tab:focus-visible {
+  outline: 2px solid var(--tts-accent);
+  outline-offset: 2px;
+}
+
+.mobile-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #edf3f9;
+  color: var(--tts-muted);
+  font-size: var(--tts-fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.mobile-studio-tab--active .mobile-tab-badge {
+  background: rgba(191, 72, 107, 0.14);
+  color: var(--tts-accent-text);
+}
+
+.mobile-tab-badge--running {
+  background: rgba(29, 78, 216, 0.12);
+  color: #1d4ed8;
+}
+
+.mobile-latest-bar {
+  position: sticky;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 9;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--tts-border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 30px rgba(30, 42, 56, 0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-latest-bar--playing {
+  border-color: var(--tts-accent-border);
+  background: rgba(253, 242, 245, 0.96);
+}
+
+.mobile-latest-bar--waiting {
+  border-color: rgba(29, 78, 216, 0.34);
+}
+
+.mobile-latest-control {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-latest-spinner-wrap {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--tts-tint);
+}
+
+.mobile-latest-avatar-lg {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mobile-latest-summary {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-latest-summary:focus-visible,
+.mobile-latest-jump:focus-visible {
+  outline: 2px solid var(--tts-accent);
+  outline-offset: 2px;
+}
+
+.mobile-latest-top {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  font-size: var(--tts-fs-sm);
+  line-height: 1.3;
+}
+
+.mobile-latest-pill {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #edf3f9;
+  color: var(--tts-muted);
+  font-size: var(--tts-fs-sm);
+  font-weight: 700;
+}
+
+.mobile-latest-pill--completed {
+  background: #eaf7ef;
+  color: #15803d;
+}
+
+.mobile-latest-pill--playing {
+  background: var(--tts-accent-soft);
+  color: var(--tts-accent-text);
+}
+
+.mobile-latest-pill--pending {
+  background: #fef4df;
+  color: #925205;
+}
+
+.mobile-latest-pill--running {
+  background: #e8f0fe;
+  color: #1d4ed8;
+}
+
+.mobile-latest-pill--failed {
+  background: #fdf0f3;
+  color: #c81e3a;
+}
+
+.mobile-latest-avatar {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mobile-latest-speaker {
+  flex: 0 0 auto;
+  color: var(--tts-ink);
+  font-weight: 700;
+}
+
+.mobile-latest-tone {
+  overflow: hidden;
+  color: var(--tts-accent-text);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-latest-text {
+  overflow: hidden;
+  color: var(--tts-muted);
+  font-size: var(--tts-fs-sm);
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-latest-jump {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 8px 0 10px;
+  border: 1px solid #d4dfea;
+  border-radius: 9px;
+  background: #ffffff;
+  color: var(--tts-ink);
+  font-size: var(--tts-fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mobile-latest-jump:hover {
+  border-color: var(--tts-accent-border);
+  color: var(--tts-accent-text);
+}
+
+/* Responsive: Tablet & Mobile (< 960px switches to Option 1C) */
+@media (max-width: 959px) {
+  .tts-studio {
+    max-width: 900px;
+    gap: 12px;
+  }
+
+  .studio-workspace {
+    display: block;
+  }
+
+  .ledger-sheet {
+    position: static;
+    max-height: none;
+    overflow: hidden;
+  }
+
+  .ledger-sheet--has-history .ledger-section--current,
+  .ledger-section--history {
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+  }
+}
+
 @media (max-width: 768px) {
   .studio-masthead,
   .studio-band,
   .studio-footer,
   .ledger-section {
-    padding: 18px 18px;
+    padding: 16px 18px;
   }
 
   .studio-sheet > .inline-notice {
@@ -3442,7 +4102,9 @@ onBeforeUnmount(() => {
   .preset-cell,
   .ledger-section,
   .media-bar,
-  .download-link {
+  .download-link,
+  .mobile-studio-tab,
+  .mobile-latest-bar {
     transition: none;
   }
 

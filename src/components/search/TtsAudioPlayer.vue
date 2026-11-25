@@ -3,6 +3,7 @@
     class="tts-player"
     :class="{
       'tts-player--compact': compact,
+      'tts-player--mini': mini,
       'tts-player--playing': isPlaying,
       'tts-player--error': hasError,
     }"
@@ -29,13 +30,13 @@
       "
       @click="togglePlayback"
     >
-      <n-icon :size="compact ? 14 : 16" aria-hidden="true">
+      <n-icon :size="toggleIconSize" aria-hidden="true">
         <PauseFilled v-if="isPlaying" />
         <PlayFilledAlt v-else />
       </n-icon>
     </button>
 
-    <div v-if="!hasError" class="tts-player-track">
+    <div v-if="!mini && !hasError" class="tts-player-track">
       <input
         type="range"
         class="tts-player-scrubber"
@@ -51,7 +52,7 @@
       />
     </div>
 
-    <span class="tts-player-time" aria-live="off">
+    <span v-if="!mini" class="tts-player-time" aria-live="off">
       <template v-if="hasError">暂不可播放（点击重试）</template>
       <template v-else-if="duration > 0">
         {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
@@ -84,10 +85,12 @@ const props = withDefaults(
     src: string
     preload?: 'none' | 'metadata' | 'auto'
     compact?: boolean
+    mini?: boolean
   }>(),
   {
     preload: 'none',
     compact: false,
+    mini: false,
   }
 )
 
@@ -100,6 +103,12 @@ const isPlaying = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
 const hasError = ref(false)
+
+const toggleIconSize = computed(() => {
+  if (props.mini) return 15
+  if (props.compact) return 14
+  return 16
+})
 
 const sliderMax = computed(() => (duration.value > 0 ? duration.value : 1))
 const progressPercent = computed(() => {
@@ -245,6 +254,12 @@ onBeforeUnmount(() => {
   gap: 10px;
 }
 
+.tts-player--mini {
+  flex: 0 0 auto;
+  gap: 0;
+  width: auto;
+}
+
 .tts-player-toggle {
   display: inline-grid;
   flex: 0 0 auto;
@@ -384,7 +399,7 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 600px) {
-  .tts-player {
+  .tts-player:not(.tts-player--mini) {
     flex: 0 0 auto;
     width: 100%;
   }

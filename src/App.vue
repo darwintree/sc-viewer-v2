@@ -14,6 +14,18 @@ import {
 const route = useRoute()
 const { locale, availableLocales, t } = useI18n()
 
+const isWideRoute = computed(() => route.path === '/voice-tts')
+
+watch(
+  isWideRoute,
+  (wide) => {
+    if (typeof document !== 'undefined') {
+      document.getElementById('app')?.classList.toggle('app--wide', wide)
+    }
+  },
+  { immediate: true }
+)
+
 const showAlert = computed(() => {
   // return location.hostname === 'viewer.strawberrytree.top'
   return true
@@ -59,7 +71,7 @@ watch(locale, (newVal) => {
         <!-- <n-alert v-if="showAlert" type="warning" closable>
           网站后端近日迁移中，可能存在不稳定
         </n-alert> -->
-        <header class="topbar">
+        <header class="topbar" :class="{ 'topbar--wide': isWideRoute }">
           <nav class="full-nav">
             <router-link :to="navTo('/')">{{ t('tab.Home') }}</router-link>
             <router-link :to="navTo('/translate')">{{
@@ -134,6 +146,10 @@ watch(locale, (newVal) => {
   );
   box-shadow: 0 4px 18px rgb(65 83 103 / 8%);
   backdrop-filter: blur(14px);
+}
+
+.topbar--wide {
+  padding: 11px max(18px, calc((100vw - 1240px) / 2));
 }
 
 .full-nav,
