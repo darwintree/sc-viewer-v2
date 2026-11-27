@@ -1,5 +1,15 @@
 # Updates
 
+## 2026/11/27
+
+* [凛世-P](/translate#json/produce_events/201202301.json)
+* [美琴-P](/translate#json/produce_events/202501501.json)
+* [摩美々-S](/translate#json/produce_events/300502601.json)
+* [樹里-S](/translate#json/produce_events/301102601.json)
+* [冬優子-S](/translate#json/produce_events/301802501.json)
+* [冬優子-birthday](/translate#json/special_communications/4902008018.json)
+
+
 ## 2026/11/18
 
 * [結華-S](/translate#json/produce_events/300702501.json)
